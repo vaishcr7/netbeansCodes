@@ -19,24 +19,27 @@ public class TransExpr {
         mp.put("^", 4);
         for (int i = 0; i < expr.length(); i++) {
             char c = expr.charAt(i);
+            StringBuilder sba=new StringBuilder();
             if (c == ')') {
-                String p = aq.pop();
-                String m = "!";
-                StringBuilder k = new StringBuilder();
-                while (!"(".equals(p)) {
-                    if (mp.containsKey(p)) {
-                        m = p;
-                    } else {
-                        k.append(p);
-                    }
-                    p = aq.pop();
-                }
-                k.reverse();
-                k.append(m);
-                aq.push(k.toString());
+                String operand1 = aq.pop();
+              if(aq.peek()=="(")
+              {
+                  aq.pop();
+                  aq.push(operand1);
+                  continue;
+              }
+              else
+              {
+                  String operator=aq.pop();
+                  String operand2=aq.pop();
+                  aq.pop();
+                  sba.append(operand2).append(operand1).append(operator);
+                  aq.push(sba.toString());
+              }
             } else {
                 aq.push("" + c);
             }
+            System.out.println("current aq= "+aq);
         }
         System.out.println(aq);
     }
