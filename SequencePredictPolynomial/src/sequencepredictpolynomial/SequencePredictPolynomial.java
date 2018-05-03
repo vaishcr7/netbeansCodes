@@ -12,13 +12,21 @@ public class SequencePredictPolynomial {
       {
         int s=sc.nextInt();
         int c=sc.nextInt();
-        String nums=sc.next();
-        String []num=nums.trim().split(nums);
+        String []num=new String[s];
+          for (int i = 0; i < s; i++) {
+              num[i]=(sc.next().trim());
+          }
+          /*System.out.println("num= ");
+          for (int i = 0; i < num.length; i++) {
+              System.out.print(num[i]+" ");
+          }
+          System.out.println("");*/
         StringBuilder sba=new StringBuilder();
-        if(nums.length()==1)// case where only one number was present in the list
+        if(num.length==1)// case where only one number was present in the list
         {
             while(c-->0)
                 sba.append(num[0]).append(" ");
+            System.out.println(sba.toString().trim());
         }
         else
         {
@@ -33,19 +41,26 @@ public class SequencePredictPolynomial {
             ArrayList<ArrayList<Integer>> als=new ArrayList<>();
             als.add(al);
             newDs match=new newDs();
-            while(match.matched==false && i<als.get(levelOfconstDiff).size())
+            match=checkSame(als.get(0));
+            while(match.matched==false)
             {
+                System.out.println("hi");//1 6 3 1 2 3 4 5 6
                 ArrayList<Integer> temp=new ArrayList<>();
-                temp.add(Math.abs(als.get(levelOfconstDiff).get(i-1)-als.get(levelOfconstDiff).get(i)));
+                while( i<als.get(levelOfconstDiff).size())
+                {
+                    temp.add(Math.abs(als.get(levelOfconstDiff).get(i-1)-als.get(levelOfconstDiff).get(i)));
+                    i+=1;
+                }
                 match=checkSame(als.get(levelOfconstDiff));
                 als.add(new ArrayList<>(temp));
                 if(match.matched==false)
                     levelOfconstDiff+=1;
                 i=1;
-        }
-             int yp=als.get(levelOfconstDiff).size();
+            }
+            System.out.println("als= "+als+" and levelof= "+levelOfconstDiff);
+            /* int yp=als.get(levelOfconstDiff).size();
              while(yp++<(c+s))
-                als.get(levelOfconstDiff).add(match.diff);
+                als.get(levelOfconstDiff).add(match.diff);*/
              while(levelOfconstDiff>0)
              {
                  int gt=0;
