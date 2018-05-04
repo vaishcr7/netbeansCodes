@@ -3,6 +3,7 @@ package sequencepredictpolynomial;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class SequencePredictPolynomial {
 
     public static void main(String[] args) {
@@ -44,7 +45,16 @@ public class SequencePredictPolynomial {
             match=checkSame(als.get(0));
             while(match.matched==false)
             {
-                System.out.println("hi");//1 6 3 1 2 3 4 5 6
+                //System.out.println("hi");
+                /*4
+ 6 3 
+1 2 3 4 5 6
+ 8 2 
+1 2 4 7 11 16 22 29 
+10 2 
+1 1 1 1 1 1 1 1 1 2 
+1 10 
+3*/
                 ArrayList<Integer> temp=new ArrayList<>();
                 while( i<als.get(levelOfconstDiff).size())
                 {
@@ -52,27 +62,31 @@ public class SequencePredictPolynomial {
                     i+=1;
                 }
                 match=checkSame(als.get(levelOfconstDiff));
-                als.add(new ArrayList<>(temp));
                 if(match.matched==false)
                     levelOfconstDiff+=1;
+                else
+                    break;    
+                als.add(new ArrayList<>(temp));
                 i=1;
+                System.out.println("als= "+als+" and levelof= "+levelOfconstDiff);
             }
-            System.out.println("als= "+als+" and levelof= "+levelOfconstDiff);
-            /* int yp=als.get(levelOfconstDiff).size();
+            int yp=als.get(levelOfconstDiff).size();
              while(yp++<(c+s))
-                als.get(levelOfconstDiff).add(match.diff);*/
+                als.get(levelOfconstDiff).add(match.diff);
+             int last=als.get(levelOfconstDiff).size()-1;
              while(levelOfconstDiff>0)
              {
-                 int gt=0;
-                 while(gt<c)
+                 System.out.println("size of current arraylist is "+last);
+                 while(last>0)
                  {
                      ArrayList<Integer> p=als.get(levelOfconstDiff-1);
-                     int y=p.get(p.size()-(1+c-gt));
+                     int y=p.get(p.size()-1);
                      ArrayList<Integer> pp=als.get(levelOfconstDiff);
                      int yy=pp.get(pp.size()-1);
                      als.get(levelOfconstDiff-1).add(y+yy);
-                     gt++;
+                     last--;
                  }
+                 System.out.println("moving up with this "+als.get(levelOfconstDiff));
                  levelOfconstDiff-=1;
              }
              for (int j = 0; j < als.get(0).size(); j++) {
