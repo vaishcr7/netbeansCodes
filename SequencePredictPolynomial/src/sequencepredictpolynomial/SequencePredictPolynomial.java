@@ -45,6 +45,7 @@ public class SequencePredictPolynomial {
             match=checkSame(als.get(0));
             while(match.matched==false)
             {
+                
                 //System.out.println("hi");
                 /*4
  6 3 
