@@ -29,55 +29,39 @@ Therefore, return the max sliding window as [3,3,5,5,6,7].
             ar[i]=sc.nextInt();
         }
         Deque<Integer> d=new LinkedList<>();
-        int count=0,i=0;
+        int count=k-1,i=0;
         StringBuilder sba=new StringBuilder();
         int max=Integer.MIN_VALUE;
-        while(count<(t-k+1))
-        {
-            System.out.println("");
-            System.out.println("initial index= "+count);
-            System.out.println("");
-            if(!d.isEmpty() && d.peekFirst()==ar[count-1])
-                d.pollFirst();
-            if(count!=0 && max==ar[count-1])
-            {
-                max=d.peekFirst();
-                System.out.println("chala");
-            }
-            else if(count!=0)
-            {
-                System.out.println("isliye max= "+max+" and ar[c-1]= "+ar[count-1]);
-            }
-            for (;i <(count+k); i++) 
-            {                
-              d.offer(ar[i]);
-              max=max<ar[i]?ar[i]:max;
-            }
-            System.out.print("max= "+max+" and current d= "+d);
-            int node=d.pollFirst();
-            System.out.println(" and node= "+node);
-            while(!d.isEmpty() && d.peekFirst()>node)
-            {
-                node=d.pollFirst();
-                max=node>max?node:max;
-            }
-            d.offerFirst(node);
-            System.out.println("yo d here is "+d);
-            boolean hop=true;
-            while(!d.isEmpty() && node<max)
-            {
-                node=d.pollFirst();
-                hop=false;
-            }
-            if(!hop)
-                d.offerFirst(node);
-            System.out.println("ok d  here is "+d);
-            sba.append(d.peekFirst()).append(" ");
-            System.out.println("sba= "+sba.toString());
-            System.out.println("max carried over= "+max);
-            count++;
+        int []ans=new int[ar.length-k+1];
+        int tab=0,initial_pos=0;
+        for (int j = 0; j < k-1; j++) {
+            d.offerLast(ar[j]);
+            while(d.peekFirst()<d.peekLast())
+                    d.pollFirst();
         }
-        System.out.println(sba.toString());
+        while(count<t)
+        {
+                d.offerLast(ar[count]);
+                while(d.peekFirst()<d.peekLast())
+                    d.pollFirst();
+            System.out.println("this d= "+d);
+            ans[tab]=d.peekFirst();
+            tab++;
+            System.out.print("for count= "+count+"  ");
+            count++;
+            if(d.peekFirst()==ar[initial_pos])
+                    d.pollFirst();
+            while(d.peekFirst()<d.peekLast())
+                    d.pollFirst();
+            System.out.println("d= "+d);
+            initial_pos+=1;
+            System.out.println("answer is ");
+            
+        for (int j = 0; j < ans.length; j++) {
+            System.out.print(ans[j]+" ");
+        }
+            System.out.println("");
+        }
+        }
     }
     //8 5 9 10 9 -7 -4 -8 2 -6
-}
