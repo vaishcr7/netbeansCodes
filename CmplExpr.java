@@ -57,7 +57,7 @@ public class CmplExpr {
                      aq.push(temp.charAt(0));
                  else
                  {//(a+b)*c wala case
-                  if((!aq.isEmpty() && (aq.peek()=='/' || aq.peek()=='-')) || (i<sba.length()-1 && mpa.containsKey(sba.charAt(i+1))&& mpa.get(sba.charAt(i+1))<mpa.get(temp.charAt(1))))
+                  if((!aq.isEmpty() && (aq.peek()=='/'))  ||(!aq.isEmpty() && aq.peek()=='-' && (temp.charAt(1)=='+' ||temp.charAt(1)=='-')) || (i<sba.length()-1 && mpa.containsKey(sba.charAt(i+1))&& mpa.get(sba.charAt(i+1))<mpa.get(temp.charAt(1))))
                   {
                        //  System.out.println("naaa");
                          temp=temp.append("(");
