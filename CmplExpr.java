@@ -26,19 +26,19 @@ public class CmplExpr {
              sba.deleteCharAt(0);
              sba.deleteCharAt(sba.length()-1);
          }*/
-         //System.out.println("initial useful sba is "+sba.toString());
+       //  System.out.println("initial useful sba is "+sba.toString());
          if(sba.length()==0)
          {
-             //System.out.println("");
+             System.out.println("");
              continue;
          }
          for (int i = 0; i < sba.length(); i++) {
-             //System.out.println("this aq= "+aq);
+            // System.out.println("this aq= "+aq);
              char ch=sba.charAt(i);
              if(ch!=')')
              {
                  aq.push(ch);
-                 //System.out.println("pushed "+sba.charAt(i));
+               //  System.out.println("pushed "+sba.charAt(i));
              }
              else
              {
@@ -51,15 +51,15 @@ public class CmplExpr {
                          break;
                      temp.append(c);
                  }
-                 //System.out.println("that aq= "+aq);//1 (a*(b/c)*d)
-                 //System.out.println("current temp= "+temp);
+                // System.out.println("that aq= "+aq);//1 (a*(b/c)*d)
+                // System.out.println("current temp= "+temp);
                  if(temp.length()==1)
                      aq.push(temp.charAt(0));
                  else
-                 {
-                     if((!aq.isEmpty() && aq.peek()=='/') || (i<sba.length()-1 && mpa.get(sba.charAt(i+1))<mpa.get(temp.charAt(1))))
-                     {
-                         //System.out.println("naaa");
+                 {//(a+b)*c wala case
+                  if((!aq.isEmpty() && (aq.peek()=='/' || aq.peek()=='-')) || (i<sba.length()-1 && mpa.containsKey(sba.charAt(i+1))&& mpa.get(sba.charAt(i+1))<mpa.get(temp.charAt(1))))
+                  {
+                       //  System.out.println("naaa");
                          temp=temp.append("(");
                          temp.insert(0,")");
                          mp.put((char)chCount,temp.toString());
@@ -70,7 +70,7 @@ public class CmplExpr {
                      {
                          for (int j = temp.length()-1; j >=0; j--) 
                          {
-                             //System.out.println("pushing "+temp.charAt(j)+" to aq");
+                           //  System.out.println("pushing "+temp.charAt(j)+" to aq");
                              aq.push(temp.charAt(j));
                          }
                          //System.out.println("haan");
@@ -78,7 +78,7 @@ public class CmplExpr {
                  }
              }
          }
-         //System.out.println("current hashmap= "+mp+" and sba= "+sba.toString());
+        // System.out.println("current hashmap= "+mp+" and sba= "+sba.toString());
          sba.setLength(0);
          while(!aq.isEmpty())
              sba.append(aq.pollLast());
@@ -89,24 +89,16 @@ public class CmplExpr {
              if(sba.charAt(i)<'a' && !mpa.containsKey(sba.charAt(i)) && sba.charAt(i)!='(' && sba.charAt(i)!=')')
              {
                  String h=mp.get(sba.charAt(i));
-               //  System.out.println("key= "+sba.charAt(i));
+               // System.out.println("key= "+sba.charAt(i));
                  sba.deleteCharAt(i);
                  StringBuilder p=new StringBuilder(h);
                  p.reverse();
                  sba.insert(i,p.toString());
              }
             }
-         }//
-         System.out.println(sba.toString());
+         }// (a+b)-(c-d)-(e/f)
+         System.out.println(sba.toString().trim());
      }
     }
     
-}/*8
- (a+(b*c))
- ((a+b)*c) 
-(a*(b*c)) 
-(a*(b/c)*d) 
-((a/(b/c))/d)
- ((x)) 
-(a+b)-(c-d)-(e/f)
- (a+b)+(c-d)-(e+f)*/
+}
