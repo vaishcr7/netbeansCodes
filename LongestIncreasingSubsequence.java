@@ -1,7 +1,9 @@
-package longestincreasingsubsequence;
+
+package dpproblems;
+//10 4 11 6 7 24 35 3 2 40 17
 
 import java.util.Scanner;
-//10 4 11 6 7 24 35 3 2 40 17
+
 public class LongestIncreasingSubsequence {
 
     public static void main(String[] args) {
@@ -15,22 +17,21 @@ public class LongestIncreasingSubsequence {
     public static int calcIncSubs(int []ar)
     {
         int [][]arr=new int[ar.length][ar.length];
-        int temp=0;
         for (int i = 0; i < ar.length; i++) 
         {
             int currMax=0;
             for (int j = 1; j < ar.length; j++)
             {
-                if(i==0)
+                if(i==0)// filling first row for the rest of the below comparisons
                 {
                     if(ar[i]<ar[j])
                         arr[i][j]=1;
                 }
                 else
                 {
-                    if(j<=temp)
+                    if(j<=i)// for copying the values already precomputed from above
                         arr[i][j]=arr[i-1][j];
-                    else if(ar[i]<ar[j])
+                    else if(ar[i]<ar[j])//  compare the current sequence or the one from above.
                     {
                         System.out.println("case for j= "+j+" and i= "+i);
                         int y=arr[i-1][j];
@@ -38,14 +39,13 @@ public class LongestIncreasingSubsequence {
                         System.out.println("y= "+y+" and currmax= "+currMax);
                         arr[i][j]=(arr[i][j]>y)?arr[i][j]:y;
                     }
-                    else
+                    else//continue the largest running sequence as this one is excluded anyway.
                     {
                             arr[i][j]=arr[i][currMax];
                     }
                 }
-                currMax=(arr[i][currMax]>arr[i][j]?currMax:j);
+                currMax=(arr[i][currMax]>arr[i][j]?currMax:j);// to track the largest running sequence till now.
             }
-            temp++;
         }
         for (int i = 0; i < ar.length; i++) {
             for (int j = 0; j < ar.length; j++) {
