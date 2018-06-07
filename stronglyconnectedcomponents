@@ -1,0 +1,139 @@
+package stronglyconnectedcomponents;
+
+import static java.lang.reflect.Array.get;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+/**
+ *
+ * @author vibhor.vaish
+ */
+public class StronglyConnectedComponents {
+
+    public static void main(String[] args) {
+     graph gf=new graph();
+     vertex a=new vertex('A');
+     vertex b=new vertex('B');
+     vertex c=new vertex('C');
+     vertex d=new vertex('D');
+     vertex e=new vertex('E');
+     vertex f=new vertex('F');
+     vertex g=new vertex('G');
+     vertex h=new vertex('H');
+     vertex k=new vertex('K');
+     gf.addVertex(a);
+     gf.addVertex(b);
+     gf.addVertex(c);
+     gf.addVertex(d);
+     gf.addVertex(e);
+     gf.addVertex(f);
+     gf.addVertex(g);
+     gf.addVertex(h);
+     gf.addEdge(c,b);
+     gf.addEdge(b,a);
+     gf.addEdge(a,c);
+     gf.addEdge(c,d);
+     gf.addEdge(d,e);
+     gf.addEdge(e,h);
+     gf.addEdge(h,f);
+     gf.addEdge(f,d);
+     gf.addEdge(g,d);
+     gf.addEdge(f,k);
+     ArrayList<vertex> temp=new ArrayList<>(gf.vertexList);
+     a.visited=true;
+     gf.kosarajuAlgoPartOne(a,temp);
+    }
+}
+class graph // it is a directed and weighted graph
+{
+    public ArrayList<vertex> vertexList;
+    public  int numOfVertices;
+    public ArrayList<LinkedList<vertex>> adjList;
+    public ArrayDeque<vertex> stack;
+    public graph() {
+        vertexList=new ArrayList<>();
+        adjList= new ArrayList<>();
+        numOfVertices=0;
+        stack=new ArrayDeque<>();
+    }
+    public  void addVertex(vertex vert)
+    {
+       vertexList.add(vert);
+       adjList.add(new LinkedList<>());
+       numOfVertices++;
+    }
+    public void addEdge(vertex source,vertex destination)
+    {
+        for (int i = 0; i < vertexList.size(); i++) {
+            if(vertexList.get(i)==source)
+            {
+                adjList.get(i).add(destination);
+            }
+        }
+    }
+    public vertex getAdjacent(vertex vert)//,int cutIndex)
+    {
+        int pos=0;
+        for (int i = 0; i < numOfVertices; i++) {
+            if(vertexList.get(i)==vert)
+            {
+                pos=i;
+                break;
+            }
+        }
+      LinkedList<vertex> p=adjList.get(pos);
+       Iterator it=p.iterator();
+        while(it.hasNext())
+        {
+            vertex j=(vertex)it.next();
+            if(!j.visited)
+                return j;
+        }
+        System.out.println("no adjacent left, returning null");
+        return null;
+     // if(cutIndex>=p.size())
+       //   return null;
+     //return p.get(cutIndex);
+    }
+   public void kosarajuAlgoPartOne(vertex source,ArrayList<vertex> temp)
+   {
+       System.out.println("source is "+source.label);
+       vertex k=getAdjacent(source);
+       while(k!=null)
+       {
+           k.visited=true;
+           temp.remove(k);
+           kosarajuAlgoPartOne(k,temp);
+           System.out.println("back to vertex "+k.label);
+           k=getAdjacent(k);
+       }
+       if(k==null)
+       {
+           System.out.println("pushing "+source.label+" to the stack" );
+           stack.push(source);
+       }
+       //now using leftover vertices
+       while(!temp.isEmpty())
+       {
+           System.out.println("hello");
+           kosarajuAlgoPartOne(temp.get(0),temp);
+       }
+       System.out.println("at the end: ");
+       System.out.println("stack is ");
+       Iterator it=stack.iterator();
+       while(it.hasNext())
+           System.out.print(((vertex)it.next()).label+" , ");
+       System.out.println("");
+   }
+}
+    class vertex
+{
+    public char label;
+    public boolean visited;
+    public vertex(char label) {
+        this.label = label;
+        this.visited = false;
+    }
+}
