@@ -1,6 +1,5 @@
 package stronglyconnectedcomponents;
 
-import static java.lang.reflect.Array.get;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,6 +30,7 @@ public class StronglyConnectedComponents {
      gf.addVertex(f);
      gf.addVertex(g);
      gf.addVertex(h);
+     gf.addVertex(k);
      gf.addEdge(c,b);
      gf.addEdge(b,a);
      gf.addEdge(a,c);
@@ -42,8 +42,12 @@ public class StronglyConnectedComponents {
      gf.addEdge(g,d);
      gf.addEdge(f,k);
      ArrayList<vertex> temp=new ArrayList<>(gf.vertexList);
+        System.out.println("size of temp= "+temp.size());
      a.visited=true;
-     gf.kosarajuAlgoPartOne(a,temp);
+     ArrayList<vertex> visited=new ArrayList<>();
+     visited.add(a);
+     temp.remove(a);
+     gf.kosarajuAlgoPartOne(a,visited,temp);
     }
 }
 class graph // it is a directed and weighted graph
@@ -91,41 +95,57 @@ class graph // it is a directed and weighted graph
             if(!j.visited)
                 return j;
         }
-        System.out.println("no adjacent left, returning null");
         return null;
      // if(cutIndex>=p.size())
        //   return null;
      //return p.get(cutIndex);
     }
-   public void kosarajuAlgoPartOne(vertex source,ArrayList<vertex> temp)
+   public void kosarajuAlgoPartOne(vertex source,ArrayList<vertex> visited,ArrayList<vertex> temp)
    {
        System.out.println("source is "+source.label);
        vertex k=getAdjacent(source);
        while(k!=null)
        {
            k.visited=true;
-           temp.remove(k);
-           kosarajuAlgoPartOne(k,temp);
-           System.out.println("back to vertex "+k.label);
+           visited.add(k);// so that i can determine the points where i do my backtracking
+           temp.remove(k);// so that i am able to cover  all vertices, the reason why i used temp
+           System.out.println("called me ");
+           kosarajuAlgoPartOne(k,visited,temp);
+           System.out.println("____________back to vertex_____________   "+k.label);
            k=getAdjacent(k);
        }
-       if(k==null)
+       if(k==null && !stack.contains(source))//do not add the already added vertices that were added before backtracking
        {
            System.out.println("pushing "+source.label+" to the stack" );
            stack.push(source);
+           temp.remove(source);//this step is necessary for the vertices that will be along in the scc like 'G' in the considered example.
+           Iterator it=visited.iterator();
+           while(it.hasNext())
+               System.out.print(((vertex)it.next()).label+" , ");
+           System.out.println("");
+           visited.remove(source);
+       }
+       if(!visited.isEmpty())
+       {
+           System.out.println("called it for vertex");
+           kosarajuAlgoPartOne(visited.get(visited.size()-1),visited,temp);
        }
        //now using leftover vertices
+          System.out.println("printing left over vertices");
+          Iterator it1=temp.iterator();
+          while(it1.hasNext())
+              System.out.print(((vertex)it1.next()).label+" , ");
+          System.out.println("");
        while(!temp.isEmpty())
        {
            System.out.println("hello");
-           kosarajuAlgoPartOne(temp.get(0),temp);
+           vertex pp=temp.get(0);
+           kosarajuAlgoPartOne(temp.get(0),visited,temp);
        }
-       System.out.println("at the end: ");
-       System.out.println("stack is ");
-       Iterator it=stack.iterator();
-       while(it.hasNext())
-           System.out.print(((vertex)it.next()).label+" , ");
-       System.out.println("");
+   }
+   public void kosarajuAlgoPartTwo()
+   {
+       
    }
 }
     class vertex
