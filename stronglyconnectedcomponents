@@ -48,6 +48,7 @@ public class StronglyConnectedComponents {
      visited.add(a);
      temp.remove(a);
      gf.kosarajuAlgoPartOne(a,visited,temp);
+     gf.kosarajuAlgoPartTwo();
     }
 }
 class graph // it is a directed and weighted graph
@@ -93,12 +94,47 @@ class graph // it is a directed and weighted graph
         {
             vertex j=(vertex)it.next();
             if(!j.visited)
+            {
                 return j;
+            }
         }
         return null;
      // if(cutIndex>=p.size())
        //   return null;
      //return p.get(cutIndex);
+    }
+     public vertex getAdjacent1(vertex vert,ArrayList<LinkedList<vertex>> adjList1)//created for kosarajuparttwo
+    {
+        int pos=0;
+        for (int i = 0; i < numOfVertices; i++) {
+            if(vertexList.get(i)==vert)
+            {
+                pos=i;
+                break;
+            }
+        }
+      LinkedList<vertex> p=adjList1.get(pos);
+       Iterator it=p.iterator();
+        while(it.hasNext())
+        {
+            vertex j=(vertex)it.next();
+            if(!j.visited)
+            {
+                return j;
+            }
+        }
+        return null;
+     // if(cutIndex>=p.size())
+       //   return null;
+     //return p.get(cutIndex);
+    }
+    public int getIndex(vertex f)
+    {
+        for (int i = 0; i < vertexList.size(); i++) {
+            if(vertexList.get(i)==f)
+                return i;
+        }
+        return -1;
     }
    public void kosarajuAlgoPartOne(vertex source,ArrayList<vertex> visited,ArrayList<vertex> temp)
    {
@@ -143,9 +179,90 @@ class graph // it is a directed and weighted graph
            kosarajuAlgoPartOne(temp.get(0),visited,temp);
        }
    }
-   public void kosarajuAlgoPartTwo()
+   public void kosarajuAlgoPartTwo()// separate getAdjacent function has to created for this to access the correct adjList1
    {
+       System.out.println("inside part two function");
+       System.out.println("the stack is "+stack.size());
+       Iterator it1=stack.iterator();
+       while(it1.hasNext())
+         System.out.print(((vertex)it1.next()).label+" , ");
+       System.out.println("");
        
+       System.out.println("marking them unvisited");
+       for (int i = 0; i < vertexList.size(); i++) {
+           vertexList.get(i).visited=false;
+       }
+       
+       System.out.println("reversing the edges");
+       ArrayList<LinkedList<vertex>> adjList1=new ArrayList<>();
+       for (int i = 0; i < adjList.size(); i++) {
+           adjList1.add(new LinkedList<>());
+       }
+       for (int i = 0; i < vertexList.size(); i++) {
+           vertex x=vertexList.get(i);
+          // System.out.print("SEARCHING FOR VERTEX "+x.label);
+           for (int j = 0; j < adjList1.size(); j++) 
+           {
+               if(j!=i)
+               {
+                    LinkedList<vertex> linkedList=adjList.get(j);
+                    for (int k = 0; k < linkedList.size(); k++) {
+                       // System.out.println("  comparing with "+linkedList.get(k).label);
+                        if(linkedList.get(k)==x)
+                        {
+                            adjList1.get(i).add(vertexList.get(j));
+                            //System.out.println("added");
+                        }
+               }
+               }
+           }
+       }
+           System.out.println("adjList1 size= "+adjList1.size());
+           for (LinkedList<vertex> linkedList : adjList1) {
+               for (vertex object : linkedList) {
+                   System.out.print(object.label+" , ");
+               }
+               System.out.println("");
+           }
+       
+       ArrayList<vertex> visited=new ArrayList<>();
+       ArrayList<StringBuilder> vars=new ArrayList<>();
+       while(!stack.isEmpty())
+       {
+           vertex z=stack.pop();
+           z.visited=true;
+           System.out.println("popped vertex= "+z.label);
+           if(!visited.contains(z))
+           {
+           StringBuilder sba=new StringBuilder();
+           sba.append(z.label);
+           System.out.println("adjacent nodes of z= ");
+           printList(adjList1.get(getIndex(z)));
+           vertex k=getAdjacent1(z,adjList1);
+           while(k!=null && !visited.contains(k))
+           {
+               sba.append(k.label);
+               visited.add(k);
+               k.visited=true;
+               System.out.println("added "+k.label+" to visited");
+               k=getAdjacent1(k,adjList1);
+           }
+           vars.add(sba);
+           }
+       }
+       System.out.println("vars size = "+vars.size());
+       Iterator it=vars.iterator();
+       while(it.hasNext())
+       {
+           System.out.println(((StringBuilder)it.next()).toString());
+       }
+   }
+   public void printList(LinkedList<vertex> al)
+   {
+       for (vertex object : al) {
+           System.out.print(object.label+" , ");
+       }
+       System.out.println("");
    }
 }
     class vertex
