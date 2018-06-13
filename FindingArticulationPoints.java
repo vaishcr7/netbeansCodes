@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author vibhor.vaish
  */
-public class FindingArticulationPoints {
+public class Findingarticulationpoints {
 
     public static void main(String[] args) {
      graph gf=new graph();
@@ -81,7 +81,7 @@ class graph // it is a directed and weighted graph
             }
         }
     }
-    public vertex getAdjacent(vertex vert)//,int cutIndex)
+    public vertex getAdjacent(vertex vert,ArrayList<vertex> temp)//,int cutIndex)
     {
         int pos=0;
         for (int i = 0; i < numOfVertices; i++) {
@@ -96,7 +96,7 @@ class graph // it is a directed and weighted graph
         while(it.hasNext())
         {
             vertex j=(vertex)it.next();
-            if(!j.visited)
+            if(!temp.contains(j))
             {
                 return j;
             }
@@ -105,39 +105,6 @@ class graph // it is a directed and weighted graph
      // if(cutIndex>=p.size())
        //   return null;
      //return p.get(cutIndex);
-    }
-     public vertex getAdjacent1(vertex vert,ArrayList<LinkedList<vertex>> adjList1)//created for kosarajuparttwo
-    {
-        int pos=0;
-        for (int i = 0; i < numOfVertices; i++) {
-            if(vertexList.get(i)==vert)
-            {
-                pos=i;
-                break;
-            }
-        }
-      LinkedList<vertex> p=adjList1.get(pos);
-       Iterator it=p.iterator();
-        while(it.hasNext())
-        {
-            vertex j=(vertex)it.next();
-            if(!j.visited)
-            {
-                return j;
-            }
-        }
-        return null;
-     // if(cutIndex>=p.size())
-       //   return null;
-     //return p.get(cutIndex);
-    }
-    public int getIndex(vertex f)
-    {
-        for (int i = 0; i < vertexList.size(); i++) {
-            if(vertexList.get(i)==f)
-                return i;
-        }
-        return -1;
     }
    public void tarjanAlgo(vertex root)
    {
@@ -146,37 +113,70 @@ class graph // it is a directed and weighted graph
        Map<vertex,vertex> parent=new HashMap<>();
        ArrayDeque<vertex> stack=new ArrayDeque<>();
        ArrayList<vertex> visited =new ArrayList<>();
+       ArrayList<vertex> artPoints=new ArrayList<>();
+       
        int time=0;
-       if(root==null)
-       {
-           root=vertexList.get(0);
-           parent.put(root,null);
-       }           
        stack.add(root);
-       if(!discTime.containsKey(root))
-       {
-           discTime.put(root,time);
-           lowTime.put(root,time);
-       }
+       visited.add(root);
+       discTime.put(root,time);
+       lowTime.put(root,time);
+       parent.put(root,null);
        time++;
-       vertex k=getAdjacent(root);
+       vertex k=getAdjacent(root,visited);
        while(!stack.isEmpty())
        {
           if(k!=null)
            {
-
+               discTime.put(k,time);
+               lowTime.put(k,time);
+               parent.put(k,root);
+               visited.add(k);
+               if(stack.contains(k))
+                   stack.remove(k);
+               stack.push(k);
            }
           else
            {
-
+               k=stack.pop();//checking if this vertex is  an articulation point
+               int yp=lowTime.get(k);
+               int pp=testAP(k,discTime,lowTime);
+               if(yp<pp)
+                   artPoints.add(k);
            }
            // check for articulation point first condition if it has two independent children
           if(parent.get(k)==null)
            {
 
            }
+          k=getAdjacent(k,visited);
+          time++;
        }
    }
+   public int testAP(vertex k,Map<vertex,Integer> discTime,Map<vertex,Integer> lowTime)
+   {
+       int ind=getIndex(k);
+       boolean flag=false;
+       LinkedList<vertex> adLList=adjList.get(ind);
+       for (vertex f : adLList) {
+           if(lowTime.get(k)>=discTime.get(f))
+           {
+               lowTime.put(k,discTime.get(f));
+               flag=true;
+           }
+       }
+       if(flag)
+            return lowTime.get(k);
+       else
+           return Integer.MAX_VALUE;
+   }
+    public int getIndex(vertex f)
+    {
+        for (int i = 0; i < vertexList.size(); i++) {
+            if(vertexList.get(i)==f)
+                return i;
+        }
+        return -1;
+    }
    public void printList(LinkedList<vertex> al)
    {
        for (vertex object : al) {
