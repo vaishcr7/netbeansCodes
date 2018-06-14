@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
  * @author vibhor.vaish
  */
-public class Findingarticulationpoints {
+public class FindingArticulationPoints {
 
     public static void main(String[] args) {
      graph gf=new graph();
@@ -37,15 +40,10 @@ public class Findingarticulationpoints {
      gf.addEdge(c,d);
      gf.addEdge(d,e);
      gf.addEdge(e,f);
-     gf.addEdge(h,f);
+     gf.addEdge(e,g);
      gf.addEdge(f,g);
-     gf.addEdge(g,e);
-     ArrayList<vertex> temp=new ArrayList<>(gf.vertexList);
-        System.out.println("size of temp= "+temp.size());
-     a.visited=true;
-     ArrayList<vertex> visited=new ArrayList<>();
-     visited.add(a);
-     temp.remove(a);
+     gf.addEdge(f,h);
+     gf.tarjanAlgo(a);
     }
 }
 class graph // it is a directed and weighted graph
@@ -54,6 +52,9 @@ class graph // it is a directed and weighted graph
     public  int numOfVertices;
     public ArrayList<LinkedList<vertex>> adjList;
     public ArrayDeque<vertex> stack;
+    
+    Map<vertex,Integer> discTime,lowTime;
+    
     public graph() {
         vertexList=new ArrayList<>();
         adjList= new ArrayList<>();
@@ -81,7 +82,7 @@ class graph // it is a directed and weighted graph
             }
         }
     }
-    public vertex getAdjacent(vertex vert,ArrayList<vertex> temp)//,int cutIndex)
+    public vertex getAdjacent(vertex vert,ArrayList<vertex> temp)
     {
         int pos=0;
         for (int i = 0; i < numOfVertices; i++) {
@@ -108,10 +109,9 @@ class graph // it is a directed and weighted graph
     }
    public void tarjanAlgo(vertex root)
    {
-       Map<vertex,Integer> discTime=new HashMap<>();
-       Map<vertex,Integer> lowTime=new HashMap<>();
+       discTime=new HashMap<>();
+       lowTime=new HashMap<>();
        Map<vertex,vertex> parent=new HashMap<>();
-       ArrayDeque<vertex> stack=new ArrayDeque<>();
        ArrayList<vertex> visited =new ArrayList<>();
        ArrayList<vertex> artPoints=new ArrayList<>();
        
@@ -123,10 +123,13 @@ class graph // it is a directed and weighted graph
        parent.put(root,null);
        time++;
        vertex k=getAdjacent(root,visited);
+       System.out.println("the starting stack is ");
+       printStack(stack);
        while(!stack.isEmpty())
        {
           if(k!=null)
            {
+               System.out.println("k= "+k.label);
                discTime.put(k,time);
                lowTime.put(k,time);
                parent.put(k,root);
@@ -134,11 +137,27 @@ class graph // it is a directed and weighted graph
                if(stack.contains(k))
                    stack.remove(k);
                stack.push(k);
+               System.out.println("current stack is ");
+               printStack(stack);
+               System.out.println("visited is ");
+               printList(visited);
            }
           else
            {
                k=stack.pop();//checking if this vertex is  an articulation point
                int yp=lowTime.get(k);
+               System.out.println("disctime = ");
+               Set<Map.Entry<vertex,Integer>> st1=discTime.entrySet();
+               for (Map.Entry<vertex, Integer> entry : st1) {
+                   System.out.print(entry.getKey().label+" - "+entry.getValue()+" || ");
+               }
+               System.out.println("");
+               System.out.println("lowtime = ");
+               Set<Map.Entry<vertex,Integer>> st2=lowTime.entrySet();
+               for (Map.Entry<vertex, Integer> entry : st2) {
+                   System.out.print(entry.getKey().label+" - "+entry.getValue()+" || ");
+               }
+               System.out.println("");
                int pp=testAP(k,discTime,lowTime);
                if(yp<pp)
                    artPoints.add(k);
@@ -146,11 +165,50 @@ class graph // it is a directed and weighted graph
            // check for articulation point first condition if it has two independent children
           if(parent.get(k)==null)
            {
-
+               int numC=getNumOfChildren(k);
+               boolean flag=false;
+               LinkedList<vertex> al=adjList.get(getIndex(k));
+               for (int i=0;i<numC;i++) {
+                   vertex t=al.get(i);
+                   LinkedList<vertex> pal=adjList.get(getIndex(t));
+                   for (vertex object : pal) {
+                       if(al.contains(object))
+                       {
+                           flag=true;
+                           break;
+                       }
+                   }
+                   if(flag)
+                       break;
+               }
+               if(!flag)
+                   artPoints.add(k);
            }
           k=getAdjacent(k,visited);
+           System.out.println("adjacent k is "+k.label);
           time++;
        }
+       Set<vertex> st=new TreeSet<>(artPoints);
+       System.out.println("these are the articulation points");
+       Iterator it=st.iterator();
+       while(it.hasNext())
+       {
+           vertex b=(vertex)it.next();
+           System.out.print(b.label+" , ");
+       }
+       System.out.println("");
+   }
+   public void printStack(ArrayDeque<vertex> stack)
+   {
+       for (vertex t : stack) {
+           System.out.print(t.label+" ");
+       }
+       System.out.println("");
+   }
+   public int getNumOfChildren(vertex f)
+   {
+       int g=getIndex(f);
+       return adjList.get(g).size();
    }
    public int testAP(vertex k,Map<vertex,Integer> discTime,Map<vertex,Integer> lowTime)
    {
@@ -158,13 +216,19 @@ class graph // it is a directed and weighted graph
        boolean flag=false;
        LinkedList<vertex> adLList=adjList.get(ind);
        for (vertex f : adLList) {
+           if(f!=null)
+               System.out.println("f is "+f.label);
+           if(k!=null)
+               System.out.println("k is "+k.label);
            if(lowTime.get(k)>=discTime.get(f))
            {
                lowTime.put(k,discTime.get(f));
                flag=true;
+               System.out.println(k.label+" not an articulation point");
+               break;
            }
        }
-       if(flag)
+       if(!flag)
             return lowTime.get(k);
        else
            return Integer.MAX_VALUE;
@@ -177,7 +241,7 @@ class graph // it is a directed and weighted graph
         }
         return -1;
     }
-   public void printList(LinkedList<vertex> al)
+   public void printList(List<vertex> al)
    {
        for (vertex object : al) {
            System.out.print(object.label+" , ");
