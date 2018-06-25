@@ -27,10 +27,35 @@ public class SpojAggrcow {
            Map<Integer,Integer> mp=new HashMap<>();
            for (int i = 1; i < n; i++) {
                diff[i-1]=ar[i]-ar[i-1];
-               mp.put(diff[i-1],i);
+               mp.put(i,diff[i-1]);
            }
            Arrays.sort(diff);
-           
+           filled[0]=1;
+           filled[filled.length-1]=1;
+           c-=2;
+           int constC=c;
+           int high=filled.length-1;
+           int low=0;
+           int mid=(high+low)/2;
+           while(c>0)
+           {
+               for (int i = 1; i < ar.length-1; i++) {
+                   if(mp.get(i)>=mid)
+                   {
+                       filled[i]=1;
+                       c--;
+                   }
+               }
+               if(c!=0)
+               {
+                   c=constC;
+                   Arrays.fill(filled,-1);
+                   filled[0]=1;
+                   filled[filled.length-1]=-1;
+                   high=mid-1;
+                   mid=low+high/2;
+               }
+           }
        }
     }
     
