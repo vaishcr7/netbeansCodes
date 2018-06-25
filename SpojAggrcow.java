@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class SpojAggrcow {
@@ -20,10 +22,14 @@ public class SpojAggrcow {
            for (int i = 0; i < n; i++) {
                ar[i]=sc.nextInt();
            }
+           Arrays.sort(ar);
            int []diff=new int[n-1];
+           Map<Integer,Integer> mp=new HashMap<>();
            for (int i = 1; i < n; i++) {
                diff[i-1]=ar[i]-ar[i-1];
+               mp.put(diff[i-1],i);
            }
+           Arrays.sort(diff);
            
        }
     }
