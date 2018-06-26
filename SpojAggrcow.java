@@ -126,4 +126,4 @@ class MyScanner
         s=br.readLine();
         return s;
     }
-}
+}//1 6 3 1 3 5 7 15 18
