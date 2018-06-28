@@ -151,7 +151,7 @@ class MyScanner
         s=br.readLine();
         return s;
     }
-}
+}//
 //1 7 7 1 4 7 8 10 20 25
 /*
 Failing in this testcase: as number of differences i.e. 6 should have been five for that 1 to be considered as 
