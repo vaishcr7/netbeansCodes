@@ -52,7 +52,11 @@ public class SpojAggrcow {
             filled[n-1]=filled[0]=1;
             int mid=(high+low)/2;
             int midValue=0;
-            
+            System.out.println("c= "+c);
+            if(c==0)
+                System.out.println(high-low);            
+            else
+            {
             while(low<=high)
             {
                 System.out.println("mid is "+mid+" with low= "+low+" and high= "+high);
@@ -60,6 +64,7 @@ public class SpojAggrcow {
                 {
                     midValue=mid;
                     low=mid+1;
+                    System.out.println("suitable mid");
                 }
                 else
                 {
@@ -71,23 +76,44 @@ public class SpojAggrcow {
             //finding the index where i will encounter this distance , proceed from both sides
             
             int ind1=0,ind2=0; // find the stall which has been selected to store the cow and find the nearest stall which is already with a cow
-            for (int i = 1; i < diffLeft.length; i++) {
-               if(diffLeft[i]-diffLeft[i-1]==mid)
+            if(diffLeft[0]==mid)
+            {
+                ind1=0;
+            }
+            else
+            {
+            for (int i = 1; i <diff.length ; i++) {
+               System.out.println(diffLeft[i]+" <> "+diffLeft[i-1]+" and mid= "+mid);
+               if((diffLeft[i]-diffLeft[i-1])==mid)
+               {
+                   System.out.println("yeogi");
                    ind1=i-1;
-           }
+                   break;
+               }
+              }
+            }
+            if(diffRight[n-2]==mid)
+            {
+                ind2=n-2;
+            }
+            else
+            {
             for (int i = diffRight.length-2; i >=0 ; i--) {
                System.out.println(diffRight[i]+" <> "+diffRight[i+1]+" and mid= "+mid);
                if((diffRight[i]-diffRight[i+1])==mid)
                {
-                   System.out.println("yeogi");
-                   ind2=i+1;
+                   System.out.println("chajahso");
+                   ind2=i;
+                   break;
                }
-           }//1 6 4 1 3 5 7 15 18
+              }
+            }//1 7 7 1 4 7 8 10 20 25
             System.out.println("ind2= "+ind2);
             System.out.println(diffLeft[ind1]+"<__>"+diffRight[ind2]);
             midValue=(diffLeft[ind1]<diffRight[ind2])?diffLeft[ind1]:diffRight[ind2];
             System.out.println("minimum distance is : "+midValue);
          }
+       }
       }
    public static int findC(int []diff,int k,int c)
    {
@@ -98,23 +124,7 @@ public class SpojAggrcow {
        }
        return (m-c);
    }
-   public static boolean findCompat(int []arr,int pos)
-   {
-       return true;
-   }
-   public static int binSearchForEqOrGreaterElem(int []arr,int k,int low,int high)
-   {
-       int mid=(low+high)/2;
-       return mid;
-   }
-} /*
-1 6 4 
-1
- 3
- 5
- 11
- 14 15
-*/
+}
 class MyScanner
 {
     BufferedReader br;
@@ -142,3 +152,9 @@ class MyScanner
         return s;
     }
 }
+//1 7 7 1 4 7 8 10 20 25
+/*
+Failing in this testcase: as number of differences i.e. 6 should have been five for that 1 to be considered as 
+a position. 3 3 1 2 10 5 . so when mid reaches 1 , it should have stopped there but it doesn't as
+findC function counts 5 other differences > mid=1 and mid=2 satfisies this property . 
+*/
