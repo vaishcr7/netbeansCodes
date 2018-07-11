@@ -1,5 +1,11 @@
 package spojinvcnt;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Stack;
+
 public class SpojInvcnt {
     
  static class Reader {
@@ -121,33 +127,126 @@ public class SpojInvcnt {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Reader sc=new Reader();
         int t=sc.nextInt();
         while(t-->0)
         {
          int n=sc.nextInt();
          int []ar=new int[n];
-         int bit=0;
-         for(int i=ar.length-1;i>=0;i++)
-         {
-          bit=bit|(i<<i);   
-         }
+            for (int i = 0; i < n; i++) {
+                ar[i]=sc.nextInt();
+            }
+            graph gf=new graph(n);
+            for (int i = 0; i < n; i++) {
+                gf.addVertex(new vertex(ar[i]));
+            }
+           // System.out.println("hello");
+            for (int i = 0; i < n; i++) {
+                  for (int j = i+1; j < n; j++) {
+                    gf.addEdge(i,j);
+                }
+            }
+          //  System.out.println("hi");
+            System.out.println(gf.bfsCount());
         }
-        
-      int i=2;
-      convertToBin(0,1<<i);
     }
-    public static void convertToBin(int h,int a)
-    {
-    a=(a)|h;
-        System.out.println("a= "+a);
-    StringBuffer sba=new StringBuffer();
-    while(a>0)
-    {
-        sba.append(a%2);
-        a/=2;
+}
+class graph // it is a directed graph
+{
+    public ArrayList<vertex> vertexList;
+    //public int numOfVertices;
+    //public ArrayList<LinkedList<vertex>> adjList;
+    public int[][] adjMatrix;
+    Stack<vertex> st=new Stack<>();
+    public graph(int n) {
+        vertexList = new ArrayList<>();
+        //adjList = new ArrayList<>();
+        //numOfVertices = 0;
+        adjMatrix=new int[n][n];
     }
-        System.out.println(sba.reverse().toString());
+
+    public void addVertex(vertex vert) {
+        vertexList.add(vert);
+      //  adjList.add(new LinkedList<>());
+       // numOfVertices++;
+    }
+
+    public void addEdge(int i,int j) {//directed graph
+     /*   for (int i = 0; i < numOfVertices; i++) {
+            if (vertexList.get(i) == source) {
+                adjList.get(i).add(destination);
+            }
+            if (vertexList.get(i) == destination) {
+                adjList.get(i).add(source);
+            }
+        }*/
+     adjMatrix[i][j]=1;
+    }
+
+    public  int [] getAdjacent(int pos) {
+       /* int pos = 0;
+        for (int i = 0; i < numOfVertices; i++) {
+            if (vertexList.get(i) == vert) {
+                pos = i;
+                break;
+            }
+        }
+        LinkedList<vertex> p = adjList.get(pos);
+        Iterator it = p.iterator();
+        while (it.hasNext()) {
+            vertex j = (vertex) it.next();
+            if (!j.visited) {
+                return j;
+            }
+        }
+        return null;*/
+       return adjMatrix[pos];
+    }
+
+    public int getIndex(vertex f) {
+        for (int i = 0; i < vertexList.size(); i++) {
+            if (vertexList.get(i) == f) {
+                return i;
+            }
+        }
+        return -1;
+    }
+/*
+    public void printList(LinkedList<vertex> al) {
+        for (vertex object : al) {
+            System.out.print(object.label + " , ");
+        }
+        System.out.println("");
+    }*/
+    public  int bfsCount()
+    {
+        int count=0;
+        ArrayList<vertex> visited =new ArrayList<>();
+        vertex root=vertexList.get(0);
+        st.push(root);
+        while(!st.isEmpty())
+        {
+            root=st.pop();
+            visited.add(root);
+            int []ad=getAdjacent(getIndex(root));
+            for (int i = 0; i < ad.length; i++) {
+              //  System.out.println("hmm");
+                if(ad[i]==1)
+                {
+                    if(!visited.contains(vertexList.get(i)))
+                        st.push(vertexList.get(i));
+                    if(root.label-vertexList.get(i).label>0)
+                        count++;
+                }
+            }
+        }
+        return count;
+    }
+}
+class vertex {
+    public int label;
+    public vertex(int label) {
+        this.label = label;
     }
 }
