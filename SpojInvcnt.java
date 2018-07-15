@@ -1,12 +1,11 @@
 package spojinvcnt;
-
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Stack;
-
-public class SpojInvcnt {
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+class SpojInvcnt {
     
  static class Reader {
 
@@ -134,119 +133,72 @@ public class SpojInvcnt {
         {
          int n=sc.nextInt();
          int []ar=new int[n];
-            for (int i = 0; i < n; i++) {
+          for (int i = 0; i < n; i++) {
                 ar[i]=sc.nextInt();
-            }
-            graph gf=new graph(n);
-            for (int i = 0; i < n; i++) {
-                gf.addVertex(new vertex(ar[i]));
-            }
-           // System.out.println("hello");
-            for (int i = 0; i < n; i++) {
-                  for (int j = i+1; j < n; j++) {
-                    gf.addEdge(i,j);
-                }
-            }
-          //  System.out.println("hi");
-            System.out.println(gf.bfsCount());
+          }
+          int []bitree=new int[n+1];
+          Map<Integer,Integer> mp=new HashMap<>();
         }
     }
-}
-class graph // it is a directed graph
-{
-    public ArrayList<vertex> vertexList;
-    //public int numOfVertices;
-    //public ArrayList<LinkedList<vertex>> adjList;
-    public int[][] adjMatrix;
-    Stack<vertex> st=new Stack<>();
-    public graph(int n) {
-        vertexList = new ArrayList<>();
-        //adjList = new ArrayList<>();
-        //numOfVertices = 0;
-        adjMatrix=new int[n][n];
-    }
-
-    public void addVertex(vertex vert) {
-        vertexList.add(vert);
-      //  adjList.add(new LinkedList<>());
-       // numOfVertices++;
-    }
-
-    public void addEdge(int i,int j) {//directed graph
-     /*   for (int i = 0; i < numOfVertices; i++) {
-            if (vertexList.get(i) == source) {
-                adjList.get(i).add(destination);
-            }
-            if (vertexList.get(i) == destination) {
-                adjList.get(i).add(source);
-            }
-        }*/
-     adjMatrix[i][j]=1;
-    }
-
-    public  int [] getAdjacent(int pos) {
-       /* int pos = 0;
-        for (int i = 0; i < numOfVertices; i++) {
-            if (vertexList.get(i) == vert) {
-                pos = i;
-                break;
-            }
-        }
-        LinkedList<vertex> p = adjList.get(pos);
-        Iterator it = p.iterator();
-        while (it.hasNext()) {
-            vertex j = (vertex) it.next();
-            if (!j.visited) {
-                return j;
-            }
-        }
-        return null;*/
-       return adjMatrix[pos];
-    }
-
-    public int getIndex(vertex f) {
-        for (int i = 0; i < vertexList.size(); i++) {
-            if (vertexList.get(i) == f) {
-                return i;
-            }
-        }
-        return -1;
-    }
-/*
-    public void printList(LinkedList<vertex> al) {
-        for (vertex object : al) {
-            System.out.print(object.label + " , ");
-        }
-        System.out.println("");
-    }*/
-    public  int bfsCount()
+    public static int getRelative(int num,char ch)
     {
-        int count=0;
-        ArrayList<vertex> visited =new ArrayList<>();
-        vertex root=vertexList.get(0);
-        st.push(root);
-        while(!st.isEmpty())
+        BitSet b=new BitSet(num);
+        b.flip(0,b.length());
+        int lastRIghtZeroPos,lastRightOnePos=0,i;
+        if(b.get(b.length()-1))
+            lastRightOnePos=b.length()-1;
+         for (i = b.nextClearBit(0); i >= 0; i = b.nextClearBit(i+1)){
+            if(true);
+        }
+        lastRIghtZeroPos=i;
+        if(lastRightOnePos>lastRIghtZeroPos)
         {
-            root=st.pop();
-            visited.add(root);
-            int []ad=getAdjacent(getIndex(root));
-            for (int i = 0; i < ad.length; i++) {
-              //  System.out.println("hmm");
-                if(ad[i]==1)
+            b.clear(lastRIghtZeroPos+1,b.length());
+            b.set(lastRIghtZeroPos);
+        }
+        else
+        {
+            b.set(lastRIghtZeroPos);
+        }
+        int value = 0;
+        for (int j = 0; j < b.length(); ++i) {
+            value += b.get(i) ? (1<< j) : 0;
+         } 
+        value&=num;
+        if(ch=='-')             //getParent
+            value-=num;
+        else                      //getNext
+            value+=num;
+        return value;
+    }    
+    public static void getRange(int ind,Map<Integer,Integer> mp)
+    {
+        int pow=0;
+        int k=(int)Math.pow(2,pow);
+        int sum=0;
+        while(sum!=ind)
+        {
+            while(k<=(ind-sum))
+            {
+                if(k==ind)
                 {
-                    if(!visited.contains(vertexList.get(i)))
-                        st.push(vertexList.get(i));
-                    if(root.label-vertexList.get(i).label>0)
-                        count++;
+                    if(sum==0)
+                        mp.put(ind,0);
+                    else
+                        mp.put(sum,sum+k-1);
+                    break;
+                }
+                else if(k<ind)
+                {
+                    pow+=1;
+                    k=(int)Math.pow(2,pow);
                 }
             }
-        }
-        return count;
-    }
-}
-class vertex {
-    public int label;
-    public vertex(int label) {
-        this.label = label;
+            System.out.println("current k= "+k);
+            pow-=1;
+            sum+=(int)Math.pow(2,pow);
+            pow=0;
+            k=1;
+        }    
     }
 }
