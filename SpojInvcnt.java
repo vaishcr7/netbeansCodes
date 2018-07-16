@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 class SpojInvcnt {
     
  static class Reader {
@@ -138,6 +140,13 @@ class SpojInvcnt {
           }
           int []bitree=new int[n+1];
           Map<Integer,Integer> mp=new HashMap<>();
+            for (int i = 1; i < n+1; i++) {
+                mp=getRange(i, mp);
+                System.out.println("ran with mp: "+mp);
+            }
+            System.out.println("map is of size: "+mp.size());
+          for(Map.Entry<Integer,Integer> entry: mp.entrySet())
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
     public static int getRelative(int num,char ch)
@@ -171,15 +180,22 @@ class SpojInvcnt {
             value+=num;
         return value;
     }    
-    public static void getRange(int ind,Map<Integer,Integer> mp)
+    public static Map<Integer,Integer> getRange(int ind,Map<Integer,Integer> mp)
     {
         int pow=0;
         int k=(int)Math.pow(2,pow);
         int sum=0;
+        if(ind!=1 && Math.ceil((int)Math.log(ind)/Math.log(2))==Math.floor((int)Math.log(ind)/Math.log(2)))
+        {
+            mp.put((int)Math.ceil((int)Math.log(ind)/Math.log(2)),0);
+            System.out.println("found a perfect power at ind= "+ind);
+            return mp;
+        }
         while(sum!=ind)
         {
             while(k<=(ind-sum))
             {
+                System.out.println("k loop= "+k+" and ind= "+ind);
                 if(k==ind)
                 {
                     if(sum==0)
@@ -192,13 +208,19 @@ class SpojInvcnt {
                 {
                     pow+=1;
                     k=(int)Math.pow(2,pow);
+                    System.out.println("going to higher ");
                 }
             }
+            if(sum==ind)
+                break;
             System.out.println("current k= "+k);
-            pow-=1;
+            if(pow!=0)
+                pow-=1;
             sum+=(int)Math.pow(2,pow);
             pow=0;
             k=1;
-        }    
+        }  
+        System.out.println("returning mp of size "+mp.size());
+        return mp;
     }
-}
+}//1 5 2 3 8 6 1
