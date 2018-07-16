@@ -185,9 +185,13 @@ class SpojInvcnt {
         int pow=0;
         int k=(int)Math.pow(2,pow);
         int sum=0;
-        if(ind!=1 && Math.ceil((int)Math.log(ind)/Math.log(2))==Math.floor((int)Math.log(ind)/Math.log(2)))
+        System.out.println("math ceil : "+Math.ceil((int)Math.log(ind)/Math.log(2)+1e-10));
+        System.out.println("math floor: "+Math.floor((int)Math.log(ind)/Math.log(2)+1e-10));
+        System.out.println("ind=  "+ind);
+        if(ind!=1 && Math.ceil((int)Math.log(ind)/Math.log(2)+1e-10)==Math.floor((int)Math.log(ind)/Math.log(2)+1e-10))
         {
-            mp.put((int)Math.ceil((int)Math.log(ind)/Math.log(2)),0);
+            System.out.println("power found is : "+(int)Math.ceil((int)(Math.log(ind)/Math.log(2)+1e-10)));
+            mp.put((int)Math.ceil((int)(Math.log(ind)/Math.log(2)+1e-10)),0);
             System.out.println("found a perfect power at ind= "+ind);
             return mp;
         }
@@ -196,10 +200,10 @@ class SpojInvcnt {
             while(k<=(ind-sum))
             {
                 System.out.println("k loop= "+k+" and ind= "+ind);
-                if(k==ind)
+                if(k==(ind-sum))
                 {
                     if(sum==0)
-                        mp.put(ind,0);
+                        mp.put(ind-1,0);
                     else
                         mp.put(sum,sum+k-1);
                     break;
@@ -211,7 +215,7 @@ class SpojInvcnt {
                     System.out.println("going to higher ");
                 }
             }
-            if(sum==ind)
+            if((sum+k)==ind)
                 break;
             System.out.println("current k= "+k);
             if(pow!=0)
