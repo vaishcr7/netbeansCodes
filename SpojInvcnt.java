@@ -185,14 +185,12 @@ class SpojInvcnt {
         int pow=0;
         int k=(int)Math.pow(2,pow);
         int sum=0;
-        System.out.println("math ceil : "+Math.ceil((int)Math.log(ind)/Math.log(2)+1e-10));
-        System.out.println("math floor: "+Math.floor((int)Math.log(ind)/Math.log(2)+1e-10));
-        System.out.println("ind=  "+ind);
-        if(ind!=1 && Math.ceil((int)Math.log(ind)/Math.log(2)+1e-10)==Math.floor((int)Math.log(ind)/Math.log(2)+1e-10))
+        BitSet b=BitSet.valueOf(new long[]{ind});
+        System.out.println("b for ind= "+ind+" is "+b);
+        if(ind!=1 && b.cardinality()==1)
         {
-            System.out.println("power found is : "+(int)Math.ceil((int)(Math.log(ind)/Math.log(2)+1e-10)));
-            mp.put((int)Math.ceil((int)(Math.log(ind)/Math.log(2)+1e-10)),0);
-            System.out.println("found a perfect power at ind= "+ind);
+            mp.put(b.size()-1,0);
+            System.out.println("found perfect power of 2");
             return mp;
         }
         while(sum!=ind)
