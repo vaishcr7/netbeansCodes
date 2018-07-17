@@ -135,17 +135,17 @@ class SpojInvcnt {
         {
          int n=sc.nextInt();
          int []ar=new int[n];
-          for (int i = 0; i < n; i++) {
+         for (int i = 0; i < n; i++) {
                 ar[i]=sc.nextInt();
-          }
-          int []bitree=new int[n+1];
-          Map<Integer,Integer> mp=new HashMap<>();
-            for (int i = 1; i < n+1; i++) {
-                mp=getRange(i, mp);
+         }
+         int []bitree=new int[n+1];
+         Map<Integer,Integer> mp=new HashMap<>();
+         for (int i = 1; i < n+1; i++) {
+            mp=getRange(i, mp);
                 System.out.println("ran with mp: "+mp);
-            }
-            System.out.println("map is of size: "+mp.size());
-          for(Map.Entry<Integer,Integer> entry: mp.entrySet())
+         }
+         System.out.println("map is of size: "+mp.size());
+         for(Map.Entry<Integer,Integer> entry: mp.entrySet())
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
@@ -189,7 +189,7 @@ class SpojInvcnt {
         System.out.println("b for ind= "+ind+" is "+b);
         if(ind!=1 && b.cardinality()==1)
         {
-            mp.put(b.size()-1,0);
+            mp.put(ind-1,0);
             System.out.println("found perfect power of 2");
             return mp;
         }
