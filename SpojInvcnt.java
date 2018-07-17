@@ -146,10 +146,9 @@ class SpojInvcnt {
                 printMap(mp);
          }
          System.out.println("map is of size: "+mp.size());
-         int i=0;
+         int i=0;        
          for(Map.Entry<Integer,pair> entry: mp.entrySet())
          {  
-            System.out.println(entry.getKey() + ": " + entry.getValue());
             bitree[i++]=sumUp(ar,entry.getValue());
           }
             System.out.println("printing the fenwick tree");
@@ -172,7 +171,8 @@ class SpojInvcnt {
         int sum=0;
         int a=p.a;
         int b=p.b;
-        for (int i = a; i <=b; i++) {
+        System.out.println("summing from "+b+" to "+a);
+        for (int i = b; i <=a; i++) {
             sum+=ar[i];
         }
         return sum;
