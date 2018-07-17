@@ -158,6 +158,12 @@ public class FenWickTree {
                 System.out.print(bitree[j]+" ");
             }
             System.out.println("");
+            int numOfQueries=sc.nextInt();
+            printMap(mp);
+            while(numOfQueries-->0)
+            {
+                System.out.println(getSum(bitree,sc.nextInt()));
+            }
         }
         
     }
@@ -256,6 +262,17 @@ public class FenWickTree {
         }  
        // System.out.println("returning mp of size "+mp.size());
         return mp;
+    }
+    public static int getSum(int []bitree,int pos)
+    {
+        int  sum=0;
+        int i=pos+1;
+        while(i>0)
+        {
+            sum+=bitree[i];
+            i=getRelative(i,'-');
+        }
+        return sum;
     }
 }
 class pair
