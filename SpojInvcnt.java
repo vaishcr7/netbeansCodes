@@ -4,9 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 class SpojInvcnt {
     
  static class Reader {
@@ -139,15 +137,45 @@ class SpojInvcnt {
                 ar[i]=sc.nextInt();
          }
          int []bitree=new int[n+1];
-         Map<Integer,Integer> mp=new HashMap<>();
+         Map<Integer,pair> mp=new HashMap<>();
+         System.out.print("mp for ind=10 is : ");
+            printMap(getRange(10, mp));
          for (int i = 1; i < n+1; i++) {
             mp=getRange(i, mp);
-                System.out.println("ran with mp: "+mp);
+                System.out.println("ran with mp: ");
+                printMap(mp);
          }
          System.out.println("map is of size: "+mp.size());
-         for(Map.Entry<Integer,Integer> entry: mp.entrySet())
+         int i=0;
+         for(Map.Entry<Integer,pair> entry: mp.entrySet())
+         {  
             System.out.println(entry.getKey() + ": " + entry.getValue());
+            bitree[i++]=sumUp(ar,entry.getValue());
+          }
+            System.out.println("printing the fenwick tree");
+            for (int j = 0; j < bitree.length; j++) {
+                System.out.print(bitree[j]+" ");
+            }
+            System.out.println("");
         }
+        
+    }
+    public static void printMap(Map<Integer,pair> mp)
+    {
+        for(Map.Entry<Integer,pair> ent:mp.entrySet())
+        {
+            System.out.println(ent.getKey()+" -> "+ent.getValue().a+" , "+ent.getValue().b);
+        }
+    }
+    public static int sumUp(int []ar,pair p)
+    {
+        int sum=0;
+        int a=p.a;
+        int b=p.b;
+        for (int i = a; i <=b; i++) {
+            sum+=ar[i];
+        }
+        return sum;
     }
     public static int getRelative(int num,char ch)
     {
@@ -180,7 +208,7 @@ class SpojInvcnt {
             value+=num;
         return value;
     }    
-    public static Map<Integer,Integer> getRange(int ind,Map<Integer,Integer> mp)
+    public static Map<Integer,pair> getRange(int ind,Map<Integer,pair> mp)
     {
         int pow=0;
         int k=(int)Math.pow(2,pow);
@@ -189,7 +217,7 @@ class SpojInvcnt {
         System.out.println("b for ind= "+ind+" is "+b);
         if(ind!=1 && b.cardinality()==1)
         {
-            mp.put(ind-1,0);
+            mp.put(ind,new pair(ind-1,0));
             System.out.println("found perfect power of 2");
             return mp;
         }
@@ -201,9 +229,9 @@ class SpojInvcnt {
                 if(k==(ind-sum))
                 {
                     if(sum==0)
-                        mp.put(ind-1,0);
+                        mp.put(ind,new pair(ind-1,0));
                     else
-                        mp.put(sum,sum+k-1);
+                        mp.put(ind,new pair(sum,sum+k-1));
                     break;
                 }
                 else if(k<ind)
@@ -225,4 +253,16 @@ class SpojInvcnt {
         System.out.println("returning mp of size "+mp.size());
         return mp;
     }
-}//1 5 2 3 8 6 1
+}
+class pair
+{
+    int a,b;
+
+    public pair(int a, int b) {
+        this.a = a;
+        this.b = b;
+    }
+    
+}
+//1 5 2 3 8 6 1
+ //1 11 3 2 -1 6 5 4 -3 3 7 2 3
