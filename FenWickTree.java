@@ -187,18 +187,39 @@ public class FenWickTree {
         //System.out.println("sum= "+sum);
         return sum;
     }
+    public static BitSet convertIntToBits(int num)
+    {
+        BitSet s=new BitSet();
+        int i=0;
+        while(num>0)
+        {
+            if(num%2!=0)
+                s.set(i);
+            i++;
+            num=num>>1;
+        }
+        return s;
+    }
     public static int getRelative(int num,char ch)
     {
-        BitSet b=new BitSet(num);
+        BitSet b=convertIntToBits(num);
         b.flip(0,b.length());
-        int lastRIghtZeroPos,lastRightOnePos=0,i;
-        if(b.get(b.length()-1))
-            lastRightOnePos=b.length()-1;
-         for (i = b.nextClearBit(0); i >= 0; i = b.nextClearBit(i+1)){
+       int lastRIghtZeroPos,lastRightOnePos=0,i,j;
+       lastRightOnePos=b.nextSetBit(0);
+       lastRIghtZeroPos=b.nextClearBit(0);
+        /*for(j=b.nextSetBit(0);j!=-1;j=b.nextSetBit(j+1))
+        //{
+           // if(j!=-1)
+               // lastRightOnePos=j;
+        //}
+        //if(b.get(b.length()-1))
+            //lastRightOnePos=b.length()-1;
+         for (i = b.nextClearBit(0); i <b.length(); i = b.nextClearBit(i+1)){
             if(true);
         }
         lastRIghtZeroPos=i;
-        if(lastRightOnePos>lastRIghtZeroPos)
+        System.out.println("b= "+b+", last zero= "+lastRIghtZeroPos+" and last one= "+lastRightOnePos);
+        if(lastRightOnePos<lastRIghtZeroPos)
         {
             b.clear(lastRIghtZeroPos+1,b.length());
             b.set(lastRIghtZeroPos);
@@ -206,16 +227,18 @@ public class FenWickTree {
         else
         {
             b.set(lastRIghtZeroPos);
-        }
+        }*/
+        
         int value = 0;
-        for (int j = 0; j < b.length(); ++i) {
-            value += b.get(i) ? (1<< j) : 0;
+        for (int jj = 0; jj < b.length(); ++jj) {
+            value += b.get(jj) ? (1<< jj) : 0;
          } 
+        value+=1;
         value&=num;
         if(ch=='-')             //getParent
-            value-=num;
+            value=num-value;
         else                      //getNext
-            value+=num;
+            value=num+value;
         return value;
     }    
     public static Map<Integer,pair> getRange(int ind,Map<Integer,pair> mp)
@@ -267,10 +290,12 @@ public class FenWickTree {
     {
         int  sum=0;
         int i=pos+1;
+        System.out.println("called for node: "+i);
         while(i>0)
         {
             sum+=bitree[i];
             i=getRelative(i,'-');
+            System.out.println("going to parent "+i);
         }
         return sum;
     }
@@ -286,4 +311,4 @@ class pair
     
 }
 //1 5 2 3 8 6 1
- //1 11 3 2 -1 6 5 4 -3 3 7 2 3
+ //1 11 3 2 -1 6 5 4 -3 3 7 2 3 1 9
