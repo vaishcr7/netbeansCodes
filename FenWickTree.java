@@ -200,40 +200,18 @@ public class FenWickTree {
         }
         return s;
     }
-    public static int getRelative(int num,char ch)
+    public static int getRelative(int num,char ch)// 1)take 2's complement 2) and with orig number 3) subtract/add FROM orig number to get relative. 
     {
         BitSet b=convertIntToBits(num);
         b.flip(0,b.length());
        int lastRIghtZeroPos,lastRightOnePos=0,i,j;
-       lastRightOnePos=b.nextSetBit(0);
-       lastRIghtZeroPos=b.nextClearBit(0);
-        /*for(j=b.nextSetBit(0);j!=-1;j=b.nextSetBit(j+1))
-        //{
-           // if(j!=-1)
-               // lastRightOnePos=j;
-        //}
-        //if(b.get(b.length()-1))
-            //lastRightOnePos=b.length()-1;
-         for (i = b.nextClearBit(0); i <b.length(); i = b.nextClearBit(i+1)){
-            if(true);
-        }
-        lastRIghtZeroPos=i;
-        System.out.println("b= "+b+", last zero= "+lastRIghtZeroPos+" and last one= "+lastRightOnePos);
-        if(lastRightOnePos<lastRIghtZeroPos)
-        {
-            b.clear(lastRIghtZeroPos+1,b.length());
-            b.set(lastRIghtZeroPos);
-        }
-        else
-        {
-            b.set(lastRIghtZeroPos);
-        }*/
-        
+       lastRightOnePos=b.nextSetBit(0);// if 0101 is a bitset so index are reversed i.e. index 0 and 2 are set . indexes start from opposite direction
+       lastRIghtZeroPos=b.nextClearBit(0);       
         int value = 0;
         for (int jj = 0; jj < b.length(); ++jj) {
             value += b.get(jj) ? (1<< jj) : 0;
          } 
-        value+=1;
+        value+=1;// 2's complement is now in value
         value&=num;
         if(ch=='-')             //getParent
             value=num-value;
