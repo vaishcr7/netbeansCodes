@@ -1,11 +1,13 @@
-package practry;
-
+package spojinvcnt;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-public class PracTry {
-    static class Reader {
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+class SpojInvcnt {
+    public static int sum=0;
+ static class Reader {
 
         final private int BUFFER_SIZE = 1 << 16;
         private DataInputStream din;
@@ -124,76 +126,8 @@ public class PracTry {
         }
     }
 
-// Returns sum of arr[0..index]. This function assumes
-// that the array is preprocessed and partial sums of
-// array elements are stored in BITree[].
-public static int getSum(int BITree[], int index)
-{
-	int sum = 0; // Initialize result
-
-	// Traverse ancestors of BITree[index]
-	while (index > 0)
-	{
-		// Add current element of BITree to sum
-		sum += BITree[index];
-
-		// Move index to parent node in getSum View
-		index -= index & (-index);
-              //  System.out.println("sum new index= "+index);
-	}
-	return sum;
-}
-
-// Updates a node in Binary Index Tree (BITree) at given index
-// in BITree. The given value 'val' is added to BITree[i] and
-// all of its ancestors in tree.
-public static int[] updateBIT(int BITree[], int n, int index, int val)
-{
-	// Traverse all ancestors and add 'val'
-	while (index <= n)
-	{
-	// Add 'val' to current node of BI Tree
-	BITree[index] += val;
-	// Update index to that of parent in update View
-	index += index & (-index);
-	}
-        return BITree;
-}
-
-// Returns inversion count arr[0..n-1]
-public static int getInvCount(int arr[], int n)
-{
-	int invcount = 0; // Initialize result
-
-	// Find maximum element in arr[]
-	int maxElement = 0;
-	for (int i=0; i<n; i++)
-		if (maxElement < arr[i])
-			maxElement = arr[i];
-
-	// Create a BIT with size equal to maxElement+1 (Extra
-	// one is used so that elements can be directly be
-	// used as index)
-	int []BIT=new int[maxElement+1];
-	for (int i=1; i<=maxElement; i++)
-		BIT[i] = 0;
-
-	// Traverse all elements from right.
-	for (int i=n-1; i>=0; i--)
-	{
-		// Get count of elements smaller than arr[i]
-		invcount += getSum(BIT, arr[i]-1);
-		// Add current element to BIT
-		BIT=updateBIT(BIT, maxElement, arr[i], 1);
-	}
-
-	return invcount;
-}
-
-// Driver program
-public static void main(String []args) throws IOException
-{
-     Reader sc=new Reader();
+    public static void main(String[] args) throws IOException {
+        Reader sc=new Reader();
         int t=sc.nextInt();
         while(t-->0)
         {
@@ -202,7 +136,101 @@ public static void main(String []args) throws IOException
          for (int i = 0; i < n; i++) {
                 ar[i]=sc.nextInt();
          }
-         System.out.println(getInvCount(ar,n));
+            System.out.println(sort(ar, 0, n-1));
         }
+    }
+   public static int merge(int arr[], int l, int m, int r)
+    {
+        // Find sizes of two subarrays to be merged
+        int n1 = m - l +1;
+        int n2 = r - m;
+        System.out.println("l= "+l+", m= "+m+", r= "+r+", n1= "+n1+" and n2= "+n2);
+        /* Create temp arrays */
+        int L[] = new int [n1];
+        int R[] = new int [n2];
+ 
+        /*Copy data to temp arrays*/
+        for (int i=0; i<n1; ++i)
+            L[i] = arr[l + i];
+        for (int j=m+1; j<=r; ++j)
+            R[j-m-1] = arr[j];
+        for (int i = 0; i < L.length; i++) {
+            System.out.print(L[i]+" , ");
+        }
+        System.out.println("");
+        for (int i = 0; i < R.length; i++) {
+            System.out.print(R[i]+" , ");
+        }
+        System.out.println("");
+ 
+        /* Merge the temp arrays */
+ 
+        // Initial indexes of first and second subarrays
+        int i = 0, j = 0;
+ 
+        // Initial index of merged subarry array
+        int k = l;
+        while (i < n1 && j < n2)
+        {
+            if (L[i] <= R[j])
+            {
+                arr[k] = L[i];
+                i++;
+            }
+            else
+            {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+ 
+        /* Copy remaining elements of L[] if any */
+        while (i < n1)
+        {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+ 
+        /* Copy remaining elements of R[] if any */
+        while (j < n2)
+        {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+        int t=0;
+        for (int y = l; y <r; y++) {
+           if(arr[y]==R[t])
+           {
+               sum+=(Math.abs(y-t));
+               t++;
+           }
+        }
+        return sum;
+    }
+ 
+    // Main function that sorts arr[l..r] using
+    // merge()
+    public static int sort(int arr[], int l, int r)
+    {
+        System.out.println("calling for l= "+l+" and r= "+r);
+        if (l < r)
+        {
+            // Find the middle point
+            int m = (l+r)/2;
+ 
+            // Sort first and second halves
+            sort(arr, l, m);
+            sort(arr , m+1, r);
+ 
+            // Merge the sorted halves
+            sum+=merge(arr, l, m, r);
+            System.out.println("calling merge");
+            System.out.println("sum is "+sum);
+        }
+        return sum;
+    }
 }
-}
+//1 5 2 3 8 6 1
