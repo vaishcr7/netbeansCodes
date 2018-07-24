@@ -3,11 +3,14 @@ package spojqtreetwo;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeSet;
 
 public class SpojQtreeTwo {
 static class Reader {
@@ -170,6 +173,7 @@ class graph // it is a non-directed and weighted graph
     public  int numOfVertices;
     //public ArrayList<LinkedList<vertex>> adjList;
     public PriorityQueue<vertex> pq;
+    public Map<String,String> paths;
     public graph(int size) {
         numOfVertices=size;
         ar=new int[numOfVertices][numOfVertices];
@@ -194,16 +198,28 @@ class graph // it is a non-directed and weighted graph
                 edWeights.put(""+source+"-"+destination,weight);
             }
         }*/
-       ar[source.label][destination.label]=weight; 
-        ar[destination.label][source.label]=weight;
+       ar[source.label-1][destination.label-1]=weight; 
+       ar[destination.label-1][source.label-1]=weight;
     }
     public void primsAlgo(vertex source,vertex destination)
     {
         source.key=0;
-        
+        Set<vertex> visited=new TreeSet<>();
+        visited.add(source);
+        updateKeys(source, visited);
+        Map<vertex,vertex> mp1=new HashMap<>();// for adding the relevant edges only.
+        Map<vertex,vertex> mp2=new HashMap<>();// for adding the relevant edges in reverse.
+        while(visited.size()!=vertexList.size())
+        {
+            int pos=getMinAdjacent(source, visited);
+            visited.add(vertexList.get(pos));
+            mp1.put(source,vertexList.get(pos));
+            mp2.put(vertexList.get(pos),source);
+            source=vertexList.get(pos);
+        }
     }
     
-    public int getAdjacent(vertex vert)
+    public int getMinAdjacent(vertex vert,Set<vertex> visited)
     {
         System.out.println("inside adjacent function");
         int pos=0;
@@ -215,16 +231,65 @@ class graph // it is a non-directed and weighted graph
             }
         }
         return null;*/
-        int minPos=Integer.MAX_VALUE;
-        for (int i = 0; i < numOfVertices; i++) {
+        int minPos=0;
+        for (int i = 1; i < numOfVertices; i++) {
             if(i!=vert.label-1)
             {
-                if(!vertexList.get(i).visited && ar[vert.label-1][i]<minPos)
-                    minPos=ar[vert.label-1][i];
+                if(!visited.contains(vertexList.get(i)) && ar[vert.label-1][i]<ar[vert.label-1][minPos])
+                    minPos=i;
              }
         }
-        vertexList.get(minPos).visited=true;
         return minPos;
+    }
+    public int returnDistance(vertex source,vertex destination,Map<vertex,vertex> mp1,Map<vertex,vertex> mp2)
+    {
+        int sum=0;
+        if(mp1.get(source)==destination)
+        {
+            paths.put(""+source.label+""+destination.label,""+source.label+","+destination.label);
+            return ar[source.label-1][destination.label-1];
+        }
+        vertex a=mp1.get(source);
+        vertex b=mp2.get(destination);
+        if(a==b)
+        {
+            paths.put(""+source.label+""+destination.label,""+source.label+","+a.label+","+destination.label);
+            return (ar[source.label-1][a.label-1]+ar[a.label-1][destination.label-1]);
+        }
+        Stack<vertex> tempStorage=new Stack<>();
+        tempStorage.add(a);
+        tempStorage.add(b);
+        int fpointer=1,lpointer;
+        StringBuffer sba=new StringBuffer();
+        sba.append(source.label);
+        sba.append(","+destination.label);
+        lpointer=-1;
+        while(a!=b)
+        {
+         sum+=ar[b.label-1][mp2.get(b).label-1];
+         sba.insert(fpointer++,","+b.label);
+         b=mp2.get(tempStorage.pop());
+         sum+=ar[mp2.get(a).label-1][a.label-1];
+         if(lpointer==-1)
+             lpointer=sba.length()-1;
+         sba.insert(lpointer++,","+a.label);
+         a=mp1.get(tempStorage.pop());
+         if(mp1.get(a)==b)
+         {
+             sum+=ar[a.label-1][b.label-1];
+             return sum;
+         }
+        }
+        return sum;
+    }
+    public void updateKeys(vertex v,Set<vertex> visited)
+    {
+        for (int i = 0; i < numOfVertices; i++) {
+            if(i!=v.label-1)
+            {
+                vertexList.get(i).key=vertexList.get(i).key>ar[v.label-1][i]?ar[v.label-1][i]:vertexList.get(i).key;
+            }
+        }
     }
    /* public int returnVertexIndex(vertex v)
     {
@@ -237,17 +302,15 @@ class graph // it is a non-directed and weighted graph
     public  int getEdgeWeight(vertex source,vertex destination)
     {
         //return edWeights.get(""+source+"-"+destination);
-        return ar[source.label][destination.label];
+        return ar[source.label-1][destination.label-1];
     }
 }
 class vertex
 {
     public int label;
     public int key;
-    public boolean visited;
     public vertex(int label) {
         this.label = label;
         this.key=Integer.MAX_VALUE;
-        this.visited=false;
     }
 }
