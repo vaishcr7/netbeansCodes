@@ -152,12 +152,15 @@ static class Reader {
                {
                    int source=Integer.parseInt(st[1]);
                    int destination=Integer.parseInt(st[2]);
+                   System.out.println(g.primsAlgo(g.vertexList.get(source),g.vertexList.get(destination)));
                }
                else
                {
-                    int source=Integer.parseInt(st[1]);
+                   int source=Integer.parseInt(st[1]);
                    int destination=Integer.parseInt(st[2]);
                    int k=Integer.parseInt(st[3]);
+                   System.out.println(g.primsAlgo(g.vertexList.get(source),g.vertexList.get(destination)));
+                   g.paths.get(""+source+""+destination);
                }
            }
        }
@@ -201,7 +204,7 @@ class graph // it is a non-directed and weighted graph
        ar[source.label-1][destination.label-1]=weight; 
        ar[destination.label-1][source.label-1]=weight;
     }
-    public void primsAlgo(vertex source,vertex destination)
+    public long primsAlgo(vertex source,vertex destination)
     {
         source.key=0;
         Set<vertex> visited=new TreeSet<>();
@@ -217,6 +220,7 @@ class graph // it is a non-directed and weighted graph
             mp2.put(vertexList.get(pos),source);
             source=vertexList.get(pos);
         }
+        return returnDistance(source, destination, mp1, mp2);
     }
     
     public int getMinAdjacent(vertex vert,Set<vertex> visited)
@@ -241,9 +245,9 @@ class graph // it is a non-directed and weighted graph
         }
         return minPos;
     }
-    public int returnDistance(vertex source,vertex destination,Map<vertex,vertex> mp1,Map<vertex,vertex> mp2)
+    public long returnDistance(vertex source,vertex destination,Map<vertex,vertex> mp1,Map<vertex,vertex> mp2)
     {
-        int sum=0;
+        long sum=0;
         if(mp1.get(source)==destination)
         {
             paths.put(""+source.label+""+destination.label,""+source.label+","+destination.label);
@@ -259,27 +263,27 @@ class graph // it is a non-directed and weighted graph
         Stack<vertex> tempStorage=new Stack<>();
         tempStorage.add(a);
         tempStorage.add(b);
-        int fpointer=1,lpointer;
-        StringBuffer sba=new StringBuffer();
+        int fpointer=1;
+        StringBuilder sba=new StringBuilder();
         sba.append(source.label);
-        sba.append(","+destination.label);
-        lpointer=-1;
+        sba.append(",").append(destination.label);
         while(a!=b)
         {
          sum+=ar[b.label-1][mp2.get(b).label-1];
          sba.insert(fpointer++,","+b.label);
          b=mp2.get(tempStorage.pop());
          sum+=ar[mp2.get(a).label-1][a.label-1];
-         if(lpointer==-1)
-             lpointer=sba.length()-1;
-         sba.insert(lpointer++,","+a.label);
+         sba.insert((fpointer+1),","+a.label);
          a=mp1.get(tempStorage.pop());
          if(mp1.get(a)==b)
          {
              sum+=ar[a.label-1][b.label-1];
+             sba.insert(fpointer,","+mp1.get(a).label);
+             paths.put(""+source.label+""+destination.label,sba.toString());
              return sum;
          }
         }
+        paths.put(""+source.label+""+destination.label,sba.toString());
         return sum;
     }
     public void updateKeys(vertex v,Set<vertex> visited)
