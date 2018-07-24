@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -132,7 +133,7 @@ static class Reader {
         }
     }
     public static void main(String[] args) throws IOException {
-       Reader sc=new Reader();
+       Scanner sc=new Scanner(System.in);
        int t=sc.nextInt();
        while(t-->0)
        {
@@ -144,21 +145,32 @@ static class Reader {
            for (int i = 0; i < n-1; i++) {
                g.addEdge(g.vertexList.get(sc.nextInt()-1),g.vertexList.get(sc.nextInt()-1), sc.nextInt());
            }
-           String s=sc.readLine();
+           String s=sc.next();
+           System.out.println("s= "+s);
            while(!"DONE".equals(s))
            {
-               String[] st=s.split(" ");
-               if(st.length==3)
+               /*String[] st=s.split(" ");
+               System.out.println("string is ");
+               for (int i = 0; i < st.length; i++) {
+                   System.out.print(st[i]+"  ");
+               }*/
+               System.out.println("");
+               if("DIST".equals(s))//st.length==3)
                {
-                   int source=Integer.parseInt(st[1]);
-                   int destination=Integer.parseInt(st[2]);
+                   int source=sc.nextInt();
+                   int destination=sc.nextInt();
+                   //int source=Integer.parseInt(st[1]);
+                   //int destination=Integer.parseInt(st[2]);
                    System.out.println(g.primsAlgo(g.vertexList.get(source),g.vertexList.get(destination)));
                }
                else
                {
-                   int source=Integer.parseInt(st[1]);
-                   int destination=Integer.parseInt(st[2]);
-                   int k=Integer.parseInt(st[3]);
+                   int source=sc.nextInt();
+                   int destination=sc.nextInt();
+                   int k=sc.nextInt();
+                 //int source=Integer.parseInt(st[1]);
+                 //int destination=Integer.parseInt(st[2]);
+                   //int k=Integer.parseInt(st[3]);
                    System.out.println(g.primsAlgo(g.vertexList.get(source),g.vertexList.get(destination)));
                    g.paths.get(""+source+""+destination);
                }
@@ -318,3 +330,14 @@ class vertex
         this.key=Integer.MAX_VALUE;
     }
 }
+1 
+
+6 
+1 2 1 
+2 4 1 
+2 5 2 
+1 3 1 
+3 6 2 
+DIST 4 6 
+KTH 4 6 4 
+DONE
