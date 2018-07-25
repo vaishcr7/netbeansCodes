@@ -11,7 +11,6 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
-import java.util.TreeSet;
 
 public class SpojQtreeTwo {
 static class Reader {
@@ -155,13 +154,21 @@ static class Reader {
                    System.out.print(st[i]+"  ");
                }*/
                System.out.println("");
+               System.out.println("adj matrix: ");
+               for (int i = 0; i < g.vertexList.size(); i++) {
+                   for (int j = 0; j < g.vertexList.size(); j++) {
+                       System.out.print(g.ar[i][j]+" ");
+                   }
+                   System.out.println("");
+               }
+ 
                if("DIST".equals(s))//st.length==3)
                {
                    int source=sc.nextInt();
                    int destination=sc.nextInt();
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
-                   System.out.println(g.primsAlgo(g.vertexList.get(source),g.vertexList.get(destination)));
+                   System.out.println(g.primsAlgo(g.vertexList.get(source-1),g.vertexList.get(destination-1)));
                }
                else
                {
@@ -171,7 +178,7 @@ static class Reader {
                  //int source=Integer.parseInt(st[1]);
                  //int destination=Integer.parseInt(st[2]);
                    //int k=Integer.parseInt(st[3]);
-                   System.out.println(g.primsAlgo(g.vertexList.get(source),g.vertexList.get(destination)));
+                   System.out.println(g.primsAlgo(g.vertexList.get(source-1),g.vertexList.get(destination-1)));
                    g.paths.get(""+source+""+destination);
                }
            }
@@ -193,7 +200,7 @@ class graph // it is a non-directed and weighted graph
         numOfVertices=size;
         ar=new int[numOfVertices][numOfVertices];
         for (int i = 0; i < numOfVertices; i++) {
-            Arrays.fill(ar[i],-1);
+            Arrays.fill(ar[i],Integer.MAX_VALUE);
         }
         //adjList=new ArrayList<>();
         vertexList=new ArrayList<>();
@@ -219,7 +226,7 @@ class graph // it is a non-directed and weighted graph
     public long primsAlgo(vertex source,vertex destination)
     {
         source.key=0;
-        Set<vertex> visited=new TreeSet<>();
+        ArrayList<vertex> visited=new ArrayList<>();
         visited.add(source);
         updateKeys(source, visited);
         Map<vertex,vertex> mp1=new HashMap<>();// for adding the relevant edges only.
@@ -231,14 +238,18 @@ class graph // it is a non-directed and weighted graph
             mp1.put(source,vertexList.get(pos));
             mp2.put(vertexList.get(pos),source);
             source=vertexList.get(pos);
+            updateKeys(source, visited);
+        }
+        System.out.println("final keys= ");
+        for (int i = 0; i < vertexList.size(); i++) {
+            System.out.print(vertexList.get(i).label+" -> "+vertexList.get(i).key+" , ");
         }
         return returnDistance(source, destination, mp1, mp2);
     }
     
-    public int getMinAdjacent(vertex vert,Set<vertex> visited)
+    public int getMinAdjacent(vertex vert,ArrayList<vertex> visited)
     {
-        System.out.println("inside adjacent function");
-        int pos=0;
+        System.out.println("inside minimum adjacent function for vertex= "+vert.label);
         /*for (int i = 0; i < numOfVertices; i++) {
             if(vertexList.get(i)==vert)
             {
@@ -247,14 +258,34 @@ class graph // it is a non-directed and weighted graph
             }
         }
         return null;*/
-        int minPos=0;
-        for (int i = 1; i < numOfVertices; i++) {
+        int minPos=0,minVal=Integer.MAX_VALUE;
+        System.out.print("visited list is ");
+        for (int i = 0; i < visited.size(); i++) {
+            System.out.print(visited.get(i).label+" , ");
+        }
+        System.out.println("");
+        for (int i = 0; i < numOfVertices; i++) {
             if(i!=vert.label-1)
             {
-                if(!visited.contains(vertexList.get(i)) && ar[vert.label-1][i]<ar[vert.label-1][minPos])
+                if(!visited.contains(vertexList.get(i)) && ar[vert.label-1][i]<minVal)
+                {
                     minPos=i;
+                    System.out.println("found one");
+                    minVal=ar[vert.label-1][minPos];
+                }
              }
         }
+        /*if(visited.contains(vertexList.get(minPos)))
+        {
+            for (int i = 0; i < vertexList.size(); i++) {
+                if(!visited.contains(vertexList.get(i)))
+                {
+                    minPos=i;
+                    break;
+                }
+            }
+        }*/
+        System.out.println("minpos= "+minPos);
         return minPos;
     }
     public long returnDistance(vertex source,vertex destination,Map<vertex,vertex> mp1,Map<vertex,vertex> mp2)
@@ -281,6 +312,7 @@ class graph // it is a non-directed and weighted graph
         sba.append(",").append(destination.label);
         while(a!=b)
         {
+         System.out.println("ar= "+ar[b.label-1][mp2.get(b).label-1]);
          sum+=ar[b.label-1][mp2.get(b).label-1];
          sba.insert(fpointer++,","+b.label);
          b=mp2.get(tempStorage.pop());
@@ -298,14 +330,24 @@ class graph // it is a non-directed and weighted graph
         paths.put(""+source.label+""+destination.label,sba.toString());
         return sum;
     }
-    public void updateKeys(vertex v,Set<vertex> visited)
+    public void updateKeys(vertex v,ArrayList<vertex> visited)
     {
+        System.out.println("old keys= ");
+        for (int i = 0; i < vertexList.size(); i++) {
+            System.out.print(vertexList.get(i).label+" -> "+vertexList.get(i).key+" , ");
+        }
+        System.out.println("");
         for (int i = 0; i < numOfVertices; i++) {
-            if(i!=v.label-1)
+            if(i!=v.label-1 && !visited.contains(vertexList.get(i)))
             {
-                vertexList.get(i).key=vertexList.get(i).key>ar[v.label-1][i]?ar[v.label-1][i]:vertexList.get(i).key;
+                vertexList.get(i).key = (vertexList.get(i).key) > (ar[v.label-1][i]) ? (ar[v.label-1][i]) : (vertexList.get(i).key);
             }
         }
+        System.out.println("new keys= ");
+        for (int i = 0; i < vertexList.size(); i++) {
+            System.out.print(vertexList.get(i).label+" -> "+vertexList.get(i).key+" , ");
+        }
+        System.out.println("");
     }
    /* public int returnVertexIndex(vertex v)
     {
@@ -330,6 +372,7 @@ class vertex
         this.key=Integer.MAX_VALUE;
     }
 }
+/*
 1 
 
 6 
@@ -341,3 +384,4 @@ class vertex
 DIST 4 6 
 KTH 4 6 4 
 DONE
+*/
