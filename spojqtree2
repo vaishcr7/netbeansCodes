@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Stack;
 
 public class SpojQtreeTwo {
@@ -140,12 +142,18 @@ static class Reader {
                g.addVertex(new vertex(i));
            }
            for (int i = 0; i < n-1; i++) {
-               g.addEdge(g.vertexList.get(sc.nextInt()-1),g.vertexList.get(sc.nextInt()-1), sc.nextInt());
+               int s=sc.nextInt();
+               int d=sc.nextInt();
+               int wt=sc.nextInt();
+               System.out.println("s= "+s+" d= "+d+"and wt= "+wt);
+               g.addEdge(g.vertexList.get(s-1),g.vertexList.get(d-1), wt);
            }
-           String s=sc.next();
-           System.out.println("s= "+s);
+           String s="";
            while(!"DONE".equals(s))
            {
+               s=sc.next();
+               System.out.println("s= "+s);
+               
                /*String[] st=s.split(" ");
                System.out.println("string is ");
                for (int i = 0; i < st.length; i++) {
@@ -159,11 +167,14 @@ static class Reader {
                    }
                    System.out.println("");
                }
- 
+               g.dfsEulerTourStyle(g.vertexList.get(0));
+               g.produceOccurence();
                if("DIST".equals(s))//st.length==3)
                {
                    int source=sc.nextInt();
                    int destination=sc.nextInt();
+                   queryPos ap=new queryPos(source,destination);
+                   System.out.println(g.returnDist(ap, n));
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
                }
@@ -172,10 +183,10 @@ static class Reader {
                    int source=sc.nextInt();
                    int destination=sc.nextInt();
                    int k=sc.nextInt();
+                   queryPos ap=new queryPos(source,destination);
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
                    //int k=Integer.parseInt(st[3]);
-                   g.paths.get(""+source+""+destination);
                }
            }
        }
@@ -188,7 +199,9 @@ class graph // it is a non-directed and weighted graph
     public int [][]ar;
     public ArrayList<vertex> vertexList,eulerTraversal;
     public Map<vertex,Integer> firstOccurence;
-    public Map<String,Integer> edWeights; // edges will be defined as source-destination as keys and their weights as values 
+    public Map<Integer,vertex> revFirstOccurence;
+    public StringBuilder path;
+    //public Map<String,Integer> edWeights; // edges will be defined as source-destination as keys and their weights as values 
     public  int numOfVertices;
     //public ArrayList<LinkedList<vertex>> adjList;
     
@@ -203,6 +216,7 @@ class graph // it is a non-directed and weighted graph
         vertexList=new ArrayList<>();
         eulerTraversal=new ArrayList<>();
         firstOccurence=new HashMap<>();
+        revFirstOccurence=new HashMap<>();
     }
     public  void addVertex(vertex vert)
     {
@@ -260,11 +274,76 @@ class graph // it is a non-directed and weighted graph
         for (int i = 0; i < eulerTraversal.size(); i++) {
             if(!firstOccurence.containsKey(eulerTraversal.get(i)))
                 firstOccurence.put(eulerTraversal.get(i),i);
+                revFirstOccurence.put(i,eulerTraversal.get(i));
         }
     }
     public queryPos returnIndexes(vertex a,vertex b)
     {
         return new queryPos(firstOccurence.get(a),firstOccurence.get(b));
+    }
+    public int rmqQuery(queryPos  qp,int n)
+    {
+        int startOfRange=qp.a;
+        int endOfRange=qp.b;
+        int minLevel=eulerTraversal.get(startOfRange).level_number;
+        for (int i = startOfRange+1; i <=endOfRange ; i++) {
+            if(eulerTraversal.get(i).level_number<minLevel)
+                minLevel=i;
+        }
+        return minLevel;
+     /*   
+    int [][]lookup=new int[n][n];
+    for (int i = 0; i < n; i++)
+        lookup[i][0] = i;
+ 
+    // Compute values from smaller to bigger intervals
+    for (int j=1; (1<<j)<=n; j++)
+    {
+        System.out.println("j= "+j);
+        // Compute minimum value for all intervals with size 2^j
+        for (int i=0; (i+(1<<j)-1) < n; i++)
+        { 
+            // For vertexList.get(2][10], we compare vertexList.get(lookup[0][3]] and
+            // vertexList.get(lookup[3][3]]
+            System.out.println("i= "+i+" and i + (1<<(j-1))= "+i + (1<<(j-1)));
+            if (vertexList.get(lookup[i][j-1]).level_number < vertexList.get(lookup[i + (1<<(j-1))][j-1]).level_number)
+                lookup[i][j] = lookup[i][j-1];
+            else
+                lookup[i][j] = lookup[i + (1 << (j-1))][j-1];      
+        }
+    }
+        System.out.println("lookup table is ");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(lookup[i][j]+" ");
+            }
+            System.out.println("");
+        }
+         // For [2,10], j = 3
+    int j = (int)(Math.log(qp.b-qp.a+1)/Math.log(2));
+ 
+    // For [2,10], we compare vertexList.get(lookup[0][3]] and
+    // vertexList.get(lookup[3][3]], 
+    if (vertexList.get(lookup[qp.a][j]).level_number <= vertexList.get(lookup[qp.b - (1<<j) + 1][j]).level_number)
+        return vertexList.get(lookup[qp.a][j]);
+    else 
+        return vertexList.get(lookup[qp.b - (1<<j) + 1][j]);*/
+    }
+    public int returnDist(queryPos  qp,int n)
+    {
+        int vindex=rmqQuery(qp, n);
+        int sum=0;
+        Set<vertex> visited=new HashSet<>();
+        for (int i = qp.a; i <vindex; i++) {
+           sum+=ar[revFirstOccurence.get(i).label-1][revFirstOccurence.get(i+1).label-1];
+           path.append(revFirstOccurence.get(i).label);
+        }
+        path.append(revFirstOccurence.get(vindex).label);
+       for (int i = qp.b; i >vindex; i--) {
+           sum+=ar[revFirstOccurence.get(i).label-1][revFirstOccurence.get(i-1).label-1];
+           path.append(revFirstOccurence.get(i).label);
+        }
+       return sum;
     }
 }
 class queryPos
@@ -289,15 +368,9 @@ class vertex
     }
 }
 /*
-1 
-
-6 
-1 2 1 
-2 4 1 
-2 5 2 
-1 3 1 
-3 6 2 
-DIST 4 6 
+1 6 1 2 1 2 4 1 2 5 2 1 3 1 3 6 1 DIST 
+ 4  6  
+ DONE
 KTH 4 6 4 
 DONE
 */
