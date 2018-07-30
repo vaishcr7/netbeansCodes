@@ -145,7 +145,7 @@ static class Reader {
                int s=sc.nextInt();
                int d=sc.nextInt();
                int wt=sc.nextInt();
-               System.out.println("s= "+s+" d= "+d+"and wt= "+wt);
+             //  System.out.println("s= "+s+" d= "+d+"and wt= "+wt);
                g.addEdge(g.vertexList.get(s-1),g.vertexList.get(d-1), wt);
            }
            String s=sc.next();
@@ -157,13 +157,13 @@ static class Reader {
                    System.out.print(st[i]+"  ");
                }*/
                System.out.println("");
-               System.out.println("adj matrix: ");
+               /*System.out.println("adj matrix: ");
                for (int i = 0; i < g.vertexList.size(); i++) {
                    for (int j = 0; j < g.vertexList.size(); j++) {
                        System.out.print(g.ar[i][j]+" ");
                    }
                    System.out.println("");
-               }
+               }*/
                g.dfsEulerTourStyle(g.vertexList.get(0));
                g.produceOccurence();
                if("DIST".equals(s))//st.length==3)
@@ -199,7 +199,7 @@ class graph // it is a non-directed and weighted graph
     public ArrayList<vertex> vertexList,eulerTraversal;
     public Map<vertex,Integer> firstOccurence;
     public Map<Integer,vertex> revFirstOccurence;
-    public StringBuilder path;
+    public ArrayList<Integer> path;
     //public Map<String,Integer> edWeights; // edges will be defined as source-destination as keys and their weights as values 
     public  int numOfVertices;
     //public ArrayList<LinkedList<vertex>> adjList;
@@ -216,7 +216,7 @@ class graph // it is a non-directed and weighted graph
         eulerTraversal=new ArrayList<>();
         firstOccurence=new HashMap<>();
         revFirstOccurence=new HashMap<>();
-        path=new StringBuilder();
+        path=new ArrayList<>();
     }
     public  void addVertex(vertex vert)
     {
@@ -248,7 +248,7 @@ class graph // it is a non-directed and weighted graph
                 if(ar[v.label-1][i]!=Integer.MAX_VALUE && !vertexList.get(i).visited)
                 {
                     vertexList.get(i).visited=true;
-                    System.out.println("returning "+vertexList.get(i).label+" from adjacent function");
+                    //System.out.println("returning "+vertexList.get(i).label+" from adjacent function");
                     return i;   
                 }
             }
@@ -270,7 +270,7 @@ class graph // it is a non-directed and weighted graph
            if(p!=-1)
                st.add(vertexList.get(p));
            else
-               System.out.println("popped "+st.pop().label);
+               st.pop();
            //System.out.println("eulerTraversal list is ");
           // for (int i = 0; i < eulerTraversal.size(); i++) {
              //System.out.print(eulerTraversal.get(i).label+" ");
@@ -358,20 +358,42 @@ class graph // it is a non-directed and weighted graph
         Set<vertex> visited=new HashSet<>();
         for (int i = qp.a; i <vindex;) {
            // System.out.println("qp.a= "+i);
-           sum+=ar[revFirstOccurence.get(i).label-1][revFirstOccurence.get(i+1).label-1];
+           //sum+=ar[revFirstOccurence.get(i).label-1][revFirstOccurence.get(i+1).label-1];
             //System.out.println("appending to path "+revFirstOccurence.get(i).label);
-           path.append(revFirstOccurence.get(i).label);
+           path.add(revFirstOccurence.get(i).label);
            i++;
         }
       //  path.append(revFirstOccurence.get(vindex).label);
         //int t=path.length()-1;
        for (int i = vindex; i <=qp.b;i++) {
           // System.out.println("qp.b= "+i);
-           sum+=ar[revFirstOccurence.get(i).label-1][revFirstOccurence.get(i-1).label-1];
+           //sum+=ar[revFirstOccurence.get(i).label-1][revFirstOccurence.get(i-1).label-1];
            //System.out.println("appending to path "+revFirstOccurence.get(i).label);
-           path.append(revFirstOccurence.get(i).label);
+           path.add(revFirstOccurence.get(i).label);
         }
-        System.out.println("path= "+path.toString());
+        System.out.println("path= "+path);
+        // calculating the sum now
+        Set<Integer> st=new HashSet<>();
+        int []posArr=new int[n];
+        Arrays.fill(posArr,-1);
+        int j=0;
+        int elem=vertexList.get(qp.b-1).label;
+        while(path.get(j)!=elem) {
+            if(!st.contains(path.get(j)))
+            {
+                st.add(path.get(j));
+                posArr[path.get(j)]=j;
+            }
+            else
+            {
+                for (int i = posArr[path.get(j)]+1; i <=j; i++) {
+                    path.remove(i);
+                }
+                j-=(j-path.get(j));
+            }
+            j++;
+        }
+        //now the elements remaining in the path should be the only real path. add them to sum.
        return sum;
     }
 }
