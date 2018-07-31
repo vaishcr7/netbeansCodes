@@ -371,14 +371,13 @@ class graph // it is a non-directed and weighted graph
            //System.out.println("appending to path "+revFirstOccurence.get(i).label);
            path.add(revFirstOccurence.get(i).label);
         }
-        System.out.println("path= "+path);
+        //System.out.println("path= "+path);
         // calculating the sum now
         Set<Integer> st=new HashSet<>();
-        int []posArr=new int[n];
+        int []posArr=new int[n+1];
         Arrays.fill(posArr,-1);
         int j=0;
-        int elem=vertexList.get(qp.b-1).label;
-        while(path.get(j)!=elem) {
+        while(j<path.size()) {
             if(!st.contains(path.get(j)))
             {
                 st.add(path.get(j));
@@ -386,14 +385,24 @@ class graph // it is a non-directed and weighted graph
             }
             else
             {
-                for (int i = posArr[path.get(j)]+1; i <=j; i++) {
-                    path.remove(i);
+                System.out.print("else part");
+                int fpos=posArr[path.get(j)];
+                int count=(j-fpos);
+                for(int i=j;i>fpos;i--){
+                    System.out.print("   count= "+count+" and j= "+j+" ,fpos= "+fpos+" ,i= "+i);
+                    System.out.println(" ,removed "+path.remove(i));
                 }
+                System.out.println("");
                 j-=(j-path.get(j));
             }
+            System.out.println("j= "+j+" and path= "+path+" ,st= "+st+" and posArr= "+Arrays.toString(posArr));
             j++;
         }
         //now the elements remaining in the path should be the only real path. add them to sum.
+        
+        for (int i = 0; i < path.size()-1; i++) {
+            sum+=ar[path.get(i)-1][path.get(i+1)-1];
+        }
        return sum;
     }
 }
