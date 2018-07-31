@@ -145,10 +145,11 @@ static class Reader {
                int s=sc.nextInt();
                int d=sc.nextInt();
                int wt=sc.nextInt();
-             //  System.out.println("s= "+s+" d= "+d+"and wt= "+wt);
+             //System.out.println("s= "+s+" d= "+d+"and wt= "+wt);
                g.addEdge(g.vertexList.get(s-1),g.vertexList.get(d-1), wt);
            }
            String s=sc.next();
+           //System.out.println("s= "+s);
            while(!"DONE".equals(s))
            {              
                /*String[] st=s.split(" ");
@@ -168,27 +169,31 @@ static class Reader {
                g.produceOccurence();
                if("DIST".equals(s))//st.length==3)
                {
-                   int source=sc.nextInt();
-                   int destination=sc.nextInt();
+                   int source=Integer.parseInt(sc.next());
+                   int destination=Integer.parseInt(sc.next());
                    queryPos ap=new queryPos(source,destination);
                    System.out.println(g.returnDist(ap, n));
+                   //sc.nextLine();
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
                }
                else
                {
-                   int source=sc.nextInt();
-                   int destination=sc.nextInt();
-                   int k=sc.nextInt();
+                   int source=Integer.parseInt(sc.next());
+                   int destination=Integer.parseInt(sc.next());
+                   int k=Integer.parseInt(sc.next());
                    queryPos ap=new queryPos(source,destination);
                    System.out.println(g.path.get(k-1));
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
                    //int k=Integer.parseInt(st[3]);
+                  // sc.nextLine();
                }
                s=sc.next();
-               //System.out.println("s= "+s);
+              // System.out.println("s= "+s);
            }
+           System.out.println("");
+           sc.nextLine();
        }
        
     }
@@ -431,4 +436,43 @@ class vertex
  4  6   
  KTH 4 6 4 
  DONE
+
+ 2
+
+ 6  
+
+ 1   2  1  
+
+ 2  4  1  
+
+ 2  5  2 
+
+ 1  3  1 
+
+ 3  6  2 
+
+ DIST  4  6 
+
+ KTH  4  6  4 
+
+ DONE 
+
+6  
+
+ 1   2  1  
+
+ 2  4  1  
+
+ 2  5  2 
+
+ 1  3  1 
+
+ 3  6  2 
+
+ DIST  4  6 
+
+ KTH  4  6  4 
+
+ DONE 
+ 
 */
