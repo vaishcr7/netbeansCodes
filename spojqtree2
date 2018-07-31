@@ -156,7 +156,7 @@ static class Reader {
                for (int i = 0; i < st.length; i++) {
                    System.out.print(st[i]+"  ");
                }*/
-               System.out.println("");
+               //System.out.println("");
                /*System.out.println("adj matrix: ");
                for (int i = 0; i < g.vertexList.size(); i++) {
                    for (int j = 0; j < g.vertexList.size(); j++) {
@@ -171,7 +171,7 @@ static class Reader {
                    int source=sc.nextInt();
                    int destination=sc.nextInt();
                    queryPos ap=new queryPos(source,destination);
-                   System.out.println("asnwer is "+g.returnDist(ap, n));
+                   System.out.println(g.returnDist(ap, n));
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
                }
@@ -181,12 +181,13 @@ static class Reader {
                    int destination=sc.nextInt();
                    int k=sc.nextInt();
                    queryPos ap=new queryPos(source,destination);
+                   System.out.println(g.path.get(k-1));
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
                    //int k=Integer.parseInt(st[3]);
                }
                s=sc.next();
-               System.out.println("s= "+s);
+               //System.out.println("s= "+s);
            }
        }
        
@@ -203,8 +204,6 @@ class graph // it is a non-directed and weighted graph
     //public Map<String,Integer> edWeights; // edges will be defined as source-destination as keys and their weights as values 
     public  int numOfVertices;
     //public ArrayList<LinkedList<vertex>> adjList;
-    
-    public Map<String,String> paths;
     public graph(int size) {
         numOfVertices=size;
         ar=new int[numOfVertices][numOfVertices];
@@ -385,17 +384,17 @@ class graph // it is a non-directed and weighted graph
             }
             else
             {
-                System.out.print("else part");
+                //System.out.print("else part");
                 int fpos=posArr[path.get(j)];
                 int count=(j-fpos);
                 for(int i=j;i>fpos;i--){
-                    System.out.print("   count= "+count+" and j= "+j+" ,fpos= "+fpos+" ,i= "+i);
-                    System.out.println(" ,removed "+path.remove(i));
+                   // System.out.print("   count= "+count+" and j= "+j+" ,fpos= "+fpos+" ,i= "+i);
+                    path.remove(i);
                 }
-                System.out.println("");
+               // System.out.println("");
                 j-=(j-path.get(j));
             }
-            System.out.println("j= "+j+" and path= "+path+" ,st= "+st+" and posArr= "+Arrays.toString(posArr));
+            //System.out.println("j= "+j+" and path= "+path+" ,st= "+st+" and posArr= "+Arrays.toString(posArr));
             j++;
         }
         //now the elements remaining in the path should be the only real path. add them to sum.
@@ -428,9 +427,8 @@ class vertex
     }
 }
 /*
-1 6 1 2 1 2 4 1 2 5 2 1 3 1 3 6 1 DIST 
- 4  6  
+1 6 1 2 1 2 4 1 2 5 2 1 3 1 3 6 2 DIST 
+ 4  6   
+ KTH 4 6 4 
  DONE
-KTH 4 6 4 
-DONE
 */
