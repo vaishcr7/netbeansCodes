@@ -133,29 +133,36 @@ static class Reader {
     }
     public static void main(String[] args) throws IOException {
        Scanner sc=new Scanner(System.in);
-       int t=sc.nextInt();
+       int t=Integer.parseInt(sc.nextLine());
        while(t-->0)
        {
-           int n=sc.nextInt();
+           int n=Integer.parseInt(sc.nextLine());
            graph g=new graph(n);
            for (int i = 1; i <=n; i++) {
                g.addVertex(new vertex(i));
            }
            for (int i = 0; i < n-1; i++) {
-               int s=sc.nextInt();
-               int d=sc.nextInt();
-               int wt=sc.nextInt();
-             //System.out.println("s= "+s+" d= "+d+"and wt= "+wt);
+               String p=sc.nextLine();
+               //System.out.println("p= "+p);
+               String []sp=p.split(" ");
+              // for (int j = 0; j < sp.length; j++) {
+                //   System.out.print(sp[j]+" || "+j+" , ");
+               //}
+              // System.out.println("");
+               int s=Integer.parseInt(sp[0]);
+               int d=Integer.parseInt(sp[1]);
+               int wt=Integer.parseInt(sp[2]);
+               ////System.out.println("s= "+s+" d= "+d+"and wt= "+wt);
                g.addEdge(g.vertexList.get(s-1),g.vertexList.get(d-1), wt);
            }
-           String s=sc.next();
-           //System.out.println("s= "+s);
+           String s=sc.nextLine();
+           //System.out.println("s here = "+s);
            while(!"DONE".equals(s))
            {              
                /*String[] st=s.split(" ");
-               System.out.println("string is ");
+               //System.out.println("string is ");
                for (int i = 0; i < st.length; i++) {
-                   System.out.print(st[i]+"  ");
+                   //System.out.print(st[i]+"  ");
                }*/
                //System.out.println("");
                /*System.out.println("adj matrix: ");
@@ -167,10 +174,11 @@ static class Reader {
                }*/
                g.dfsEulerTourStyle(g.vertexList.get(0));
                g.produceOccurence();
-               if("DIST".equals(s))//st.length==3)
+               String []sp=s.split(" ");
+               if("DIST".equals(sp[0]))//st.length==3)
                {
-                   int source=Integer.parseInt(sc.next());
-                   int destination=Integer.parseInt(sc.next());
+                   int source=Integer.parseInt(sp[1]);
+                   int destination=Integer.parseInt(sp[2]);
                    queryPos ap=new queryPos(source,destination);
                    System.out.println(g.returnDist(ap, n));
                    //sc.nextLine();
@@ -179,21 +187,27 @@ static class Reader {
                }
                else
                {
-                   int source=Integer.parseInt(sc.next());
-                   int destination=Integer.parseInt(sc.next());
-                   int k=Integer.parseInt(sc.next());
+                   int source=Integer.parseInt(sp[1]);
+                   int destination=Integer.parseInt(sp[2]);
+                   int k=Integer.parseInt(sp[3]);
                    queryPos ap=new queryPos(source,destination);
+                   g.returnDist(ap, n);
+                   //System.out.println("path= "+g.path);
                    System.out.println(g.path.get(k-1));
                    //int source=Integer.parseInt(st[1]);
                    //int destination=Integer.parseInt(st[2]);
                    //int k=Integer.parseInt(st[3]);
                   // sc.nextLine();
                }
-               s=sc.next();
-              // System.out.println("s= "+s);
+               s=sc.nextLine();
+               //System.out.println("s= "+s);
            }
-           System.out.println("");
-           sc.nextLine();
+           if(t>0)
+           {    
+               //System.out.println("another testcase");
+               //System.out.println(" t= "+t);
+               sc.nextLine();
+           }
        }
        
     }
@@ -353,12 +367,12 @@ class graph // it is a non-directed and weighted graph
     else 
         return vertexList.get(lookup[qp.b - (1<<j) + 1][j]);*/
     }
-    public int returnDist(queryPos  qp,int n)
+    public long returnDist(queryPos  qp,int n)
     {
         qp=returnIndexes(vertexList.get(qp.a-1),vertexList.get(qp.b-1));
         int vindex=rmqQuery(qp, n);
        //System.out.println("vindex= "+vindex);
-        int sum=0;
+        long sum=0;
         Set<vertex> visited=new HashSet<>();
         for (int i = qp.a; i <vindex;) {
            // System.out.println("qp.a= "+i);
@@ -393,7 +407,7 @@ class graph // it is a non-directed and weighted graph
                 int fpos=posArr[path.get(j)];
                 int count=(j-fpos);
                 for(int i=j;i>fpos;i--){
-                   // System.out.print("   count= "+count+" and j= "+j+" ,fpos= "+fpos+" ,i= "+i);
+                   //System.out.print("   count= "+count+" and j= "+j+" ,fpos= "+fpos+" ,i= "+i);
                     path.remove(i);
                 }
                // System.out.println("");
@@ -437,42 +451,52 @@ class vertex
  KTH 4 6 4 
  DONE
 
- 2
+2
+6
+1 2 1
+2 4 1
+2 5 2
+1 3 1
+3 6 2
+DIST 4 6
+KTH 4 6 4
+DONE
 
- 6  
-
- 1   2  1  
-
- 2  4  1  
-
- 2  5  2 
-
- 1  3  1 
-
- 3  6  2 
-
- DIST  4  6 
-
- KTH  4  6  4 
-
- DONE 
-
-6  
-
- 1   2  1  
-
- 2  4  1  
-
- 2  5  2 
-
- 1  3  1 
-
- 3  6  2 
-
- DIST  4  6 
-
- KTH  4  6  4 
-
- DONE 
+6
+1 2 1
+2 4 1
+2 5 2
+1 3 1
+3 6 2
+DIST 4 6
+KTH 4 6 4
+DONE
  
+
+The first line of input contains an integer t, the number of test cases (t <= 25). t test cases follow.
+
+For each test case:
+
+In the first line there is an integer N (N <= 10000)
+In the next N-1 lines, the i-th line describes the i-th edge: a line with three integers a b c denotes an edge between a, b of cost c (c <= 100000)
+The next lines contain instructions "DIST a b" or "KTH a b k"
+The end of each test case is signified by the string "DONE".
+There is one blank line between successive tests.
+
+2
+3
+1 2 1
+2 3 2
+DIST 1 3
+KTH 1 3 2
+DONE
+
+3
+1 2 2
+2 3 2
+KTH 1 3 2
+DONE
+
+
+beware test cases "DIST a a" and "KTH a a 1"
 */
