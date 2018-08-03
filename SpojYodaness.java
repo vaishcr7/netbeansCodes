@@ -3,6 +3,10 @@ package spojyodaness;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class SpojYodaness {
 static class Reader {
@@ -133,27 +137,33 @@ static class Reader {
             stObj []incorrWords=new stObj[n];
             stObj []corrWords=new stObj[n];
             String []sp=(sc.readLine()).split(" ");
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < sp.length; i++) {
                 incorrWords[i]=new stObj(sp[i],i);
             }
             String []sp2=(sc.readLine()).split(" ");
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < sp2.length; i++) {
                 corrWords[i]=new stObj(sp2[i],i);
             }
-            System.out.println(yodaLevelMergeSort(incorrWords,corrWords));
+            yodaLevelMergeSort(incorrWords,corrWords);
+            System.out.println("answer is = "+sum);
         }
     }
-    public static long yodaLevelMergeSort(stObj[] wrong,stObj[] correct)
+    public static void yodaLevelMergeSort(stObj[] wrong,stObj[] correct)
     {
-        long pairs=0;
-        
+        Map<stObj,Integer> mp=new HashMap<>();
+        for (int i = 0; i < correct.length; i++) {
+            mp.put(correct[i],i);
+            System.out.println(correct[i].str+" -> "+i);
+        }
+        sort(wrong, 0, wrong.length-1, mp);
     }
-       public static stObj[] merge(stObj []arr, int l, int m, int r)
+       public static stObj[] merge(stObj []arr, int l, int m, int r,Map<stObj,Integer> pm)
     {
         // Find sizes of two subarrays to be merged
+        Map<stObj,Integer> mp=new HashMap<>();
         int n1 = m - l +1;
         int n2 = r - m;
-        System.out.println("l= "+l+", m= "+m+", r= "+r+", n1= "+n1+" and n2= "+n2);
+        //System.out.println("l= "+l+", m= "+m+", r= "+r+", n1= "+n1+" and n2= "+n2);
         /* Create temp arrays */
         stObj L[] = new stObj [n1];
         stObj R[] = new stObj [n2];
@@ -163,14 +173,14 @@ static class Reader {
             L[i] = arr[l + i];
         for (int j=m+1; j<=r; ++j)
             R[j-m-1] = arr[j];
-        for (int i = 0; i < L.length; i++) {
+       /* for (int i = 0; i < L.length; i++) {
             System.out.print(L[i]+" , ");
         }
         System.out.println("");
         for (int i = 0; i < R.length; i++) {
             System.out.print(R[i]+" , ");
         }
-        System.out.println("");
+        System.out.println("");*/
  
         /* Merge the temp arrays */
  
@@ -181,12 +191,16 @@ static class Reader {
         int k = l;
         while (i < n1 && j < n2)
         {
-            if (L[i].pos <= R[j].pos)
+            System.out.println("L[i] is "+L[i].str+" and r[j]= "+R[j].str);
+            System.out.println(pm.get(R[j]));
+           Set<Entry<stObj,Integer>> st1=pm.entrySet();
+            for (Entry<stObj, Integer> entry : st1) {
+                System.out.println(entry.getKey().str+" , "+entry.getValue());
+            }
+            if (L[i].pos <= pm.get(R[j]))
             {
                 arr[k] = L[i];
-                sum+=1;
-                //arr[k].pos= 
-                //L[i].pos=
+                mp.put(L[i],k);
                 i++;
             }
             else
@@ -212,26 +226,33 @@ static class Reader {
             j++;
             k++;
         }
+        for (int z = 0; z < arr.length; z++) {
+            if(mp.containsKey(arr[z]))
+            {
+                sum+=Math.abs(arr[z].pos-mp.get(arr[z]));
+                arr[z].pos=l+mp.get(arr[z]);// ell + mp.get...
+            }
+        }
         return arr;
     }
  
     // Main function that sorts arr[l..r] using
     // merge()
-    public static void sort(stObj []incWds, int l, int r)
+    public static void sort(stObj []incWds, int l, int r,Map<stObj,Integer> pm)
     {
-        System.out.println("calling for l= "+l+" and r= "+r);
+        //System.out.println("calling for l= "+l+" and r= "+r);
         if (l < r)
         {
             // Find the middle point
             int m = (l+r)/2;
  
             // Sort first and second halves
-            sort(incWds, l, m);
-            sort(incWds, m+1, r);
+            sort(incWds, l, m,pm);
+            sort(incWds, m+1, r,pm);
  
             // Merge the sorted halves
-            incWds=merge(incWds, l, m, r);
-            System.out.println("calling merge");
+            incWds=merge(incWds, l, m, r,pm);
+            //System.out.println("calling merge");
         }
     }
 }
@@ -244,3 +265,12 @@ class stObj
         this.pos = pos;
     } 
 }
+/*
+2
+6
+in the force strong you are
+you are strong in the force
+6
+or i will help you not
+or i will not help you
+*/
