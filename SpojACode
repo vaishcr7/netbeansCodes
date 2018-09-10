@@ -128,16 +128,17 @@ public class SpojACode {
             din.close();
         }
     }
+    public static Map<String,Long> mp;
     public static void main(String[] args) {
     Reader sc=new Reader();
         try 
         {
             String t=sc.readLine();
-            Map<String,Long> mp=new HashMap<>();
+            mp=new HashMap<>();
             while(t.charAt(0)!='0')     //any substrings starting with zero are invalid encryptions
             {
                 //System.out.println("input with "+t);
-                System.out.println(calcAns(t,mp));
+                System.out.println(calcAns(t));
                 t=sc.readLine();
             }
         } 
@@ -147,7 +148,7 @@ public class SpojACode {
         }
     
     }
-    public static long calcAns(String t,Map<String,Long> mp)
+    public static long calcAns(String t)
     {
         System.out.println("t= "+t);
         System.out.println("map is ");
@@ -158,7 +159,6 @@ public class SpojACode {
            Entry<String,Long> entry=(Entry<String,Long>)it.next();
             System.out.println(entry.getKey()+" , "+entry.getValue());
         }
-        System.out.println("");
         long z=0;
         if(!mp.containsKey(t))
         {
@@ -174,18 +174,26 @@ public class SpojACode {
                 if (Integer.parseInt(twoLetterPerm) < 27 && Integer.parseInt(twoLetterPerm) > 0 && twoLetterPerm.charAt(0) != '0') {
                     if (oneLetterPerm != '0') {
                         System.out.println("case 1");
-                        mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2), mp) + calcAns(t.substring(0, t.length() - 1), mp)));
+                        mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2))
+                                + calcAns(t.substring(0, t.length() - 1))));
                     } 
                     else {
                         System.out.println("case 2");
-                        mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2), mp)));
+                        mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2))));
                     }
                 }
             }
             if(oneLetterPerm!='0')
             {
                 System.out.println("case 3");
-                mp.put(t,calcAns(t.substring(0,t.length()-1), mp));
+                long h=calcAns(t.substring(0,t.length()-1));
+                if(h==0)
+                {
+                    System.out.println("case 3b");
+                    mp.put(t,1L);
+                }
+                else
+                    mp.put(t, h);
             }
             else
             {
@@ -196,126 +204,4 @@ public class SpojACode {
         System.out.println("for "+t+" the sum exists is "+mp.get(t));
         return mp.get(t);
     }
-    /*
-    public static int formGpsAndRetAns(String t,Map<Integer,Character> mp)
-    {
-        //System.out.println("inside working func");
-        long numOfgps=0;
-        Map<String,String> mapping=new HashMap<>();
-        ArrayList<String> singleCopy=new ArrayList<>();
-         ArrayList<String> tempsingleCopy=new ArrayList<>();
-        //forming combinations
-        for (int i = t.length()-1; i >=0; i--) 
-        {
-            char ch=t.charAt(i);
-           //System.out.println("current character is "+ch);
-            //case: if t itself is zero 
-            //case: if t is not zero
-            if(!singleCopy.isEmpty())
-            {
-                tempsingleCopy.clear();
-                int it=0;
-                long currSingleCopySize=singleCopy.size();
-                while(it<currSingleCopySize)
-                {
-                    String f=singleCopy.get(it);
-                    String sp[]=f.split(",");
-                    if(sp[0].length()==1)// need to make it two letter string in this case
-                    {
-                       // System.out.println("case 1");
-                        // case where a zero is present
-                        if(sp[0].charAt(0)=='0')
-                        {
-                            //System.out.println("case 2");
-                            String s=ch+sp[0];
-                            if(Integer.parseInt(s)<27 && ch!='0')
-                            {
-                               // System.out.println("case 3");
-                                StringBuilder finalString = new StringBuilder();
-                                finalString.append(s).append(",");
-                                for (int j = 1; j < sp.length; j++) {
-                                    finalString.append(sp[j]).append(",");
-                                }
-                                finalString.deleteCharAt(finalString.length() - 1);
-                              //  System.out.println("adding this to collection : "+finalString.toString());
-                                tempsingleCopy.add(finalString.toString());
-                            }
-                        }
-                        else
-                        {
-                            //double digit case 
-                           String s=ch+sp[0];
-                           if(Integer.parseInt(s)<27 && ch!='0')
-                            {
-                               //System.out.println("case 4");
-                                StringBuilder finalString = new StringBuilder();
-                                finalString.append(s).append(",");
-                                for (int j = 1; j < sp.length; j++) {
-                                    finalString.append(sp[j]).append(",");
-                                }
-                                finalString.deleteCharAt(finalString.length() - 1);
-                               // System.out.println("adding this to collection : "+finalString.toString());
-                                tempsingleCopy.add(finalString.toString());
-                            }
-                           //single digit case
-                           s=""+ch;
-                           StringBuilder finalString = new StringBuilder();
-                           finalString.append(s).append(",");
-                           for (int j = 0; j < sp.length; j++) {
-                                finalString.append(sp[j]).append(",");                                
-                            }
-                           finalString.deleteCharAt(finalString.length() - 1);
-                           //System.out.println("adding this to collection : "+finalString.toString());
-                           tempsingleCopy.add(finalString.toString());
-                        }
-                    }
-                    else // only add the current char at the head 
-                    {                        
-                     //   System.out.println("case 5");
-                           //single digit case
-                           String s=""+ch;
-                           StringBuilder finalString = new StringBuilder();
-                           finalString.append(s).append(",");
-                           for (int j = 0; j < sp.length; j++) {
-                                finalString.append(sp[j]).append(",");
-                            }
-                           finalString.deleteCharAt(finalString.length() - 1);
-                           //System.out.println("adding this to collection : "+finalString.toString());
-                           tempsingleCopy.add(finalString.toString());
-                    }
-                    it++;
-                }
-            }
-            else
-            {
-               // System.out.println("case 6");
-                //System.out.println("adding this to collection : "+ch);
-                tempsingleCopy.add(""+ch);
-            }
-            Set<String> st = new HashSet<>();
-           /* System.out.println("tempsinglecopy= ");
-            for (int iz = 0; iz < tempsingleCopy.size(); iz++) {
-                System.out.println(tempsingleCopy.get(iz));
-            }
-            System.out.println("");
-            st.addAll(tempsingleCopy);
-            singleCopy.clear();
-            singleCopy.addAll(st);
-        }
-        // some combinations might contain single zeroes eg) 1,14,0,2; remove such combs
-        int it=0;
-        while(it<singleCopy.size())
-        {
-            String s=singleCopy.get(it);
-            String []sp=s.split(",");
-            for (int i = 0; i < sp.length; i++) {
-               // System.out.println("checking single zero in "+sp[i]);
-                if(sp[i].equals("0") || sp[i].equals("00"))
-                    singleCopy.remove(s);
-            }
-            it++;
-        }
-        return singleCopy.size();
-    }*/
-    
 }
