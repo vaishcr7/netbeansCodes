@@ -168,40 +168,56 @@ public class SpojACode {
                 return 0;
             }
             char oneLetterPerm=t.charAt(t.length()-1);
+            boolean flag=false;
             if(t.length()>=2)
             {
                 String twoLetterPerm = t.substring(t.length() - 2, t.length());
                 if (Integer.parseInt(twoLetterPerm) < 27 && Integer.parseInt(twoLetterPerm) > 0 && twoLetterPerm.charAt(0) != '0') {
                     if (oneLetterPerm != '0') {
                         System.out.println("case 1");
-                        mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2))
-                                + calcAns(t.substring(0, t.length() - 1))));
+                        flag=true;
+                       long a=calcAns(t.substring(0, t.length() - 2));
+                       long b= calcAns(t.substring(0, t.length() - 1));
+                       System.out.println("putting value in map 1 for "+t+" : a= "+a+" and b= "+b);
+                       mp.put(t, (a+b));//how to handle case where for eg) 25->2,5;25->,25 should add 1 and 1 but ignores ,25 case
                     } 
                     else {
                         System.out.println("case 2");
+                        System.out.println("putting value in map 2 for "+t);
                         mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2))));
                     }
                 }
             }
-            if(oneLetterPerm!='0')
+            if(oneLetterPerm!='0' && !flag)
             {
                 System.out.println("case 3");
                 long h=calcAns(t.substring(0,t.length()-1));
                 if(h==0)
                 {
                     System.out.println("case 3b");
+                    System.out.println("putting value in map 3b for "+t);
                     mp.put(t,1L);
                 }
                 else
-                    mp.put(t, h);
+                {
+                    System.out.println("putting value in map 3 for "+t);
+                    mp.put(t,h);
+                }
             }
-            else
+            if(oneLetterPerm=='0')
             {
                 System.out.println("case 4");
+                System.out.println("putting value in map 4 for "+t);
                 mp.put(t,0L);
             }
         }
         System.out.println("for "+t+" the sum exists is "+mp.get(t));
-        return mp.get(t);
+        if(mp.get(t)!=null)
+            return mp.get(t);
+        else
+        {
+            System.out.println("map doesn't contain key for string "+t);
+            return 0;
+        }
     }
 }
