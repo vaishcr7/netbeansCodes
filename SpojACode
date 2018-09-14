@@ -1,16 +1,11 @@
 package spojacode;
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Scanner;
 
 public class SpojACode {
-    static class Reader {
+   /* static class Reader {
 
         final private int BUFFER_SIZE = 1 << 16;
         private DataInputStream din;
@@ -127,44 +122,28 @@ public class SpojACode {
             }
             din.close();
         }
-    }
-    public static Map<String,Long> mp;
+    }*/
+ public static Map<String,Integer> mp;
     public static void main(String[] args) {
-    Reader sc=new Reader();
-        try 
-        {
-            String t=sc.readLine();
+    Scanner sc=new Scanner(System.in);
+            String t=sc.nextLine();
             mp=new HashMap<>();
             while(t.charAt(0)!='0')     //any substrings starting with zero are invalid encryptions
             {
                 //System.out.println("input with "+t);
                 System.out.println(calcAns(t));
-                t=sc.readLine();
+                t=sc.nextLine();
             }
-        } 
-        catch (IOException ex) 
-        {
-            
-        }
-    
     }
-    public static long calcAns(String t)
+    public static int calcAns(String t)
     {
-        System.out.println("t= "+t);
-        System.out.println("map is ");
-        Set<Map.Entry<String,Long>> st=mp.entrySet();
-        Iterator it=st.iterator();
-        while(it.hasNext())
-        {
-           Entry<String,Long> entry=(Entry<String,Long>)it.next();
-            System.out.println(entry.getKey()+" , "+entry.getValue());
-        }
-        long z=0;
+        //System.out.println("t is "+t);
+        int z=0;
         if(!mp.containsKey(t))
         {
             if(t.length()==0)
             {
-                System.out.println("returning zero");
+                //System.out.println("returning zero");
                 return 0;
             }
             char oneLetterPerm=t.charAt(t.length()-1);
@@ -174,49 +153,51 @@ public class SpojACode {
                 String twoLetterPerm = t.substring(t.length() - 2, t.length());
                 if (Integer.parseInt(twoLetterPerm) < 27 && Integer.parseInt(twoLetterPerm) > 0 && twoLetterPerm.charAt(0) != '0') {
                     if (oneLetterPerm != '0') {
-                        System.out.println("case 1");
+                        //System.out.println("case 1");
                         flag=true;
-                       long a=calcAns(t.substring(0, t.length() - 2));
-                       long b= calcAns(t.substring(0, t.length() - 1));
-                       System.out.println("putting value in map 1 for "+t+" : a= "+a+" and b= "+b);
+                       int a=calcAns(t.substring(0, t.length() - 2));
+                       int b= calcAns(t.substring(0, t.length() - 1));
+                       //System.out.println("putting value in map 1 for "+t+" : a= "+a+" and b= "+b);
+                       if(Integer.parseInt(t)>0 && Integer.parseInt(t)<27)
+                           a+=1;
                        mp.put(t, (a+b));//how to handle case where for eg) 25->2,5;25->,25 should add 1 and 1 but ignores ,25 case
                     } 
-                    else {
-                        System.out.println("case 2");
-                        System.out.println("putting value in map 2 for "+t);
+                   else {       // not taking into account the double zero case it will become an invalid encryption then.
+                        //System.out.println("case 2");
                         mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2))));
+                        //System.out.println("putting value in map 2 for "+t+" which is "+mp.get(t));
                     }
                 }
             }
             if(oneLetterPerm!='0' && !flag)
             {
-                System.out.println("case 3");
-                long h=calcAns(t.substring(0,t.length()-1));
+                //System.out.println("case 3");
+                int h=calcAns(t.substring(0,t.length()-1));
                 if(h==0)
                 {
-                    System.out.println("case 3b");
-                    System.out.println("putting value in map 3b for "+t);
-                    mp.put(t,1L);
+                    //System.out.println("case 3b");
+                    //System.out.println("putting value in map 3b for "+t);
+                    mp.put(t,1);
                 }
                 else
                 {
-                    System.out.println("putting value in map 3 for "+t);
+                    //System.out.println("putting value in map 3 for "+t);
                     mp.put(t,h);
                 }
             }
-            if(oneLetterPerm=='0')
+            if(oneLetterPerm=='0' && !mp.containsKey(t))
             {
-                System.out.println("case 4");
-                System.out.println("putting value in map 4 for "+t);
-                mp.put(t,0L);
+                //System.out.println("case 4");
+                //System.out.println("putting value in map 4 for "+t);
+                mp.put(t,0);
             }
         }
-        System.out.println("for "+t+" the sum exists is "+mp.get(t));
+        //System.out.println("for "+t+" the sum exists is "+mp.get(t));
         if(mp.get(t)!=null)
             return mp.get(t);
         else
         {
-            System.out.println("map doesn't contain key for string "+t);
+            //System.out.println("map doesn't contain key for string "+t);
             return 0;
         }
     }
