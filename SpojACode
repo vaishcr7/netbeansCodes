@@ -1,11 +1,12 @@
 package spojacode;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
-
-public class SpojACode {
-   /* static class Reader {
+ class SpojACode {
+   static class Reader {
 
         final private int BUFFER_SIZE = 1 << 16;
         private DataInputStream din;
@@ -122,18 +123,24 @@ public class SpojACode {
             }
             din.close();
         }
-    }*/
+    }
  public static Map<String,Integer> mp;
     public static void main(String[] args) {
-    Scanner sc=new Scanner(System.in);
-            String t=sc.nextLine();
+    Reader sc=new Reader();
+            String t;
+       try {
+           t = sc.readLine();
             mp=new HashMap<>();
             while(t.charAt(0)!='0')     //any substrings starting with zero are invalid encryptions
             {
                 //System.out.println("input with "+t);
                 System.out.println(calcAns(t));
-                t=sc.nextLine();
+                t=sc.readLine();
             }
+       }
+       catch(Exception e)
+       {
+       }
     }
     public static int calcAns(String t)
     {
@@ -151,20 +158,25 @@ public class SpojACode {
             if(t.length()>=2)
             {
                 String twoLetterPerm = t.substring(t.length() - 2, t.length());
-                if (Integer.parseInt(twoLetterPerm) < 27 && Integer.parseInt(twoLetterPerm) > 0 && twoLetterPerm.charAt(0) != '0') {
+                //System.out.println("two letter param = "+twoLetterPerm+" and one letter param= "+oneLetterPerm);
+                if (Integer.parseInt(twoLetterPerm) < 27 && Integer.parseInt(twoLetterPerm) > 0 && twoLetterPerm.charAt(0) != '0') //last condition takes care of '03' type cases
+                {
                     if (oneLetterPerm != '0') {
                         //System.out.println("case 1");
                         flag=true;
                        int a=calcAns(t.substring(0, t.length() - 2));
                        int b= calcAns(t.substring(0, t.length() - 1));
                        //System.out.println("putting value in map 1 for "+t+" : a= "+a+" and b= "+b);
-                       if(Integer.parseInt(t)>0 && Integer.parseInt(t)<27)
+                       if(Integer.parseInt(twoLetterPerm)>0 && Integer.parseInt(twoLetterPerm)<27)
                            a+=1;
                        mp.put(t, (a+b));//how to handle case where for eg) 25->2,5;25->,25 should add 1 and 1 but ignores ,25 case
                     } 
                    else {       // not taking into account the double zero case it will become an invalid encryption then.
                         //System.out.println("case 2");
-                        mp.put(t, (1 + calcAns(t.substring(0, t.length() - 2))));
+                        if(!mp.containsKey(t) &&  (Integer.parseInt(twoLetterPerm)>0 && Integer.parseInt(twoLetterPerm)<27))//to include case where t='10'
+                            mp.put(t,1+(calcAns(t.substring(0, t.length() - 2))));
+                        else
+                            mp.put(t, (calcAns(t.substring(0, t.length() - 2))));
                         //System.out.println("putting value in map 2 for "+t+" which is "+mp.get(t));
                     }
                 }
@@ -176,8 +188,13 @@ public class SpojACode {
                 if(h==0)
                 {
                     //System.out.println("case 3b");
-                    //System.out.println("putting value in map 3b for "+t);
-                    mp.put(t,1);
+                    ////System.out.println("putting value in map 3b for "+t);
+                    if(t.length()==1)
+                        mp.put(t,1);
+                    else
+                    {
+                        mp.put(t,0);
+                    }
                 }
                 else
                 {
