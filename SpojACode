@@ -133,7 +133,7 @@ import java.util.Map;
             mp=new HashMap<>();
             while(t.charAt(0)!='0')     //any substrings starting with zero are invalid encryptions
             {
-                //System.out.println("input with "+t);
+                System.out.println("input with "+t);
                 System.out.println(calcAns(t));
                 t=sc.readLine();
             }
@@ -144,77 +144,81 @@ import java.util.Map;
     }
     public static int calcAns(String t)
     {
-        //System.out.println("t is "+t);
+        System.out.println("t is "+t);
         int z=0;
         if(!mp.containsKey(t))
         {
             if(t.length()==0)
             {
-                //System.out.println("returning zero");
+                System.out.println("returning zero");
                 return 0;
             }
             char oneLetterPerm=t.charAt(t.length()-1);
             boolean flag=false;
-            if(t.length()>=2)
+            if(t.length()>2)
             {
                 String twoLetterPerm = t.substring(t.length() - 2, t.length());
-                //System.out.println("two letter param = "+twoLetterPerm+" and one letter param= "+oneLetterPerm);
+                System.out.println("two letter param = "+twoLetterPerm+" and one letter param= "+oneLetterPerm);
                 if (Integer.parseInt(twoLetterPerm) < 27 && Integer.parseInt(twoLetterPerm) > 0 && twoLetterPerm.charAt(0) != '0') //last condition takes care of '03' type cases
                 {
                     if (oneLetterPerm != '0') {
-                        //System.out.println("case 1");
+                        System.out.println("case 1");
                         flag=true;
                        int a=calcAns(t.substring(0, t.length() - 2));
                        int b= calcAns(t.substring(0, t.length() - 1));
-                       //System.out.println("putting value in map 1 for "+t+" : a= "+a+" and b= "+b);
-                       if(Integer.parseInt(twoLetterPerm)>0 && Integer.parseInt(twoLetterPerm)<27)
+                       System.out.println("putting value in map 1 for "+t+" : a= "+a+" and b= "+b);
+                       if(Integer.parseInt(twoLetterPerm)>0 && Integer.parseInt(twoLetterPerm)<27 && (a!=0 || b!=0))
+                       {
                            a+=1;
+                           System.out.println("increased a by 1");
+                       }
                        mp.put(t, (a+b));//how to handle case where for eg) 25->2,5;25->,25 should add 1 and 1 but ignores ,25 case
                     } 
                    else {       // not taking into account the double zero case it will become an invalid encryption then.
-                        //System.out.println("case 2");
-                        if(!mp.containsKey(t) &&  (Integer.parseInt(twoLetterPerm)>0 && Integer.parseInt(twoLetterPerm)<27))//to include case where t='10'
-                            mp.put(t,1+(calcAns(t.substring(0, t.length() - 2))));
-                        else
-                            mp.put(t, (calcAns(t.substring(0, t.length() - 2))));
-                        //System.out.println("putting value in map 2 for "+t+" which is "+mp.get(t));
+                        System.out.println("case 2");
+                        mp.put(t, (calcAns(t.substring(0, t.length() - 2))));
+                        System.out.println("putting value in map 2 for "+t+" which is "+mp.get(t));
                     }
                 }
             }
+            if(t.length()==2)
+            {
+                System.out.println("case2");
+                if(!mp.containsKey(t) &&  (Integer.parseInt(t)>0 && Integer.parseInt(t)<27))//to include case where t='10'
+                            mp.put(t,1+(calcAns(t.substring(0, t.length() - 2))));
+            }
             if(oneLetterPerm!='0' && !flag)
             {
-                //System.out.println("case 3");
+                System.out.println("case 3");
                 int h=calcAns(t.substring(0,t.length()-1));
                 if(h==0)
                 {
-                    //System.out.println("case 3b");
-                    ////System.out.println("putting value in map 3b for "+t);
+                    System.out.println("case 3b");
+                    //System.out.println("putting value in map 3b for "+t);
                     if(t.length()==1)
                         mp.put(t,1);
                     else
-                    {
                         mp.put(t,0);
-                    }
                 }
                 else
                 {
-                    //System.out.println("putting value in map 3 for "+t);
+                    System.out.println("putting value in map 3 for "+t);
                     mp.put(t,h);
                 }
             }
             if(oneLetterPerm=='0' && !mp.containsKey(t))
             {
-                //System.out.println("case 4");
-                //System.out.println("putting value in map 4 for "+t);
+                System.out.println("case 4");
+                System.out.println("putting value in map 4 for "+t);
                 mp.put(t,0);
             }
         }
-        //System.out.println("for "+t+" the sum exists is "+mp.get(t));
+        System.out.println("for "+t+" the sum exists is "+mp.get(t));
         if(mp.get(t)!=null)
             return mp.get(t);
         else
         {
-            //System.out.println("map doesn't contain key for string "+t);
+            System.out.println("map doesn't contain key for string "+t);
             return 0;
         }
     }
