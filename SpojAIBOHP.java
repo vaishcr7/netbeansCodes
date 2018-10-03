@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SpojAIBOHP {
+public class Spojaibohp {
 static class Reader {
 
         final private int BUFFER_SIZE = 1 << 32;
@@ -135,7 +135,10 @@ static class Reader {
  while(t-->0)
  {
      String s=sc.readLine();
-     System.out.println(convToPndme(s));
+     if(s.length()>1)
+        System.out.println(convToPndmeDownTop(s,s.length()-2,s.length()));
+     else
+         System.out.println("0");
  }
  }
  catch(Exception e)
@@ -185,7 +188,7 @@ static class Reader {
     }
     public static boolean checkIfPndme(String s)
     {
-        //System.out.println("checking if "+s+" is a palindrome");
+        System.out.println("checking if "+s+" is a palindrome");
         int i=0;
         int j=s.length()-1;
         while(i<j)
@@ -196,7 +199,88 @@ static class Reader {
             j--;
         }
         if(i<j)
-            return false;
+        {
+            System.out.println("not a palindrome");
+        return false;
+        }
         return true;
+    }
+    
+    public static int convToPndmeDownTop(String a,int stLen,int endLen)
+    {   
+     System.out.println("---------------------FOR STRING  "+a.substring(stLen,endLen)+"   -----------------------");
+     /*if((stLen<0 || endLen>=a.length()) && mp.containsKey(a))
+     {
+         System.out.println("returning final answer");
+         return mp.get(a);
+     }*/
+     if(mp.containsKey(a.substring(stLen,endLen)))
+     {
+         System.out.println("returning stored answer for substring");
+         return mp.get(a.substring(stLen,endLen));
+     }
+        System.out.println("stlen= "+stLen+" and endLen= "+(endLen-1));
+     if(checkIfPndme(a.substring(stLen,endLen)))
+     {
+         System.out.println("case 1");
+         mp.put(a,0);
+         if(stLen>0 && (endLen<a.length()-1))
+            return convToPndmeDownTop(a, stLen-1, endLen+1);
+     }
+     else if(endLen-stLen==0)
+     {
+         System.out.println("case2a");
+         mp.put(""+a.charAt(stLen),0);
+     }
+     else if((a.charAt(stLen)==a.charAt(endLen)) && endLen-stLen>0)
+     {
+         System.out.println("case 2");
+         if(!(stLen<0 || endLen>a.length()))
+            mp.put(a,convToPndmeDownTop(a.substring(stLen-1, endLen+1),stLen-1,endLen+1));  
+         else
+             return mp.get(a);
+     }
+     /*else if((a.charAt(0)==a.charAt(a.length()-1)) && a.length()>2)
+     {
+         //System.out.println("case 2");
+        mp.put(a,convToPndme(a.substring(1, a.length()-1)));
+     }*/
+     else if((a.charAt(stLen)!=a.charAt(endLen)) && endLen-stLen==1)
+     {
+         System.out.println("case 3");
+         mp.put(a,1);
+     }
+     /*
+     else if((a.charAt(0)!=a.charAt(a.length()-1)) && a.length()==2)
+     {
+         //System.out.println("case 3");
+         mp.put(a,1);
+     }*/
+     else
+     {
+         System.out.println("case 4");
+         mp.put(a,(1+
+                 (int)Math.min(
+                         convToPndmeDownTop(a.substring(stLen,endLen+1),stLen,endLen+1)
+                         ,convToPndmeDownTop(a.substring(stLen-1,endLen),stLen-1,endLen)
+                 )));         
+     }
+     /*
+     else
+     {
+         //System.out.println("case 4");
+         mp.put(a,(1+(int)Math.min(convToPndme(a.substring(0,a.length()-1)),convToPndme(a.substring(1, a.length()))) ));
+         //mp.put(a,(convToPndme(a.substring(0,a.length()-1))+convToPndme(a.substring(1, a.length()))));
+     }*/
+     if(mp.containsKey(a))
+     {
+         System.out.println("returning value "+mp.get(a)+" for string "+a);
+         return mp.get(a);
+     }
+     else
+     {
+        System.out.println("couldn't find the string "+a+" in the map");
+         return -1;
+     }
     }
 }
