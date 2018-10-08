@@ -7,7 +7,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FenWickTree {
+public class FenWickTree { // look at tushar roy's video for better reference to the code
     
  static class Reader {
 
@@ -147,12 +147,18 @@ public class FenWickTree {
                 //System.out.println("ran with mp: ");
                 //printMap(mp);
          }
+         /*
+         now i have the tree nodes which contain the range info which the node will contain  sum for
+         */
          //System.out.println("map is of size: "+mp.size());
          int i=1;        
          for(Map.Entry<Integer,pair> entry: mp.entrySet())
          {  
             bitree[i++]=sumUp(ar,entry.getValue());
           }
+         /*
+         the tree is complete with the sum and range info
+         */
             System.out.println("printing the fenwick tree");
             for (int j = 0; j < bitree.length; j++) {
                 System.out.print(bitree[j]+" ");
@@ -200,18 +206,19 @@ public class FenWickTree {
         }
         return s;
     }
-    public static int getRelative(int num,char ch)// 1)take 2's complement 2) and with orig number 3) subtract/add FROM orig number to get relative. 
+    public static int getRelative(int num,char ch) //handles both functionalities by getting next (which will be used the propagate the changes in element and ) by getting parent (for calculating range sums)
     {
         BitSet b=convertIntToBits(num);
         b.flip(0,b.length());
-       int lastRIghtZeroPos,lastRightOnePos=0,i,j;
-       lastRightOnePos=b.nextSetBit(0);// if 0101 is a bitset so index are reversed i.e. index 0 and 2 are set . indexes start from opposite direction
-       lastRIghtZeroPos=b.nextClearBit(0);       
+        int lastRIghtZeroPos,lastRightOnePos=0,i,j;
+        lastRightOnePos=b.nextSetBit(0);
+        lastRIghtZeroPos=b.nextClearBit(0);
         int value = 0;
         for (int jj = 0; jj < b.length(); ++jj) {
             value += b.get(jj) ? (1<< jj) : 0;
          } 
-        value+=1;// 2's complement is now in value
+        value+=1;
+        //2's  complement complete
         value&=num;
         if(ch=='-')             //getParent
             value=num-value;
@@ -226,7 +233,7 @@ public class FenWickTree {
         int sum=0;
         BitSet b=BitSet.valueOf(new long[]{ind});
        // System.out.println("b for ind= "+ind+" is "+b);
-        if(ind!=1 && b.cardinality()==1)
+        if(ind!=1 && b.cardinality()==1)//returning sum of elements from 0 to ind-1 ( '-1' added for ind because 0 or the root of the tree is a dummy ) and it's a perfect power of 2
         {
             mp.put(ind,new pair(ind-1,0));
             //System.out.println("found perfect power of 2");
@@ -234,13 +241,13 @@ public class FenWickTree {
         }
         while(sum!=ind)
         {
-            while(k<=(ind-sum))
+            while(k<=(ind-sum)) //  find the highest possible power of 2 which can be subtracted
             {
                 //System.out.println("k loop= "+k+" and ind= "+ind);
                 if(k==(ind-sum))
                 {
                     if(sum==0)
-                        mp.put(ind,new pair(ind-1,0));
+                        mp.put(ind,new pair(ind-1,0)); //returning sum of elements from 0 to ind-1 ( '-1' added for ind because 0 or the root of the tree is a dummy ) and it's a perfect power of 2
                     else
                         mp.put(ind,new pair(sum+k-1,sum));
                     break;
@@ -252,7 +259,7 @@ public class FenWickTree {
                     //System.out.println("going to higher ");
                 }
             }
-            if((sum+k)==ind)
+            if((sum+k)==ind) // found some power of 2+constant 
                 break;
           //  System.out.println("current k= "+k);
             if(pow!=0)
