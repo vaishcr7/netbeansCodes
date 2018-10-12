@@ -1,4 +1,4 @@
-package spofentree;
+package ftree;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -7,7 +7,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SpojFenTree {// look at tushar roy's video for better reference to the code
+public class FTree {// look at tushar roy's video for better reference to the code
     
  static class Reader {
 
@@ -152,7 +152,7 @@ public class SpojFenTree {// look at tushar roy's video for better reference to 
 //            for (int j = 0; j < bitree.length; j++) {
 //                System.out.print(bitree[j]+" ");
 //            }
-            System.out.println("");
+           //System.out.println("");
             int numOfQueries=Integer.parseInt(sc.readLine());
             while(numOfQueries-->0)
             {
@@ -161,7 +161,7 @@ public class SpojFenTree {// look at tushar roy's video for better reference to 
                 {
                     int l=Integer.parseInt(qp[1]);
                     int r=Integer.parseInt(qp[2]);
-                    System.out.println((getSum(bitree, r+1))-(getSum(bitree, l-1)));
+                    System.out.println((getSum(r+1))-(getSum(l-1)));
                 }
                 else
                 {
@@ -269,16 +269,16 @@ public class SpojFenTree {// look at tushar roy's video for better reference to 
        // System.out.println("returning mp of size "+mp.size());
         return ;
     }
-    public static int getSum(long []bitree,int pos)
+    public static int getSum(int pos)
     {
         int  sum=0;
         int i=pos+1;
-        System.out.println("called for node: "+i);
-        while(i>0)
+        //System.out.println("called for node: "+i);
+        while(i>0 && i<bitree.length)
         {
             sum+=bitree[i];
             i=getRelative(i,'-');
-            System.out.println("going to parent "+i);
+            //System.out.println("going to parent "+i);
         }
         return sum;
     }
