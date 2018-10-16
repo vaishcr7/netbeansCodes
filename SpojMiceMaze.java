@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 
 public class SpojMiceMaze {
 
@@ -130,45 +131,50 @@ public class SpojMiceMaze {
     }
 
     public static void main(String[] args) {
-    
         try
         {
             Reader sc=new Reader();
-            int n=Integer.parseInt(sc.readLine());
-            int exitCell=Integer.parseInt(sc.readLine());
-            int timeLimit=Integer.parseInt(sc.readLine());
-            int numOfEdges=Integer.parseInt(sc.readLine());
-            graph  g=new graph(exitCell);
+//            int n=Integer.parseInt(sc.readLine());
+//            int exitCell=Integer.parseInt(sc.readLine());
+//            int timeLimit=Integer.parseInt(sc.readLine());
+//            int numOfEdges=Integer.parseInt(sc.readLine());
+//            Scanner sc=new Scanner(System.in);
+            int n=sc.nextInt();
+            int exitCell=sc.nextInt();
+            int timeLimit=sc.nextInt();
+            int numOfEdges=sc.nextInt();
+            //System.out.println("n= "+n+" ,exitcell= "+exitCell+" ,timelimit= "+timeLimit+" and numedges= "+numOfEdges);
+            graph  g=new graph();
             for (int i = 0; i < n; i++) {
                 g.addVertex(new vertex(i+1));
             }
+           // System.out.println("going to add edges");
             for (int i = 0; i < numOfEdges; i++) {
-                String []sp=(sc.readLine()).split(" ");
-                int source=Integer.parseInt(sp[0]);
-                int destination=Integer.parseInt(sp[1]);
-                int weight=Integer.parseInt(sp[2]);
-                g.addEdge(g.vertexList.get(source),g.vertexList.get(destination),weight);
+               // String []sp=(sc.nextLine()).split(" ");
+//                int source=Integer.parseInt(sp[0]);
+//                int destination=Integer.parseInt(sp[1]);
+//                int weight=Integer.parseInt(sp[2]);
+                int source=sc.nextInt();
+                int destination=sc.nextInt();
+                int weight=sc.nextInt();
+                g.addEdge(g.vertexList.get(source-1),g.vertexList.get(destination-1),weight);
+                //System.out.println("i= "+i);
             }
+            g.bfs(g.vertexList.get(exitCell-1),timeLimit);
+            System.out.println(g.sum);
         }
         catch(Exception e)
-        {
-            
+        {       
         }
-    }
-    
+    }   
 }
-
 class graph // it is a directed and weighted graph
 {
-    public int exitCell;
-    public graph(int exitCell)
-    {
-        this.exitCell=exitCell;
-    }
+    public static int sum=1;
     public ArrayList<vertex> vertexList;
     public  int numOfVertices;
     public ArrayList<LinkedList<destedge>> adjList;
-    public Queue<vertex> queue;
+    public Queue<destedge> queue;
     public graph() {
         vertexList=new ArrayList<>();
         adjList= new ArrayList<>();
@@ -216,47 +222,28 @@ class graph // it is a directed and weighted graph
        //   return null;
      //return p.get(cutIndex);
     }
-    public int bfs(int timeLimit)
+    public void bfs(vertex root,int timeLimit)
     {
-        vertex root;
-        if(!queue.isEmpty())
-            root=queue.poll();
-        else
-            root=vertexList.get(exitCell);
-        int sum=0;
-        if(timeLimit>0)
+        if(root==null || timeLimit==0)
+            return;
+        destedge k=getAdjacent(root);
+        root.visited=true;
+        while(k!=null)
         {
-            destedge p=getAdjacent(root);
-            while(p!=null)
+            if(timeLimit-k.weight>=0)
             {
-                if(timeLimit-p.weight>=0)
-                {
-                    queue.offer(p.destination);
-                    p.destination.visited=true;
-                }
-                else
-                    p.destination.visited=true;
+                queue.offer(k);
+                k.destination.visited=true;
+                sum+=1;
             }
+            k=getAdjacent(root);
         }
-        
-        return sum;
-    }
-    public int getIndex(vertex f)
-    {
-        for (int i = 0; i < vertexList.size(); i++) {
-            if(vertexList.get(i)==f)
-                return i;
+        while(!queue.isEmpty())
+        {   
+            destedge p=queue.poll();
+            bfs(p.destination,(timeLimit-p.weight));
         }
-        return -1;
     }
-  
-   public void printList(LinkedList<vertex> al)
-   {
-       for (vertex object : al) {
-           System.out.print(object.label+" , ");
-       }
-       System.out.println("");
-   }
 }
     class vertex
 {
