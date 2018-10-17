@@ -144,7 +144,7 @@ public class SpojMiceMaze {
             int timeLimit=sc.nextInt();
             int numOfEdges=sc.nextInt();
             //System.out.println("n= "+n+" ,exitcell= "+exitCell+" ,timelimit= "+timeLimit+" and numedges= "+numOfEdges);
-            graph  g=new graph();
+            graph  g=new graph(exitCell-1);
             for (int i = 0; i < n; i++) {
                 g.addVertex(new vertex(i+1));
             }
@@ -157,10 +157,11 @@ public class SpojMiceMaze {
                 int source=sc.nextInt();
                 int destination=sc.nextInt();
                 int weight=sc.nextInt();
-                g.addEdge(g.vertexList.get(source-1),g.vertexList.get(destination-1),weight);
+                g.addEdgeInReverseOrder(g.vertexList.get(source-1),g.vertexList.get(destination-1),weight);
                 //System.out.println("i= "+i);
             }
-            g.bfs(g.vertexList.get(exitCell-1),timeLimit);
+            g.beforeRunningbfs();
+            g.bfsmodif(timeLimit);
             System.out.println(g.sum);
         }
         catch(Exception e)
@@ -171,11 +172,13 @@ public class SpojMiceMaze {
 class graph // it is a directed and weighted graph
 {
     public static int sum=1;
+    public  int exitCellVertexIndex;
     public ArrayList<vertex> vertexList;
     public  int numOfVertices;
-    public ArrayList<LinkedList<destedge>> adjList;
-    public Queue<destedge> queue;
-    public graph() {
+    public ArrayList<LinkedList<edge>> adjList;
+    public Queue<vertex> queue;
+    public graph(int index) {
+        exitCellVertexIndex=index;
         vertexList=new ArrayList<>();
         adjList= new ArrayList<>();
         numOfVertices=0;
@@ -187,17 +190,17 @@ class graph // it is a directed and weighted graph
        adjList.add(new LinkedList<>());
        numOfVertices++;
     }
-    public void addEdge(vertex source,vertex destination,int weight)
+    public void addEdgeInReverseOrder(vertex source,vertex destination,int weight)
     {
         for (int i = 0; i < vertexList.size(); i++) {
-            if(vertexList.get(i)==source)
+            if(vertexList.get(i)==destination)
             {
-                destedge lp=new destedge(destination,weight);
+                edge lp=new edge(destination,source,weight);
                 adjList.get(i).add(lp);
             }
         }
     }
-    public destedge getAdjacent(vertex vert)//,int cutIndex)
+    public edge getAdjacent(vertex vert)//,int cutIndex)
     {
         int pos=0;
         for (int i = 0; i < numOfVertices; i++) {
@@ -207,11 +210,11 @@ class graph // it is a directed and weighted graph
                 break;
             }
         }
-      LinkedList<destedge> p=adjList.get(pos);
+      LinkedList<edge> p=adjList.get(pos);
        Iterator it=p.iterator();
         while(it.hasNext())
         {
-            destedge j=(destedge)it.next();
+            edge j=(edge)it.next();
             if(!j.destination.visited)
             {
                 return j;
@@ -220,46 +223,73 @@ class graph // it is a directed and weighted graph
         return null;
      // if(cutIndex>=p.size())
        //   return null;
-     //return p.get(cutIndex);
+     //return p.get(cutIndewx);
     }
-    public void bfs(vertex root,int timeLimit)
+    public void beforeRunningbfs()
     {
-        if(root==null || timeLimit==0)
-            return;
-        destedge k=getAdjacent(root);
-        root.visited=true;
-        while(k!=null)
+        queue.offer(vertexList.get(exitCellVertexIndex));
+        vertexList.get(exitCellVertexIndex).visited=true;
+    }
+    public void printQueueContents()
+    {
+        Iterator it=queue.iterator();
+        System.out.println("--------------------------------");
+        while(it.hasNext())
         {
-            if(timeLimit-k.weight>=0)
-            {
-                queue.offer(k);
-                k.destination.visited=true;
-                sum+=1;
-            }
-            k=getAdjacent(root);
+            vertex k=(vertex)it.next();
+            System.out.println(k.label+" -> "+k.timeExhausted);
         }
-        while(!queue.isEmpty())
-        {   
-            destedge p=queue.poll();
-            bfs(p.destination,(timeLimit-p.weight));
+        System.out.println("--------------------------------");
+    }
+    public void bfsmodif(int timeLimit)
+    {
+        if(queue.isEmpty())
+            return;
+        vertex root=queue.poll();
+        System.out.println("current root= "+root.label);
+        if(timeLimit-root.timeExhausted==0)
+        {
+            System.out.println("not using any path through this root");
+            bfsmodif(timeLimit);
         }
+        root.visited=true;
+        edge p=getAdjacent(root);
+        while(p!=null)
+        {
+              System.out.println("adjacent vertex is "+p.destination.label+" for which net time= "+(timeLimit-(root.timeExhausted+p.weight)));
+              if(p.destination.visited)
+                  System.out.println("already visited earlier");
+              p.destination.visited=true;
+              if(timeLimit-(root.timeExhausted+p.weight)>=0)
+              {
+                  sum+=1;
+                  System.out.println("this adjacent vertex can be reached from exit cell");
+                  p.destination.timeExhausted+=(root.timeExhausted+p.weight);
+                  queue.offer(p.destination);
+                  printQueueContents();
+              }
+             p=getAdjacent(root); 
+        }
+        bfsmodif(timeLimit);
     }
 }
     class vertex
 {
-    public int label;
+    public int label,timeExhausted;
     public boolean visited;
     public vertex(int label) {
         this.label = label;
         this.visited = false;
+        this.timeExhausted=0;
     }
 }
-class destedge
+class edge
 {
-    vertex destination;
+    vertex source,destination;
     int weight;
 
-    public destedge(vertex destination, int weight) {
+    public edge(vertex source,vertex destination, int weight) {
+        this.source=source;
         this.destination = destination;
         this.weight = weight;
     }
