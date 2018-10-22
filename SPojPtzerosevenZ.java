@@ -2,8 +2,9 @@ package spojptzerosevenz;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Stack;
 public class SPojPtzerosevenZ {
   
@@ -129,10 +130,11 @@ public class SPojPtzerosevenZ {
  {
      int label,visitedTime;
      boolean visited;
-     vertex left,right;
+     vertex left,right,parent;
 
         public vertex(int label) {
             this.label = label;
+            this.parent=null;
             this.visitedTime =0;
             this.visited = false;
             this.left=null;
@@ -145,9 +147,10 @@ static class Graph
     public LinkedList<vertex> adj[];
     public Stack<vertex> st;
     public vertex []vertarr;
-    public ArrayList<vertex> leftSideNodes,rightSideNodes;
+    Map<vertex,Integer> mp;
     Graph(int v) 
     { 
+        mp=new HashMap<>();
         adj = new LinkedList[v]; 
         for (int i=0; i<v; ++i) 
             adj[i] = new LinkedList(); 
@@ -156,22 +159,21 @@ static class Graph
         for (int i = 0; i < v; i++) {
             vertarr[i]=new vertex(i);
         }
-        leftSideNodes=new ArrayList<>();
-        rightSideNodes=new ArrayList<>();
     } 
     public void dirOfChild(vertex a,vertex b)
     {
         if(a.left!=null)
             a.right=b;
         else
-            a.left=b;            
+            a.left=b;
+        b.parent=a;
     }
    public void addEdge(vertex v,vertex w) 
     { 
         adj[v.label].add(w);
         dirOfChild(v, w);
         adj[w.label].add(v); 
-        dirOfChild(w, v);
+        //dirOfChild(w, v);
         //System.out.println("edge added");
     }
    public int getAdjacent(vertex v,int parent)
@@ -187,7 +189,7 @@ static class Graph
    public void beforeRunningDfsModif(int v)
    {
        st.clear();
-       System.out.println("starting for main root= "+vertarr[v].label);
+//       System.out.println("starting for main root= "+vertarr[v].label);
        st.push(vertarr[v]);
        vertarr[v].visited=true;
    }
@@ -211,7 +213,7 @@ static class Graph
             if(getAdjacent(curNode,parent)==-1)
             {
                 curNode=st.pop();
-                System.out.println("new current root= "+curNode.label);
+//                System.out.println("new current root= "+curNode.label);
             }
             int k=getAdjacent(curNode,parent);
             if(k!=-1)
@@ -224,6 +226,46 @@ static class Graph
                 curNode=psuedoNode;
             }
         }
+    }
+    public int getDiameter(vertex root)
+    {
+        if(root==null)
+           return 0;
+        int lheight,rheight;
+        if(!mp.containsKey(root.left))
+        {
+            lheight=height(root.left);
+            mp.put(root.left,lheight);
+        }
+        else
+            lheight=mp.get(root.left);
+//        System.out.println("lheight= "+lheight);
+        if(!mp.containsKey(root.right))
+        {
+            rheight=height(root.right);
+            mp.put(root.right,rheight);
+        }
+        else
+            rheight=height(root.right);
+//        System.out.println("rheight= "+rheight);
+//        System.out.println("going for left diameter");
+        int ldiam=getDiameter(root.left);
+//        System.out.println("ldiam= "+ldiam);
+//        System.out.println("going for right diameter");
+        int rdiam=getDiameter(root.right);
+//        System.out.println("rdiam= "+rdiam);
+//        System.out.println("returning "+Math.max((1+lheight+rheight),Math.max(ldiam, rdiam)));
+        return Math.max((1+lheight+rheight),Math.max(ldiam, rdiam));
+    }
+    public int height(vertex node)
+    {
+        
+        if(node==null)
+            return 0;
+        if(!mp.containsKey(node))
+            return (1+(int)Math.max(height(node.left),height(node.right)));
+        else
+            return mp.get(node);
     }
     public static void main(String args[]) 
     { 
@@ -238,45 +280,54 @@ static class Graph
                 //System.out.println("src= "+src+" and dest= "+dest);
                 g.addEdge(g.vertarr[src-1],g.vertarr[dest-1]);
         }
-        int vpos=-1;
-        for (int i = 0; i < n; i++) {
-            System.out.println("current vertex considered is "+g.vertarr[i].label);
-            if(g.vertarr[i].left!=null && g.vertarr[i].right!=null)
-            {
-                System.out.println("left-> "+g.vertarr[i].left.label);
-                System.out.println("right-> "+g.vertarr[i].right.label);
-                vpos=i;
-                break;
+//        int vpos=-1;
+//        for (int i = 0; i < n; i++) {
+//            System.out.println("current vertex considered is "+g.vertarr[i].label);
+//            if(g.vertarr[i].left!=null && g.vertarr[i].right!=null)
+//            {
+//                System.out.println("left-> "+g.vertarr[i].left.label);
+//                System.out.println("right-> "+g.vertarr[i].right.label);
+//                vpos=i;
+//                break;
+//            }
+//        }
+//        if(vpos==-1)
+//            vpos=0;
+//        System.out.println("vpos = "+vpos);
+//        boolean leftN=(g.vertarr[vpos].left==null);
+//        boolean rightN=(g.vertarr[vpos].right==null);
+//        System.out.println("leftN= "+leftN);
+//            System.out.println("rightN= "+rightN);
+//        if(leftN && rightN)
+//        {
+//            System.out.println("0");
+//        }
+//        else if((leftN && !rightN) || (!leftN && rightN))
+//        {
+//            System.out.println("second block");
+//            g.beforeRunningDfsModif(vpos);
+//            System.out.println(g.getLongestPath(vpos));
+//        }
+//        else
+//        {
+//            System.out.println("third block and vpos= "+vpos);
+//            g.beforeRunningDfsModif(g.vertarr[vpos].left.label);
+//            int leftLen=g.getLongestPath(vpos);
+//            System.out.println("left length= "+leftLen);
+//            g.beforeRunningDfsModif(g.vertarr[vpos].right.label);
+//            int rightLen=g.getLongestPath(vpos);
+//            System.out.println("right length= "+rightLen);
+//            System.out.println(leftLen+rightLen+2);
+        //}
+        int rootpos=-1;
+            for (int i = 0; i < n; i++) {
+                if(g.vertarr[i].parent==null)
+                {
+                    rootpos=i;
+                    break;
+                }
             }
-        }
-        if(vpos==-1)
-            vpos=0;
-        System.out.println("vpos = "+vpos);
-        boolean leftN=(g.vertarr[vpos].left==null);
-        boolean rightN=(g.vertarr[vpos].right==null);
-        System.out.println("leftN= "+leftN);
-            System.out.println("rightN= "+rightN);
-        if(leftN && rightN)
-        {
-            System.out.println("0");
-        }
-        else if((leftN && !rightN) || (!leftN && rightN))
-        {
-            System.out.println("second block");
-            g.beforeRunningDfsModif(vpos);
-            System.out.println(g.getLongestPath(vpos));
-        }
-        else
-        {
-            System.out.println("third block and vpos= "+vpos);
-            g.beforeRunningDfsModif(g.vertarr[vpos].left.label);
-            int leftLen=g.getLongestPath(vpos);
-            System.out.println("left length= "+leftLen);
-            g.beforeRunningDfsModif(g.vertarr[vpos].right.label);
-            int rightLen=g.getLongestPath(vpos);
-            System.out.println("right length= "+rightLen);
-            System.out.println(leftLen+rightLen+2);
-        }
+            System.out.println(g.getDiameter(g.vertarr[rootpos])-1);
         }
         catch(Exception e)
         {
@@ -287,6 +338,19 @@ static class Graph
 /*
 11
 1 2
+2 4
+2 5
+1 3
+3 6
+6 7
+7 8
+6 9
+9 10
+10 11
+
+
+11
+8 2
 2 4
 2 5
 1 3
