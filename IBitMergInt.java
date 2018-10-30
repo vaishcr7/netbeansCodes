@@ -22,14 +22,16 @@ public class IBitMergInt {
 //        Interval obj1=new Interval(1, 2);
 //        Interval obj2=new Interval(3, 6);
 //        Interval objToInsert=new Interval(10, 8);
-     
-      Interval[] intervalsarr={new Interval(6037774, 6198243), new Interval(6726550, 7004541),new Interval(8842554, 10866536),new Interval(11027721, 11341296), new Interval(11972532, 14746848),new Interval(16374805, 16706396), new Interval(17557262, 20518214), new Interval(22139780, 22379559), new Interval(27212352, 28404611), new Interval(28921768, 29621583), new Interval(29823256, 32060921), new Interval(33950165, 36418956), new Interval(37225039, 37785557), new Interval(40087908, 41184444), new Interval(41922814, 45297414), new Interval(48142402, 48244133), new Interval(48622983, 50443163), new Interval(50898369, 55612831), new Interval(57030757, 58120901), new Interval(59772759, 59943999), new Interval(61141939, 64859907), new Interval(65277782, 65296274), new Interval(67497842, 68386607), new Interval(70414085, 73339545), new Interval(73896106, 75605861), new Interval(79672668, 84539434), new Interval(84821550, 86558001), new Interval(91116470, 92198054), new Interval(96147808, 98979097)};
-      ArrayList<Interval> intervals=new ArrayList<Interval>(Arrays.asList(intervalsarr));
+//     
+//      Interval[] intervalsarr={new Interval(6037774, 6198243), new Interval(6726550, 7004541),new Interval(8842554, 10866536),new Interval(11027721, 11341296), new Interval(11972532, 14746848),new Interval(16374805, 16706396), new Interval(17557262, 20518214), new Interval(22139780, 22379559), new Interval(27212352, 28404611), new Interval(28921768, 29621583), new Interval(29823256, 32060921), new Interval(33950165, 36418956), new Interval(37225039, 37785557), new Interval(40087908, 41184444), new Interval(41922814, 45297414), new Interval(48142402, 48244133), new Interval(48622983, 50443163), new Interval(50898369, 55612831), new Interval(57030757, 58120901), new Interval(59772759, 59943999), new Interval(61141939, 64859907), new Interval(65277782, 65296274), new Interval(67497842, 68386607), new Interval(70414085, 73339545), new Interval(73896106, 75605861), new Interval(79672668, 84539434), new Interval(84821550, 86558001), new Interval(91116470, 92198054), new Interval(96147808, 98979097)};
+//      ArrayList<Interval> intervals=new ArrayList<Interval>(Arrays.asList(intervalsarr));
 //      intervals.add(obj1);
 //      intervals.add(obj2);
 //      intervals.add(obj3);
 //      intervals.add(obj4);
 //      intervals.add(obj5);
+//(3,5),(8,10);(1,12)->(1, 12) answer
+        ArrayList<Interval> intervals=new ArrayList<>();
         Interval objToInsert=new Interval(36210193, 61984219);
       intervals=insert(intervals, objToInsert);
       Collections.sort(intervals, new sortByInterval());
@@ -38,11 +40,17 @@ public class IBitMergInt {
         }
     }
     public static ArrayList<Interval> insert(ArrayList<Interval> intervals, Interval newInterval) {
+        
         if(newInterval.start>newInterval.end)
         {
             int a=newInterval.end;
             newInterval.end=newInterval.start;
             newInterval.start=a;
+        }
+        if(intervals.isEmpty())
+        {
+            intervals.add(newInterval);
+            return intervals;
         }
     int numOfPairs=intervals.size();
     System.out.println("num of pairs= "+numOfPairs);
@@ -204,7 +212,12 @@ class sortByInterval implements Comparator<Interval>
     public int compare(Interval o1, Interval o2) {
         if(o1.start<o2.start)
             return -1;
-        else 
+        else if(o1.start==o2.start)
+                if(o1.end<o2.end)
+                    return -1;
+                else
+                    return 1;
+        else
             return 1;
     }
     
