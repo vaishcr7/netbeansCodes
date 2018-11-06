@@ -1,6 +1,11 @@
 package ibitlongestcommonprefix;
 
+import static java.lang.System.out;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class IBitLongestCommonPrefix {
 
@@ -13,15 +18,47 @@ public class IBitLongestCommonPrefix {
         al.add("orangutan");
         System.out.println(longestCmPfx(al));
     }
+    public static TrieNode root=new TrieNode();
     public static String longestCmPfx(ArrayList<String> al)
     {
-        TrieNode root=new TrieNode();
         for (int i = 0; i < al.size(); i++) {
-            root=insert(root, al.get(i));
+            insert(root, al.get(i));
+            
+//            TrieNode k=root;
+//            System.out.println("");
+//            System.out.println("");
+//            Map<TrieNode,Integer> mp=new HashMap<>();
+//            while(!k.isLeaf)
+//            {
+//                System.out.println("its children number are "+k.numOfChildren+"and k= "+k+" mp contains it ? "+mp.containsKey(k));
+//                for (int h = 0;h < 26; h++) {
+//                if(k.children[h]!=null)
+//                {
+//                    k=k.children[h];
+//                    mp.put(k,h);
+//                    System.out.println("new char= "+(char)(h+97));
+//                    System.out.println("k= "+k);
+//                    break;
+//                }
+//              }
+//                Set<Map.Entry<TrieNode,Integer>> st=mp.entrySet();
+//                for (Map.Entry<TrieNode,Integer> entry : st) {
+//                    System.out.println(entry.getKey()+" , "+entry.getValue());
+//                }
+//                System.out.println("is a leaf ? "+k.isLeaf);
+//            }
+//            System.out.println("");
+//            System.out.println("");
         }
-        System.out.println("its children are "+root.numOfChildren);
+        System.out.println("kskdcdskhkdshk its children are "+root.numOfChildren);
         StringBuilder sba=new StringBuilder();
-        while(root.numOfChildren==1)
+        int lenOfSmallestString=Integer.MAX_VALUE;
+        for (int i = 0; i < al.size(); i++) {
+            if(al.get(i).length()<lenOfSmallestString)
+                lenOfSmallestString=al.get(i).length();
+        }
+        
+        while(lenOfSmallestString-->0)
         {
             for (int i = 0; i < 26; i++) {
                 if(root.children[i]!=null)
@@ -35,10 +72,9 @@ public class IBitLongestCommonPrefix {
         }
         return sba.toString();
     }
-    public static TrieNode insert(TrieNode root,String s)
+    public static void insert(TrieNode root,String s)
     {
         System.out.println("insert func called for string "+s);
-        TrieNode mainRoot=root;
         for (int i = 0; i < s.length(); i++) {
             if(root.isLeaf)
             {
@@ -53,13 +89,13 @@ public class IBitLongestCommonPrefix {
                 {
                     System.out.println("adding another path to char "+Character.toLowerCase(s.charAt(i)));
                     root.children[(int)Character.toLowerCase(s.charAt(i))-97]=new TrieNode();
+                    root.numOfChildren+=1;
                 }
-                root.numOfChildren+=1;
-                root=root.children[(int)Character.toLowerCase(s.charAt(i))-97];
+//                root=root.children[(int)Character.toLowerCase(s.charAt(i))-97];
             }
             System.out.println("number of children for "+Character.toLowerCase(s.charAt(i))+" are "+root.numOfChildren);
+            root=root.children[(int)Character.toLowerCase(s.charAt(i))-97];
         }
-        return mainRoot;
     }
 }
 class TrieNode
