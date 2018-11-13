@@ -6,152 +6,140 @@ public class IBitMaxContSrsOne {
     public static void main(String[] args) {
         ArrayList<Integer> tp=new ArrayList<>();
         tp.add(1);
+//        tp.add(0);
+//        tp.add(0);
+        tp.add(1);
+//        tp.add(0);
+//        tp.add(0);
+//        tp.add(0);
+//        tp.add(0);
         tp.add(1);
         tp.add(1);
         tp.add(1);
+//        tp.add(0);
         tp.add(1);
-        tp.add(1);
-        tp.add(1);
-        tp.add(1);
-        tp.add(1);
-        tp.add(1);
-        tp.add(1);
-        tp.add(1);
-        tp.add(0);
-        System.out.println(getLongSrs(tp, 1));
+        System.out.println(getLongSrs(tp,10));
 //        System.out.println("al.size= "+tp.size());
     }
     public static ArrayList<Integer> getLongSrs(ArrayList<Integer> al,int m)
     {
-        ArrayList<Integer> zeroRange=new ArrayList<>();
+//        System.out.println("al= "+al);
+        ArrayList<obj> objCollection=new ArrayList<>();
         if(al.isEmpty())
             return al;
+        int ls=0;
+        int rs=0;
         for (int i = 0; i < al.size(); i++) {
             if(al.get(i).equals(0))
-                zeroRange.add(i);
-        }
-        System.out.println("zero range= "+zeroRange+" and al= "+al);
-        int r=-1,stpos=-1;
-        if(m==0)
-        {
-            for (int k = 0; k < zeroRange.size(); k++) {
-                int p=-2;
-                int st=-2;
-                if(k==0)
-                {
-                    p=zeroRange.get(k)-0;
-                    st=0;
-                }
-                else if(k==zeroRange.size()-1)
-                {
-                    p=(al.size()-zeroRange.get(k));
-                    st=k+1;
-                }
-                else
-                {
-                    p=(zeroRange.get(k)-zeroRange.get(k-1));
-                    st=k;
-                }
-                if (r < p) {
-                    r = p;
-                    stpos = st;
-                }
-                System.out.println("r= "+r+" and stpos= "+stpos);
+            {
+                 obj a=new obj(i);
+                 if(!objCollection.isEmpty())
+                 {
+                     ls=i-objCollection.get(objCollection.size()-1).pos-1;
+                     a.numOfOnesToLeft=ls;
+                     objCollection.get(objCollection.size()-1).numOfOnesToRight=ls;
+                 }
+                 else
+                 {
+                     ls=i;
+                     a.numOfOnesToLeft=ls;
+                 }
+                 objCollection.add(a);
             }
-            ArrayList<Integer> ap = new ArrayList<>();
-            for (int i = stpos; i < stpos + r; i++) {
+        }
+        if(objCollection.size()==0)
+        {
+            ArrayList<Integer> ap=new ArrayList<>();
+            for (int i = 0; i < al.size(); i++) {
                 ap.add(i);
             }
             return ap;
         }
-        else
+        if(objCollection.size()==1)
+            objCollection.get(0).numOfOnesToRight=al.size()-1-objCollection.get(0).pos;
+        if(objCollection.size()>1)
+            objCollection.get(objCollection.size()-1).numOfOnesToRight=al.size()-1-objCollection.get(objCollection.size()-1).pos;
+        while(m>objCollection.size())
+            m--;
+        System.out.println("m= "+m);
+        for (int i = 0; i < objCollection.size(); i++) {
+            System.out.println(objCollection.get(i).pos+" -> left: "+objCollection.get(i).numOfOnesToLeft+" , right: "+objCollection.get(i).numOfOnesToRight);
+        }
+        
+        if(m==0)
         {
-            while(m>zeroRange.size())  //if we can flip three but only 2 zeroes there in list 
-                m--;
-            int i=0;
-            int j=m-1;
-            System.out.println("m= "+m);
-            while(j<zeroRange.size())
+            int stChosenObj=-1;
+            int min=-1;
+            boolean goTowardsLeft=false;
+            for (int i = 0; i < objCollection.size(); i++) {
+                int y=objCollection.get(i).numOfOnesToLeft;
+                int z=objCollection.get(i).numOfOnesToRight;
+                int h=Math.max(y, z);
+                if(h>min)
+                {
+                    min=h;
+                    stChosenObj=i;
+                    if(h==y)
+                        goTowardsLeft=true;
+                    else
+                        goTowardsLeft=false;
+                }
+            }
+            stChosenObj=objCollection.get(stChosenObj).pos;
+//            System.out.println("min= "+min+" and stpos= "+stChosenObj+" and goto left= "+goTowardsLeft);
+            ArrayList<Integer> ap=new ArrayList<>();
+            if(goTowardsLeft)
             {
-                System.out.println("i= "+i+" and j= "+j);
-                int p,st;
-                if(i==0)
-                {
-                    p=(zeroRange.get(j));
-                    st=0;
+                for (int i = Math.abs(stChosenObj-min);i<stChosenObj ;i++) {
+                    ap.add(i);
                 }
-                else
-                {
-                    p=(zeroRange.get(j)-zeroRange.get(i));
-                    st=zeroRange.get(i);            
-                    if(j==zeroRange.size()-1)
-                    {
-                        System.out.println("initial p= "+p);
-                        p+=(al.size()-1-zeroRange.get(j));
-                    }
-                }
-                if(r<p)
-                {
-                    r=p;
-                    stpos=st;
-                }
-                System.out.println("r= "+r+" and stpos= "+stpos);
-                i=j;
-                j++;
-            }
-        }
-        if(zeroRange.get(0).equals(stpos))
-        {
-            stpos=0;
-            r+=(zeroRange.get(0));
-            System.out.println("new r= "+r);
-        }
-        else
-        {
-            System.out.println("not zero start");
-            int y = 0;
-            while (zeroRange.get(y) < stpos) {
-                y++;
-            }
-            if(y>0)
-            {    y -= 1;
-                System.out.println("y= " + y);
-                r += (stpos - zeroRange.get(y) - 1);
-                stpos = zeroRange.get(y) + 1;
-                if(zeroRange.size()-1-stpos==m)
-                    stpos+=1;
-                System.out.println("stpos= " + stpos + " and r= " + r);
-            }
-        }
-        if(zeroRange.get(zeroRange.size()-1).equals((stpos+r)))
-        {
-            r+=al.size()-(zeroRange.get(zeroRange.size()-1));
-            System.out.println("modified r= "+r);
-        }
-        else
-        {
-            System.out.println("not zero end");
-            int x=zeroRange.size()-1;
-            while(zeroRange.get(x)>(stpos+r))
-                x--;
-            if(x!=zeroRange.size()-1)
-            {
-                x+=1;
-                System.out.println("x= " + x);
-                r += (zeroRange.get(x) - stpos - r);
-                System.out.println("stpos= " + stpos + " and r= " + r);
             }
             else
-            {
-                r+=(al.size()-(stpos+r));
-                System.out.println("stpos= "+stpos+" and new r= "+r); 
-            }       
+                {
+                for (int i=stChosenObj+1;i <=Math.abs(stChosenObj+min) ;i++) {
+                    ap.add(i);
+                }
+            }
+            return ap;
         }
+
+        int stChosenObj=-1;
+        int min=-1;
+        for (int j = 0; j <=objCollection.size()-m; j++) {
+            int y=0;
+            for (int k = 0; k < m; k++) {
+                 y+=(objCollection.get(j+k).numOfOnesToLeft)+1;
+            }
+//            System.out.println("initial y= "+y);
+            y+=objCollection.get(j+m-1).numOfOnesToRight;
+            if(y>min)
+            {
+                min=y;
+                stChosenObj=j;
+            }
+            System.out.println("y for index "+j+" is "+y);
+          }
+        System.out.println("min= "+min+" and chosen index= "+stChosenObj);
         ArrayList<Integer> ap=new ArrayList<>();
-        for (int i = stpos; i <stpos+r; i++) {
-            ap.add(i);
+        int i = objCollection.get(stChosenObj).pos;
+        int leftToIt=objCollection.get(stChosenObj).numOfOnesToLeft;
+        for (int j = Math.abs(i-leftToIt); j <(min+Math.abs(i-leftToIt)); j++) {
+            ap.add(j);
         }
         return ap;
+    }
+    
+}
+class obj
+{
+    int numOfOnesToLeft;
+    int numOfOnesToRight;
+    int pos;
+
+    public obj(int pos) {
+        this.numOfOnesToLeft = Integer.MIN_VALUE;
+        this.numOfOnesToRight = Integer.MIN_VALUE;
+        this.pos = pos;
     }
     
 }
