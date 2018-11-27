@@ -24,79 +24,35 @@ public class IBitPndrPrtBcktrck {
         }
         return true;
     }
-    public static ArrayList<ArrayList<String>> makePts(String a)
+    public static Map<Integer,ArrayList<String>> makePts(String a)
     {
-        ArrayList<ArrayList<String>> ans=new ArrayList<>();
-        if(isPalin(a))
-        {
-            ArrayList<String> p=new ArrayList<>();
-            p.add(a);
-            ans.add(new ArrayList<>(p));
+        Map<Integer,ArrayList<String>> mp=new HashMap<>();
+        for (int i = 0; i < a.length(); i++) {
+            String str=new String(a.substring(i));
+            System.out.println("\n***************");
+            System.out.println("str= "+str);
+            for (int ik = i+1; ik <=str.length(); ik++) {
+                String temp=new String(str.substring(i, ik));
+                System.out.println("considering "+temp);
+                if(isPalin(temp))
+                {
+                    ArrayList<String> tp;
+                    if(!mp.containsKey(i))
+                    {
+                        tp=new ArrayList<>();
+                    }
+                    else
+                    {
+                        tp=new ArrayList<>(mp.get(i));
+                    }
+                    tp.add(temp);
+                    mp.put(i,new ArrayList<>(tp));
+                    System.out.println("therefore "+mp.get(i));
+                }
+            }
+                System.out.println("***************\n");
         }
-        int mid=a.length()/2;
-        if(a.length()%2==0)
-            mid=(a.length()-1)/2;
-        Map<String,Boolean> mp=new HashMap<>();
-        WeirdObj ob=new WeirdObj(ans, mp);
-        for (int i = 1; i <=mid; i++) {
-            ob=retPsFrCurrI(i, a, ob);
-        }
-        System.out.println(ob.al);
-        return ans;
-    }
-    public static WeirdObj retPsFrCurrI(int i,String a,WeirdObj ob)
-    {
-        if(a.length()==0)
-            return ob;
-        String sub1=a.substring(0,a.length()-i);
-        String sub1rest=a.substring(a.length()-i);
-        String sub2=a.substring(i);
-        String sub2rest=a.substring(0,i);
-        if (!ob.mp.containsKey(sub1)) {
-//            System.out.println("sub1= "+sub1);
-            ob.mp.put(sub1, isPalin(sub1));
-        }
-        if (!ob.mp.containsKey(sub1rest)) {
-//            System.out.println("sub1rest= "+sub1rest);
-            ob.mp.put(sub1rest, isPalin(sub1rest));
-        }
-        if (!ob.mp.containsKey(sub2)) {
-//            System.out.println("sub2= "+sub2);
-            ob.mp.put(sub2, isPalin(sub2));
-        }
-        if (!ob.mp.containsKey(sub2rest)) {
-//            System.out.println("sub2rest= "+sub2rest);
-            ob.mp.put(sub2rest,isPalin(sub2rest));
-        }
-        System.out.println("mp= "+ob.mp);
-         if (ob.mp.get(sub1) && ob.mp.get(sub1rest)) {
-            ArrayList<String> p = new ArrayList<>();
-            p.add(sub1);
-            p.add(sub1rest);
-            ob.al.add(new ArrayList<>(p));
-            ob = retPsFrCurrI(i, sub1, ob);
-            ob = retPsFrCurrI(i, sub1rest, ob);
-        }
-        if (ob.mp.get(sub2) && ob.mp.get(sub2rest)) {
-            ArrayList<String> p = new ArrayList<>();
-            p.add(sub1);
-            p.add(sub1rest);
-            ob.al.add(new ArrayList<>(p));
-            ob = retPsFrCurrI(i, sub2, ob);
-            ob = retPsFrCurrI(i, sub2rest, ob);
-        }
-        return ob;
-    }
-    
-    
-}
-class WeirdObj
-{
-    ArrayList<ArrayList<String>> al;
-    Map<String,Boolean> mp;
-
-    public WeirdObj(ArrayList<ArrayList<String>> al, Map<String, Boolean> mp) {
-        this.al = al;
-        this.mp = mp;
-    }    
+        System.out.println(mp);
+        return mp;
+    }       
 }
