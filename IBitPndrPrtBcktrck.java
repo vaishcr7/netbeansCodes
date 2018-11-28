@@ -28,11 +28,11 @@ public class IBitPndrPrtBcktrck {
     {
         Map<Integer,ArrayList<String>> mp=new HashMap<>();
         for (int i = 0; i < a.length(); i++) {
-            String str=new String(a.substring(i));
+            String str=a.substring(i);
             System.out.println("\n***************");
             System.out.println("str= "+str);
-            for (int ik = i+1; ik <=str.length(); ik++) {
-                String temp=new String(str.substring(i, ik));
+            for (int ik = i+1; ik <=str.length()+i; ik++) {
+                String temp=str.substring(0,ik-i);
                 System.out.println("considering "+temp);
                 if(isPalin(temp))
                 {
