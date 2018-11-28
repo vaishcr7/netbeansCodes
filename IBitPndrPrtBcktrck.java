@@ -1,13 +1,20 @@
 package ibitpndrprtbcktrck;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class IBitPndrPrtBcktrck {
 
     public static void main(String[] args) {
-        System.out.println(makePts("geeksskeeg"));
+        ArrayList<ArrayList<String>> k=makeSets("geeksskeeg");
+        for (ArrayList<String> at : k) {
+            System.out.println(at);
+        }
     }
     public static boolean isPalin(String s)
     {
@@ -29,11 +36,11 @@ public class IBitPndrPrtBcktrck {
         Map<Integer,ArrayList<String>> mp=new HashMap<>();
         for (int i = 0; i < a.length(); i++) {
             String str=a.substring(i);
-            System.out.println("\n***************");
-            System.out.println("str= "+str);
+//            System.out.println("\n***************");
+//            System.out.println("str= "+str);
             for (int ik = i+1; ik <=str.length()+i; ik++) {
                 String temp=str.substring(0,ik-i);
-                System.out.println("considering "+temp);
+//                System.out.println("considering "+temp);
                 if(isPalin(temp))
                 {
                     ArrayList<String> tp;
@@ -47,12 +54,70 @@ public class IBitPndrPrtBcktrck {
                     }
                     tp.add(temp);
                     mp.put(i,new ArrayList<>(tp));
-                    System.out.println("therefore "+mp.get(i));
+//                    System.out.println("therefore "+mp.get(i));
                 }
             }
-                System.out.println("***************\n");
+//                System.out.println("***************\n");
         }
-        System.out.println(mp);
+//        System.out.println(mp);
         return mp;
     }       
+    public static ArrayList<ArrayList<String>> makeSets(String a)
+    {
+        Map<Integer,ArrayList<String>> mp=new HashMap<>(makePts(a));
+        Set<ArrayList<String>> ans=new HashSet<>();
+        Set<Integer> st=new TreeSet<>(mp.keySet());
+        ArrayList<Integer> keys=new ArrayList<>(st);
+        Collections.sort(keys);
+        ArrayList<ArrayList<String>> t=new ArrayList<>();
+        t=new ArrayList<>(formGps(mp, keys, t, a));
+        Set<ArrayList<String>> ansSet=new HashSet<>(t);
+//        System.out.println(ansSet);
+        t.clear();
+        t=new ArrayList<>(ansSet);
+        return t;
+    }
+    public static ArrayList<ArrayList<String>> formGps(Map<Integer,ArrayList<String>> mp,ArrayList<Integer> keys,ArrayList<ArrayList<String>> ans,String a)
+    {
+        if(keys.isEmpty())
+            return ans;
+        int currKey=keys.remove(0);
+        ArrayList<String> p=mp.get(currKey);
+        if(ans.isEmpty())
+        {
+            for (String s : p) {
+                ArrayList<String> y=new ArrayList<>();
+                y.add(s);
+                ans.add(new ArrayList<>(y));
+            }
+        }
+        else
+        {
+            ArrayList<ArrayList<String>> ansTemp=new ArrayList<>();
+            for ( ArrayList<String> al: ans) {
+                String s=convAlToStr(al);
+                int nextIndex=s.length();
+                if(currKey>=nextIndex)
+                {
+                    for (String str : mp.get(currKey)) {
+                        ArrayList<String> tp=new ArrayList<>(al);
+                        tp.add(str);
+                        ansTemp.add(tp);
+                    }
+                }
+                else
+                    ansTemp.add(al);
+            }
+            ans=new ArrayList<>(ansTemp);
+        }
+        return formGps(mp, keys, ans, a);
+    }
+    public static String convAlToStr(ArrayList<String> a)
+    {
+        StringBuilder sba=new StringBuilder();
+        for (String string : a) {
+            sba.append(string);
+        }
+        return sba.toString();
+    }
 }
