@@ -2,6 +2,7 @@ package ibitpndrprtbcktrck;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,10 +12,11 @@ import java.util.TreeSet;
 public class IBitPndrPrtBcktrck {
 
     public static void main(String[] args) {
-        ArrayList<ArrayList<String>> k=makeSets("geeksskeeg");
-        for (ArrayList<String> at : k) {
-            System.out.println(at);
-        }
+        ArrayList<ArrayList<String>> k=makeSets("");
+        System.out.println(k);
+//        for (ArrayList<String> at : k) {
+//            System.out.println(at);
+//        }
     }
     public static boolean isPalin(String s)
     {
@@ -64,6 +66,8 @@ public class IBitPndrPrtBcktrck {
     }       
     public static ArrayList<ArrayList<String>> makeSets(String a)
     {
+        if(a.isEmpty())
+            return new ArrayList<>();
         Map<Integer,ArrayList<String>> mp=new HashMap<>(makePts(a));
         Set<ArrayList<String>> ans=new HashSet<>();
         Set<Integer> st=new TreeSet<>(mp.keySet());
@@ -75,6 +79,19 @@ public class IBitPndrPrtBcktrck {
 //        System.out.println(ansSet);
         t.clear();
         t=new ArrayList<>(ansSet);
+        Collections.sort(t,new Comparator<ArrayList<String>>(){
+            @Override
+            public int compare(ArrayList<String> t, ArrayList<String> t1) {
+               int minLen=Math.min(t.size(), t1.size());
+                for (int i = 0; i < minLen; i++) {
+                    if(t.get(i).length()<t1.get(i).length())
+                        return -1;
+                    else if(t.get(i).length()>t1.get(i).length())
+                        return 1;
+                }
+                return 0;
+            }            
+        });
         return t;
     }
     public static ArrayList<ArrayList<String>> formGps(Map<Integer,ArrayList<String>> mp,ArrayList<Integer> keys,ArrayList<ArrayList<String>> ans,String a)
