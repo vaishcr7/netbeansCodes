@@ -7,18 +7,24 @@ import java.util.Map;
 import java.util.Set;
 
 public class IBitStrConcntn {
+    /*
+    "pjzkrkevzztxductzzxmxsvwjkxpvukmfjywwetvfnujhweiybwvvsrfequzkhossmootkmyxgjgfordrpapjuunmqnxxdrqrfgkrsjqbszgiqlcfnrpjlcwdrvbumtotzylshdvccdmsqoadfrpsvnwpizlwszrtyclhgilklydbmfhuywotjmktnwrfvizvnmfvvqfiokkdprznnnjycttprkxpuykhmpchiksyucbmtabiqkisgbhxngmhezrrqvayfsxauampdpxtafniiwfvdufhtwajrbkxtjzqjnfocdhekumttuqwovfjrgulhekcpjszyynadxhnttgmnxkduqmmyhzfnjhducesctufqbumxbamalqudeibljgbspeotkgvddcwgxidaiqcvgwykhbysjzlzfbupkqunuqtraxrlptivshhbihtsigtpipguhbhctcvubnhqipncyxfjebdnjyetnlnvmuxhzsdahkrscewabejifmxombiamxvauuitoltyymsarqcuuoezcbqpdaprxmsrickwpgwpsoplhugbikbkotzrtqkscekkgwjycfnvwfgdzogjzjvpcvixnsqsxacfwndzvrwrycwxrcismdhqapoojegggkocyrdtkzmiekhxoppctytvphjynrhtcvxcobxbcjjivtfjiwmduhzjokkbctweqtigwfhzorjlkpuuliaipbtfldinyetoybvugevwvhhhweejogrghllsouipabfafcxnhukcbtmxzshoyyufjhzadhrelweszbfgwpkzlwxkogyogutscvuhcllphshivnoteztpxsaoaacgxyaztuixhunrowzljqfqrahosheukhahhbiaxqzfmmwcjxountkevsvpbzjnilwpoermxrtlfroqoclexxisrdhvfsindffslyekrzwzqkpeocilatftymodgztjgybtyheqgcpwogdcjlnlesefgvimwbxcbzvaibspdjnrpqtyeilkcspknyylbwndvkffmzuriilxagyerjptbgeqgebiaqnvdubrtxibhvakcyotkfonmseszhczapxdlauexehhaireihxsplgdgmxfvaevrbadbwjbdrkfbbjjkgcztkcbwagtcnrtqryuqixtzhaakjlurnumzyovawrcjiwabuwretmdamfkxrgqgcdgbrdbnugzecbgyxxdqmisaqcyjkqrntxqmdrczxbebemcblftxplafnyoxqimkhcykwamvdsxjezkpgdpvopddptdfbprjustquhlazkjfluxrzopqdstulybnqvyknrchbphcarknnhhovweaqawdyxsqsqahkepluypwrzjegqtdoxfgzdkydeoxvrfhxusrujnmjzqrrlxglcmkiykldbiasnhrjbjekystzilrwkzhontwmehrfsrzfaqrbbxncphbzuuxeteshyrveamjsfiaharkcqxefghgceeixkdgkuboupxnwhnfigpkwnqdvzlydpidcljmflbccarbiegsmweklwngvygbqpescpeichmfidgsjmkvkofvkuehsmkkbocgejoiqcnafvuokelwuqsgkyoekaroptuvekfvmtxtqshcwsztkrzwrpabqrrhnlerxjojemcxel"
+["dhvf","sind","ffsl","yekr","zwzq","kpeo","cila","tfty","modg","ztjg","ybty","heqg","cpwo","gdcj","lnle","sefg","vimw","bxcb"]
+    */
     public static void main(String[] args) {
         ArrayList<String> g=new ArrayList<>();
-        g.add("bar");
-        g.add("foo");
-        g.add("mp3");
-        System.out.println(subct(g,"barfoomp3foobarmp3foo"));
-//        System.out.println(makeGps(g));
+        g.add("good");
+        g.add("best");
+        g.add("word");
+        g.add("good");
+        System.out.println(subct(g,"wordgoodgoodgoodbestword"));
+//        System.out.println(subct(g,"aaaaaaaa"));
     }
     public static ArrayList<Integer> subct(ArrayList<String> sal,String a)
     {
         ArrayList<Integer> ans=new ArrayList<>();
         ArrayList<String> gps=new ArrayList<>(makeGps(sal));
+        System.out.println("gps= "+gps);
         if(sal.isEmpty())
             return ans;
         Map<String,Integer> mp=new HashMap<>();
@@ -28,15 +34,15 @@ public class IBitStrConcntn {
         int len=gps.get(0).length();
 //        System.out.println("len= "+len);
 //        System.out.println("mp = "+mp);
-        for (int i = 0; i < a.length()-len;) {
+        for (int i = 0; i < a.length()-len+1;) {
             String f=a.substring(i,len+i);
-//            System.out.println("f= "+f);
+            System.out.println("f= "+f);
             if(mp.containsKey(f.intern()))
             {
                 ans.add(i);
-                i+=len;
+//                i+=minLen;
             }
-            else
+//            else
                 i++;
         }
         return ans;
