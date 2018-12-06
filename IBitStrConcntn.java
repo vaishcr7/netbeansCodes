@@ -13,75 +13,69 @@ public class IBitStrConcntn {
     */
     public static void main(String[] args) {
         ArrayList<String> g=new ArrayList<>();
-        g.add("good");
-        g.add("best");
-        g.add("word");
-        g.add("good");
-        System.out.println(subct(g,"wordgoodgoodgoodbestword"));
-//        System.out.println(subct(g,"aaaaaaaa"));
+//        g.add("aa");
+//        g.add("aa");
+//        g.add("aa");
+//        g.add("aa");
+//        System.out.println(subct(g,"aaaaaaaaaa"));
+//         g.add("word");
+//         g.add("good");
+//         g.add("good");
+//         g.add("best");
+//        System.out.println(subct(g,"goodbestwordgoodgoodgoodbestword"));
+         g.add("pk");
+         g.add("at");
+         g.add("pc");
+         g.add("at");
+         System.out.println(subct(g,"pkatpcatatatpcpkatatatpkpc"));
     }
     public static ArrayList<Integer> subct(ArrayList<String> sal,String a)
     {
         ArrayList<Integer> ans=new ArrayList<>();
-        ArrayList<String> gps=new ArrayList<>(makeGps(sal));
-        System.out.println("gps= "+gps);
         if(sal.isEmpty())
             return ans;
-        Map<String,Integer> mp=new HashMap<>();
-        for (int i = 0; i < gps.size(); i++) {
-            mp.put(gps.get(i),1);
+        Map<String,Integer> mainMp=new HashMap<>();
+        for (int i = 0; i < sal.size(); i++) {
+            if(!mainMp.containsKey(sal.get(i)))
+                mainMp.put(sal.get(i),1);
+            else
+                mainMp.put(sal.get(i),mainMp.get(sal.get(i))+1);
         }
-        int len=gps.get(0).length();
-//        System.out.println("len= "+len);
-//        System.out.println("mp = "+mp);
-        for (int i = 0; i < a.length()-len+1;) {
-            String f=a.substring(i,len+i);
-            System.out.println("f= "+f);
-            if(mp.containsKey(f.intern()))
+        int totLen=sal.get(0).length()*sal.size();
+        int len=sal.get(0).length();
+        int j=len-1;
+        for (int i = 0; i < a.length()-totLen+1; ) {
+            Map<String,Integer> tmpMp=new HashMap<>(mainMp);
+            int k=i;
+            String substr=a.substring(i,j+1);
+            int curTotLen=0;
+//            System.out.println("tmpMp= "+tmpMp+" and substr= "+substr+" and i= "+i+" and j= "+j);
+            while(curTotLen<totLen && tmpMp.containsKey(substr.intern()) && tmpMp.get(substr.intern())>0)
+            {
+                curTotLen+=len;
+                tmpMp.put(substr,tmpMp.get(substr)-1);
+                k=j+1;
+                j+=len;
+                if(j>a.length()-1)
+                {
+//                    System.out.println("j exceeded");
+                    break;
+                }
+                substr=a.substring(k,j+1);
+//                System.out.println("new tmpMp= "+tmpMp+" and substr= "+substr+" and k= "+k+" and j= "+j+" and curent totlength: "+curTotLen);
+            }
+            if(curTotLen<totLen)
+            {
+                j=i+len;
+                i+=1;
+            }
+            else if(curTotLen==totLen)
             {
                 ans.add(i);
-//                i+=minLen;
+                i+=1;
+                j=i+len-1;
             }
-//            else
-                i++;
         }
         return ans;
-    }    
-    public static ArrayList<String> makeGps(ArrayList<String> sal)
-    {
-//        System.out.println("sal= "+sal);
-        ArrayList<ArrayList<String>> x=new ArrayList<>();
-        x.add(new ArrayList<>());
-        for (int i = 0; i < sal.size(); i++) {
-//            System.out.println("current word= "+sal.get(i));
-            ArrayList<ArrayList<String>> z=new ArrayList<>();
-            for (int j = 0; j < x.size(); j++) {
-                ArrayList<String> p=x.get(j);
-//                System.out.println("p= "+p);
-                for (int k = 0; k < p.size(); k++) {
-                    ArrayList<String> v=new ArrayList<>(p);
-                    v.add(k,sal.get(i));
-                    z.add(new ArrayList<>(v));
-                }
-                ArrayList<String> v=new ArrayList<>(p);
-                v.add(sal.get(i));
-                z.add(new ArrayList<>(v));
-//                System.out.println("z is "+z);
-            }
-            x=new ArrayList<>();
-            x.addAll(z);
-//            System.out.println("x is "+x);
-        }
-//        System.out.println("x= "+x);
-        Set<String> st=new HashSet<>();
-        for (int i = 0; i < x.size(); i++) {
-            StringBuilder sba=new StringBuilder();
-            for (int j = 0; j < x.get(i).size(); j++) {
-                sba.append(x.get(i).get(j));
-            }
-            st.add(sba.toString());
-        }
-        ArrayList<String> ans=new ArrayList<>(st);
-        return ans;
-    }
+    }  
 }
