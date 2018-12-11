@@ -58,6 +58,7 @@ public class MergeKsrtdLsts {
     public static ListNode mgkslt(ArrayList<ListNode> a)
     {
         ArrayList<ArrayList<ListNode>> al=new ArrayList<>();
+        int lg=0;
         for (ListNode listNode : a) {
             ArrayList<ListNode> t=new ArrayList<>();
             while(listNode!=null)
@@ -74,15 +75,11 @@ public class MergeKsrtdLsts {
         ArrayList<ListNode> ans=new ArrayList<>();
         ListNode []heads=new ListNode[al.size()];
         int i=0;
-        ListNode root=al.get(0).get(0);
         int numOfNodes=0;
         for (ArrayList<ListNode> arrayList : al) {
             if(!arrayList.isEmpty() )
             {   
                 heads[i] = arrayList.get(0);
-                if (root.val > heads[i].val) {
-                    root = heads[i];
-                }
                 i++;
                 numOfNodes+=arrayList.size();
             }
@@ -96,6 +93,7 @@ public class MergeKsrtdLsts {
             int z=-1;
             for (int j=0;j<heads.length;j++) 
             {
+                lg++;
                 if(g==null && heads[j]!=null)
                 {
                     g=heads[j];
@@ -106,14 +104,7 @@ public class MergeKsrtdLsts {
                     g=heads[j];
                     z=j;
                 }
-//                if(prevNode!=null && prevNode.val==3)
-//                {
-//                    if(heads[j]==null)
-//                        System.out.println("j= "+j);
-//                }
             }
-//            System.out.println("z= " + z);
-//            System.out.println("g= " + g.val + " and heads[" + z + "]= " + heads[z].val + " i= " + i);
             if(mp.isEmpty())
                 mp.put(null,g);
             else
@@ -124,33 +115,21 @@ public class MergeKsrtdLsts {
 //            System.out.println("previous node= "+prevNode.val);
             i++;
         }
+        System.out.println("lg= "+lg);
         i=0;
         prevNode=null;
         while(i<numOfNodes)
         {
             ans.add(mp.get(prevNode));
-            System.out.print(mp.get(prevNode).val+" -> ");
             prevNode=mp.get(prevNode);
             i++;
         }
-        System.out.println("");
         for (int j = 0; j < ans.size()-1; j++) {
             ans.get(j).next=ans.get(j+1);
         }
         ans.get(ans.size()-1).next=null;
         return ans.get(0);
     }    
-    public static void dispMp(HashMap<ListNode,ListNode> mp)
-    {
-        for (Map.Entry<ListNode,ListNode> entry: mp.entrySet()) {
-            if(entry.getKey()==null)
-                System.out.println("null -> "+entry.getValue().val);
-            else if(entry.getValue()==null)
-                System.out.println("null value for "+entry.getKey().val);
-            else
-                System.out.println(entry.getKey().val+" -> "+entry.getValue().val);
-        }
-    }
 }
 class ListNode {
       int val;
