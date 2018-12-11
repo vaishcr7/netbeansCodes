@@ -6,17 +6,14 @@ public class IBitLRUCache {
 
   
     public static void main(String[] args) {
-        Lrucache cache = new Lrucache(3);// 2 /* capacity */ );
-
-        cache.set(1, 1);
-        cache.set(2, 2);
-        System.out.println(cache.get(1));       // returns 1
-        cache.set(3, 3);    
-        System.out.println(cache.get(2));       // returns 2
-        cache.set(4, 4);    // evicts key 1
-        System.out.println(cache.get(1));       // returns -1 (not found)
-        System.out.println(cache.get(3));       // returns 3
-        System.out.println(cache.get(4));       // returns 4
+        Lrucache cache = new Lrucache(2);
+        System.out.println(cache.get(2));   //-1
+        cache.set(2, 6);    //null
+        System.out.println(cache.get(1));   //-1
+        cache.set(1, 5);    //null
+        cache.set(1, 2);    //null
+        System.out.println(cache.get(1));       // 2
+        System.out.println(cache.get(2));       // 6
     }
     
 }
@@ -39,7 +36,7 @@ class Lrucache
         if(mp.size()==capacity)
         {
             int f=dept.get(t-capacity+1);
-//            System.out.print("f= "+f);
+            System.out.print("f= "+f);
             mp.remove(f);
         }
         mp.put(key,val);
@@ -47,7 +44,7 @@ class Lrucache
         arval.put(key,t);
         dept.put(t, key);
         dept.remove(t-capacity);
-//        System.out.println(" , "+t+" and arval= "+arval+", mp= "+mp+"   ");
+        System.out.println(" , "+t+" and arval= "+arval+", mp= "+mp+"   ");
     }
     public int get(int key)
     {
@@ -57,7 +54,7 @@ class Lrucache
             arval.put(key,t);
             dept.put(t,key);
             dept.remove(t-capacity);
-//            System.out.print("mp= "+mp+"dept= "+dept+"arval= "+arval+"    ");
+            System.out.print("mp= "+mp+"dept= "+dept+"arval= "+arval+"    ");
             return mp.get(key);
         }
         return -1;    
