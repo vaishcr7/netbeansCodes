@@ -6,16 +6,16 @@ import java.util.Stack;
 public class IBitCrtTr {
 
     public static void main(String[] args) {
-        //2,7,3,4,10,1,8,5,6
-        TreeNode a=new TreeNode(10);
-        TreeNode b=new TreeNode(7);
-        TreeNode c=new TreeNode(8);
-        TreeNode d=new TreeNode(2);
-        TreeNode e=new TreeNode(4);
-        TreeNode f=new TreeNode(1);
-        TreeNode g=new TreeNode(6);
-        TreeNode h=new TreeNode(3);
-        TreeNode i=new TreeNode(5);
+        //1,2,3,4,5,6
+        TreeNode a=new TreeNode(1);
+        TreeNode b=new TreeNode(2);
+        TreeNode c=new TreeNode(3);
+        TreeNode d=new TreeNode(4);
+        TreeNode e=new TreeNode(5);
+        TreeNode f=new TreeNode(6);
+//        TreeNode g=new TreeNode(6);
+//        TreeNode h=new TreeNode(3);
+//        TreeNode i=new TreeNode(5);
 //        a.left=b;
 //        a.right=c;
 //        b.left=d;
@@ -25,15 +25,15 @@ public class IBitCrtTr {
 //        e.right=h;
 //        g.left=i;
         ArrayList<TreeNode> al=new ArrayList<>();
-        al.add(d);
-        al.add(b);
-        al.add(h);
-        al.add(e);
         al.add(a);
-        al.add(f);
+        al.add(b);
         al.add(c);
-        al.add(i);
-        al.add(g);
+        al.add(d);
+        al.add(e);
+        al.add(f);
+//        al.add(c);
+//        al.add(i);
+//        al.add(g);
         TreeNode head=formTr(al);
         System.out.println(inorderTraversal(head));
     }
@@ -60,18 +60,18 @@ public class IBitCrtTr {
             for (int i = pos - 2; i >= 0; i--) {
                 if (lh.val > al.get(i).val) 
                 {
-                    if (lh.right == null) 
-                    {
-                        lh.right = al.get(i);
-                        System.out.println("lh right= "+lh.right.val);
-                    } 
-                    else if(lh.left==null) 
+                    if (lh.left == null) 
                     {
                         lh.left = al.get(i);
                         System.out.println("lh left= "+lh.left.val);
+                    } 
+                    else if(lh.right==null) 
+                    {
+                        lh.right = al.get(i);
+                        System.out.println("lh right= "+lh.right.val);
                         TreeNode temp=lh.right;
-                        lh.right=lh.left;
-                        lh.left=temp;
+                        lh.right=lh.right;
+                        lh.right=temp;
                         System.out.println("SWAPPED "+lh.right.val+" and "+lh.left.val);
                     }
                 } 
@@ -111,10 +111,11 @@ public class IBitCrtTr {
 //                        i-=1;
 //                        System.out.println("shifted to new ");
 //                    }
-                } else {
-                    al.get(i).left = rh;
+                } 
+                 else {
+                    al.get(i).right = rh;
                     rh = al.get(i);
-                    System.out.println("new rh= "+rh.val+" its left= "+rh.left.val);
+                    System.out.println("new rh= "+rh.val+" its right= "+rh.right.val);
                 }
             }
             System.out.println("RH= "+rh.val);
