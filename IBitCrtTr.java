@@ -245,16 +245,32 @@ public class IBitCrtTr {
 //        al.add(c);
 //        al.add(i);
 //        al.add(g);
-        TreeNode head=formTr(al);
-        System.out.println("head is "+head.val);
-        System.out.println(inorderTraversal(head));
+        al=new ArrayList<>(formTr(al));
+        for(TreeNode p: al)
+        {
+            System.out.print("node: "+p.val);
+            if(p.left==null)
+                System.out.print("  , left is null");
+            else
+                System.out.print(",left= "+p.left.val);
+            if(p.right==null)    
+                System.out.println("  , right is null");
+            else
+                System.out.println(",right= "+p.right.val);
+        }
+        // System.out.println("\n head is "+head.val);
+        // System.out.println(" = "+head.left.val);
+        // System.out.println(" = "+head.right.val);
+        // System.out.println(" = "+head.left.left.val);
+        // System.out.println(" = "+head.left.left.left.val);
+        // System.out.println(" = "+head.left.left.right.val);
     }
-    public static TreeNode formTr(ArrayList<TreeNode> al)
+    public static ArrayList<TreeNode> formTr(ArrayList<TreeNode> al)
     {
         if(al.isEmpty())
             return null;
         if(al.size()==1)
-            return al.get(0);
+            return al;// return al.get(0);
         TreeNode head=al.get(0);
         int pos=0;
         for (int i = 1; i < al.size(); i++) {
@@ -342,7 +358,8 @@ public class IBitCrtTr {
         System.out.println(" = "+head.left.left.val);
         System.out.println(" = "+head.left.left.left.val);
         System.out.println(" = "+head.left.left.right.val);
-        return head;
+        // return head;
+        return al;
     }
     public static ArrayList<Integer> inorderTraversal(TreeNode root) {
         ArrayList<Integer> ans=new ArrayList<>();
