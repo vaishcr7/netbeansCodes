@@ -26,11 +26,11 @@ public class IBitCrtTr {
 //        g.left=i;
         ArrayList<TreeNode> al=new ArrayList<>();
         al.add(a);
-        al.add(b);
         al.add(c);
+        al.add(b);
         al.add(d);
-        al.add(e);
         al.add(f);
+        al.add(e);
 //        al.add(c);
 //        al.add(i);
 //        al.add(g);
@@ -56,8 +56,10 @@ public class IBitCrtTr {
         if(pos>0)
         {
             TreeNode lh = al.get(pos - 1);
-            System.out.println("lh= "+lh.val);
+            
             for (int i = pos - 2; i >= 0; i--) {
+                if(lh!=null)
+                    System.out.println("lh= "+lh.val);
                 if (lh.val > al.get(i).val) 
                 {
                     if (lh.left == null) 
@@ -65,15 +67,22 @@ public class IBitCrtTr {
                         lh.left = al.get(i);
                         System.out.println("lh left= "+lh.left.val);
                     } 
-                    else if(lh.right==null) 
+                    else if(lh.right==null && lh.left.val<al.get(i).val) 
                     {
-                        lh.right = al.get(i);
-                        System.out.println("lh right= "+lh.right.val);
-                        TreeNode temp=lh.right;
-                        lh.right=lh.right;
-                        lh.right=temp;
-                        System.out.println("SWAPPED "+lh.right.val+" and "+lh.left.val);
+                        TreeNode temp=lh.left;
+                        lh.left=al.get(i);
+                        lh.left.left=temp;
+                        System.out.println("SWAPPED "+lh.left.val+" and "+lh.left.left.val);
                     }
+                    else if(lh.right==null && lh.left.val>al.get(i).val) 
+                    {
+                        TreeNode j=lh;
+                        //??
+                        while(j.left!=null)
+                            j=j.left;
+                        j.left = al.get(i);
+                        System.out.println("new lh left= "+j.left.val);
+                    }                    
                 } 
                 else 
                 {
