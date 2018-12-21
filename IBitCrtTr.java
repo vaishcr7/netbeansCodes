@@ -86,11 +86,21 @@ public class IBitCrtTr {
                     } 
                     else
                     {
-                        al.get(i).left=l;
-                        al.get(i).right=r;
-                        m.right=al.get(i);
-                        r=m.right;
-                        System.out.println("SWAPPED "+m.val+" and "+al.get(i).val);
+                        TreeNode y=m;
+                        while(y.right!=null && y.right.val>al.get(i).val)
+                        {
+                            y=y.right;
+                        }
+                        if(y.val>al.get(i).val)
+                        {
+                            al.get(i).right=y.right;
+                            y.right=al.get(i);
+                        }
+                        else
+                        {
+                            al.get(i).right=y;
+                            y=al.get(i);
+                        }
                     }                   
                 } 
                 else 
@@ -117,17 +127,26 @@ public class IBitCrtTr {
                     {
                         l = al.get(i);
                         m.left=l;
-                        if(r!=null)
-                            System.out.println("r= "+r.val);
+                        System.out.println("l= "+l.val);
                     } 
-                    else
+                     else
                     {
-                        al.get(i).left=l;
-                        al.get(i).right=r;
-                        m.left=al.get(i);
-                        l=m.left;
-                        System.out.println("SWAPPED "+m.val+" and "+al.get(i).val);
-                    }                   
+                        TreeNode y=m;
+                        while(y.left!=null && y.left.val>al.get(i).val)
+                        {
+                            y=y.left;
+                        }
+                        if(y.val>al.get(i).val)
+                        {
+                            al.get(i).left=y.left;
+                            y.left=al.get(i);
+                        }
+                        else
+                        {
+                            al.get(i).left=y;
+                            y=al.get(i);
+                        }
+                    }                      
                 } 
                 else 
                 {
