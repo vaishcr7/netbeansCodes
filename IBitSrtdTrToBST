@@ -28,8 +28,7 @@ public class Main {
         // System.out.println(" = "+head.right.left.val);
         // System.out.println(" = "+head.right.right.val);
     }
-    public static TreeNode mkHtBncdBST(ArrayList<TreeNode> al)
-    {
+    public TreeNode sortedArrayToBST(final List<Integer> al) {
         if(al.isEmpty())
             return null;
         if(al.size()==1)
@@ -45,25 +44,25 @@ public class Main {
             return null;
         if((end-st)==0)
             {
-                System.out.println("returning "+al.get(end).val);
+                // System.out.println("returning "+al.get(end).val);
                 return al.get(end);
             }
-        System.out.println("initial st= "+st+" and end= "+end);
+        // System.out.println("initial st= "+st+" and end= "+end);
         int mid=(end-st)/2;
         TreeNode head=al.get(st+mid);
-        System.out.println("mid= "+mid+" and head= "+head.val);
+        // System.out.println("mid= "+mid+" and head= "+head.val);
         if(mid-1>=0)
             head.left=gps(al,st,st+mid-1);
         if(end>=(st+mid-1))    
             head.right=gps(al,st+mid+1,end);
-        if(head.left!=null && head.right!=null)
-            System.out.println("head left= "+head.left.val+" and head's right= "+head.right.val);
-        else if(head.left!=null && head.right==null)
-            System.out.println("head left= "+head.left.val+" and head's right= null");
-        else if(head.left==null && head.right!=null)
-            System.out.println("head left= null"+" and head's right= "+head.right.val);
-        else if(head.left==null && head.right==null)
-            System.out.println("head left= null and head's right= null");            
+        // if(head.left!=null && head.right!=null)
+        //     System.out.println("head left= "+head.left.val+" and head's right= "+head.right.val);
+        // else if(head.left!=null && head.right==null)
+        //     System.out.println("head left= "+head.left.val+" and head's right= null");
+        // else if(head.left==null && head.right!=null)
+        //     System.out.println("head left= null"+" and head's right= "+head.right.val);
+        // else if(head.left==null && head.right==null)
+        //     System.out.println("head left= null and head's right= null");            
         return head;
     }
 }
