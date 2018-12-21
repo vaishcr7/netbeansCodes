@@ -1,57 +1,32 @@
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class IBitSrtdTrToBST {
+public class Main {
 
     public static void main(String[] args) {
-        //1,2,3,4,5,6
-        TreeNode a=new TreeNode(-10);
-        TreeNode b=new TreeNode(-3);
-        TreeNode c=new TreeNode(0);
-        TreeNode d=new TreeNode(5);
-        TreeNode e=new TreeNode(9);
-//        TreeNode g=new TreeNode(6);
-//        TreeNode h=new TreeNode(3);
-//        TreeNode i=new TreeNode(5);
-//        a.left=b;
-//        a.right=c;
-//        b.left=d;
-//        b.right=e;
-//        c.left=f;
-//        c.right=g;
-//        e.right=h;
-//        g.left=i;
+        // TreeNode a=new TreeNode(0);
+        TreeNode b=new TreeNode(1);
+        // TreeNode c=new TreeNode(2);
+        TreeNode d=new TreeNode(3);
+        // TreeNode e=new TreeNode(4);
+        // TreeNode f=new TreeNode(5);
+        // TreeNode g=new TreeNode(6);
         ArrayList<TreeNode> al=new ArrayList<>();
-        al.add(a);
+        // al.add(a);
         al.add(b);
-        al.add(c);
+        // al.add(c);
         al.add(d);
-        al.add(e);
         // al.add(e);
-//        al.add(c);
-//        al.add(i);
-//        al.add(g);
-        // al=new ArrayList<>(formTr(al));
-        // for(TreeNode p: al)
-        // {
-        //     System.out.print("node: "+p.val);
-        //     if(p.left==null)
-        //         System.out.print("  , left is null");
-        //     else
-        //         System.out.print(",left= "+p.left.val);
-        //     if(p.right==null)    
-        //         System.out.println("  , right is null");
-        //     else
-        //         System.out.println(",right= "+p.right.val);
-        // }
+        // al.add(f);
+        // al.add(g);
         TreeNode head=mkHtBncdBST(al);
         System.out.println("\n head is "+head.val);
         System.out.println(" = "+head.left.val);
-        System.out.println(" = "+head.right.val);
-        System.out.println(" = "+head.left.left.val);
-        System.out.println(" = "+head.right.left.val);
-        // System.out.println(" = "+head.left.left.right.val);
-        
+        // System.out.println(" = "+head.right.val);
+        // System.out.println(" = "+head.left.left.val);
+        // System.out.println(" = "+head.left.right.val);
+        // System.out.println(" = "+head.right.left.val);
+        // System.out.println(" = "+head.right.right.val);
     }
     public static TreeNode mkHtBncdBST(ArrayList<TreeNode> al)
     {
@@ -60,60 +35,37 @@ public class IBitSrtdTrToBST {
         if(al.size()==1)
             return al.get(0);
         int mid=al.size()/2;
-        System.out.println("head= "+al.get(mid).val);
         al.get(mid).left=gps(al,0,mid-1);
         al.get(mid).right=gps(al,mid+1,al.size()-1);
         return al.get(mid);
     }
     public static TreeNode gps(ArrayList<TreeNode> al,int st,int end)
     {
+        if(end<st)
+            return null;
         if((end-st)==0)
             {
-                System.out.println("returning null");
-                return null;
+                System.out.println("returning "+al.get(end).val);
+                return al.get(end);
             }
         System.out.println("initial st= "+st+" and end= "+end);
         int mid=(end-st)/2;
         TreeNode head=al.get(st+mid);
         System.out.println("mid= "+mid+" and head= "+head.val);
-        head.left=gps(al,0,st+mid-1);
-        head.right=gps(al,st+mid+1,end-1);
-        System.out.println("head left= "+head.left.val+" and head's right= "+head.right.val);
+        if(mid-1>=0)
+            head.left=gps(al,st,st+mid-1);
+        if(end>=(st+mid-1))    
+            head.right=gps(al,st+mid+1,end);
+        if(head.left!=null && head.right!=null)
+            System.out.println("head left= "+head.left.val+" and head's right= "+head.right.val);
+        else if(head.left!=null && head.right==null)
+            System.out.println("head left= "+head.left.val+" and head's right= null");
+        else if(head.left==null && head.right!=null)
+            System.out.println("head left= null"+" and head's right= "+head.right.val);
+        else if(head.left==null && head.right==null)
+            System.out.println("head left= null and head's right= null");            
         return head;
     }
-    // public static ArrayList<Integer> inorderTraversal(TreeNode root) {
-    //     ArrayList<Integer> ans=new ArrayList<>();
-    //     if(root==null)
-    //         return ans;
-    //     Stack<TreeNode> st=new Stack<>();
-    //     st.push(root);
-    //     boolean done =false;
-    //     TreeNode k=root;
-    //     while(!st.isEmpty())
-    //     {
-    //             k=st.pop();
-    //             System.out.print("k= "+k.val);
-    //             if(k.left!=null)
-    //             {
-    //                 st.push(k);
-    //                 st.push(k.left);
-    //                 k.left=null;
-    //                 System.out.println("case 1");
-    //             }
-    //             else if(k.right==null)
-    //             {
-    //                 ans.add(k.val);
-    //                 System.out.println("case 2");
-    //             }
-    //             else if(k.right!=null)
-    //             {
-    //                 ans.add(k.val);
-    //                 st.push(k.right);
-    //                 System.out.println("case 3");
-    //             }
-    //       }
-    //     return ans;
-    // }
 }
 class TreeNode
 {
