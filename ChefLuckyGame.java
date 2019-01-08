@@ -59,8 +59,16 @@ public class ChefLuckyGame {
                 }
                 else
                 {
-                    writer.write("ALICE\n");
-                    writer.flush();
+                    if(compareLists(b, common) && b.size()==a.size())
+                    {
+                        writer.write("BOB\n");
+                        writer.flush();
+                    }
+                    else
+                    {   
+                        writer.write("ALICE\n");
+                        writer.flush();
+                    }
                     continue;
                 }
             }
