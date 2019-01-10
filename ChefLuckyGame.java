@@ -34,7 +34,6 @@ public class ChefLuckyGame {
                 writer.flush();
                 continue;
             }
-            Collections.sort(al);
             for (Integer ip : al) {
                 if(ip%bob==0)
                 {
@@ -55,11 +54,10 @@ public class ChefLuckyGame {
                 {
                     writer.write("BOB\n");
                     writer.flush();
-                    continue;
                 }
                 else
                 {
-                    if(compareLists(b, common) && b.size()==a.size())
+                    if(b.size()==a.size())
                     {
                         writer.write("BOB\n");
                         writer.flush();
@@ -69,8 +67,8 @@ public class ChefLuckyGame {
                         writer.write("ALICE\n");
                         writer.flush();
                     }
-                    continue;
                 }
+                continue;
             }
             if(!common.isEmpty() && compareLists(b, common) && a.size()<b.size())
             {
@@ -78,7 +76,13 @@ public class ChefLuckyGame {
                  writer.flush();
                  continue;
             }
-            if(b.size()>a.size())
+//            System.out.println("b size= "+b.size()+" and a size= "+a.size()); // 1 5 2 11 22 44 66 2 11
+            if(common.isEmpty() && b.size()>a.size())
+            {
+                 writer.write("BOB\n");
+                 writer.flush();
+            }
+            else if(!common.isEmpty() && b.size()>=a.size())
             {
                  writer.write("BOB\n");
                  writer.flush();
