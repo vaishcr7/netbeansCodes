@@ -1,3 +1,5 @@
+package ibiteditdist;
+
 import java.util.Scanner;
 
 public class IBitEditDist {
@@ -15,8 +17,9 @@ public class IBitEditDist {
         int j=w2.length()-1;
         int minLen=(int)Math.min(i,j);
         int sum=0;
-        while(i>0 && j>0)
+        while(i>=0 && j>=0)
         {
+//            System.out.println("w1 char= "+w1.charAt(i)+" and w2 char=  "+w2.charAt(j));
             if(w1.charAt(i)==w2.charAt(j))
             {
                 i--;
@@ -39,7 +42,6 @@ public class IBitEditDist {
                         {
                             i--;
                             System.out.println("case 3");
-                            break;
                         }
                         else
                         {
@@ -63,19 +65,16 @@ public class IBitEditDist {
                             i--;
                             j--;
                             System.out.println("case 6");
-                            break;
                         }
-                        else if(i==0)
+                        else if(i==0 && j!=0)
                         {
                             j--;
                             System.out.println("case 7");
-                            break;
                         }
-                        else if(j==0)
+                        else if(j==0 && i!=0)
                         {
                             i--;
                             System.out.println("case 8");
-                            break;
                         }
                         else
                         {
@@ -96,14 +95,15 @@ public class IBitEditDist {
                 sum+=1;
             }
         }
-        if(i==0 && j==0)
-        {
-            System.out.println("here");
-            if(w1.charAt(0)!=w2.charAt(0))
-                sum+=1;
-        }
-        System.out.println("sum = "+sum);
-        sum+=Math.abs(i-j);
+//        if(i==0 || j==0)
+//        {
+//            System.out.println("here");
+//            if(w1.charAt(0)!=w2.charAt(0))
+//                sum+=1;
+//        }
+        System.out.println("sum = "+sum+" ,i= "+i+" and j= "+j);
+        if(j>0)
+            sum+=Math.abs(i-j);
         System.out.println("minimum steps taken are "+sum);
     }
 }
