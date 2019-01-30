@@ -1,0 +1,76 @@
+import java.util.ArrayList;
+
+public class distSubseq {
+    public static void main(String[] args) {
+        distSubseq ob=new distSubseq();
+//        System.out.println(ob.numDistinct("adbdadeecadeadeccaeaabdabdbcdabddddabcaaadbabaaedeeddeaeebcdeabcaaaeeaeeabcddcebddebeebedaecccbdcbcedbdaeaedcdebeecdaaedaacadbdccabddaddacdddc","bcddceeeebecbc"));
+        System.out.println(ob.numDistinct("babgbag","bag"));
+    }
+    public int numDistinct(String s, String t) {
+        if(t.length()>s.length())
+            return 0;
+        if(s.isEmpty())
+            return 0;
+        if(t.isEmpty())
+            return 1;
+        ArrayList<ArrayList<Integer>> al=new ArrayList<>();
+        ArrayList<Integer> p=new ArrayList<>();
+        for(int i=0;i<s.length();i++)
+        {
+            if(s.charAt(i)==t.charAt(0))
+            {
+                p.add(i);
+            }
+        }
+        if(p.isEmpty())
+            return 0;
+        if(t.length()==1)
+            return p.size();
+        al.add(p);
+        for(int i=1;i<t.length();i++)
+        {
+            if(al.get(i-1).isEmpty())
+                return 0;
+            int min=al.get(i-1).get(0);
+            ArrayList<Integer> pp=new ArrayList<>();
+            for(int j=min+1;j<s.length();j++)
+            {
+                if(s.charAt(j)==t.charAt(i))
+                {
+                    pp.add(j);
+                }
+            }
+            al.add(pp);
+        }
+            ArrayList<Integer> ap = new ArrayList<>();
+            for (int i = 0; i < al.get(al.size()-2).size();i++)
+            {
+                int count=0;
+                for (int j = 0; j < al.get(al.size()-1).size();j++)
+                {
+                    if(al.get(al.size()-2).get(i)<al.get(al.size()-1).get(j))
+                        count+=1;
+                }
+                ap.add(count);
+            }
+            int q=al.size()-3;
+            while(q>=0) {
+                ArrayList<Integer> bm = new ArrayList<>();
+                for (int i = 0; i < al.get(q).size(); i++) {
+                    int count = 0;
+                    for (int j = 0; j < al.get(q + 1).size(); j++) {
+                        if (al.get(q).get(i) < al.get(q+1).get(j))
+                            count += ap.get(j);
+                    }
+                    bm.add(count);
+                }
+                ap=new ArrayList<>(bm);
+                q-=1;
+            }
+            System.out.println("ap= "+ap);
+            int sum=0;
+            for(int i:ap)
+                sum+=i;
+            return sum;
+    }
+}
