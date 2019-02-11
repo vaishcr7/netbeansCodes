@@ -1,0 +1,104 @@
+package largRect;
+
+import java.util.Stack;
+
+public class lgRec {
+public static void main(String []args)
+{
+//	char [][]mat={{'1','0','1','0','0'},{'1','0','1','1','1'},{'1','1','1','1','1'},{'1','0','0','1','0'}};
+	char [][]mat={{'0','1'}};
+	System.out.println((new lgRec()).maximalRectangle(mat));
+}
+public int maximalRectangle(char[][] matrix) {
+    int [][]ar=new int[matrix.length][matrix[0].length];
+    for(int j=0;j<matrix[0].length;j++)
+    {
+    	ar[0][j]=(matrix[0][j]=='1'?1:0);
+    }
+    for(int i=1;i<matrix.length;i++)
+    {
+    	for(int j=1;j<matrix[0].length;j++)
+    	{
+    		if(matrix[i][j]=='0')
+    			ar[i][j]=0;
+    		else
+    			ar[i][j]+=ar[i-1][j]+1;
+    	}
+    }
+    return maxRect(0,0,matrix,ar);
+}
+public int maxRect(int i,int j,char[][]matrix,int [][]height)
+{
+if(i==matrix.length || j==matrix[0].length)
+	return 0;
+int max=Integer.MIN_VALUE;
+for(int k=0;k<matrix.length;k++)
+{
+	int []p=height[k];
+//	for(int y=0;y<p.length;y++)
+//		System.out.print(p[y]+" , ");
+//	System.out.println("");
+	int g=histRect(p);
+//	System.out.println("g= "+g+" and p= ");
+	max=(max<g?g:max);
+}
+return max;
+}
+public int histRect(int []lt )
+{
+	Stack<Integer> st=new Stack<>();
+	int maxArea=-1;
+	int area=-1;
+	for(int i=0;i<lt.length;i++)
+	{
+		if(st.isEmpty())
+			{
+				st.push(i);
+			}
+		else
+		{
+			if(lt[st.peek()]<=lt[i])
+				st.push(i);
+			else
+			{
+				while(!st.isEmpty() && lt[st.peek()]>lt[i])
+				{
+					int top=st.pop();
+//					System.out.println("area is "+area+" and st= "+st+" and top= "+top+" and elem= "+lt[i]);
+					if(!st.isEmpty())
+						area=lt[top]*(i-st.peek()-1);
+					else
+						area=lt[top]*i;
+//					System.out.println("area is "+area);
+					maxArea=maxArea<area?area:maxArea;
+				}
+				st.push(i);
+//				System.out.println("current st= "+st+" and maxarea= "+maxArea);
+			}
+		}
+	}
+//	System.out.println("finaLP st= "+st+" and maxarea= "+maxArea);
+	int t=-1,len=1;
+	if(!st.isEmpty())
+		t=st.peek();
+	while(!st.isEmpty())
+	{
+		if(lt[st.peek()]<=lt[t] && t!=0)
+		{
+			t=st.pop();
+			len+=1;
+			if(t==0)
+				len-=1;
+			maxArea=maxArea<(lt[t]*len)?(lt[t]*len):maxArea;
+			System.out.println("current st= "+st+" and maxarea= "+maxArea+" ,len= "+len);
+		}
+		else
+		{
+			maxArea=maxArea<(lt[t])?(lt[t]):maxArea;
+			t=st.pop();
+		}
+	}
+//	System.out.println("st is "+st+" and maxarea is "+maxArea);
+	return maxArea;
+}
+}
