@@ -1,0 +1,132 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class IbitCuttingRod {
+public static void main(String []args)
+{
+	ArrayList<Integer> al=new ArrayList<Integer>();
+	al.add(1);
+	al.add(2);
+	al.add(5);
+//	al.add(9);
+//	al.add(10);
+//	al.add(17);
+//	al.add(17);
+//	al.add(20);
+	int n=6;
+	
+//	System.out.println(drivFunc(al));
+	System.out.println(jumble(al,n));
+}
+public static ArrayList<ArrayList<Integer>> jumble(ArrayList<Integer> al,int n)
+{
+	int [][]ar=new int[al.size()][al.size()];
+	for(int i=0;i<ar.length;i++)
+		for(int j=0;j<ar.length;j++)
+			if(i>j)
+				ar[i][j]=0;
+	ArrayList<ArrayList<Integer>> ans=new ArrayList<ArrayList<Integer>>();
+	ans.add(new ArrayList<Integer>());
+	Collections.sort(al,Collections.reverseOrder());
+	while(ans.get(0).size()!=al.size())
+	{
+		ArrayList<ArrayList<Integer>> temp=new ArrayList<ArrayList<Integer>>();
+		for(ArrayList<Integer> p:ans)
+		{
+			for(int i=0;i<al.size();i++)
+			{
+				ArrayList<Integer>pp=new ArrayList<Integer>(p);
+				if(!pp.contains(i))
+					{
+						pp.add(i);
+						temp.add(pp);
+					}					
+			}
+		}
+		ans=new ArrayList<ArrayList<Integer>>(temp);
+	}
+	return ans;
+}
+public static int fnc(int n,ArrayList<Integer> al,int [][]ar,int st,int end){
+	int sum=end-st;
+	if(end==st)
+		return 0;
+	int min=Integer.MAX_VALUE;
+	for(int i=st;i<=end;i++)
+	{
+		if(ar[st][i]>0)
+			sum+=ar[st][i];
+		else
+		{
+			int y=i-st;
+			for(int k=st+1;k<i;k++)
+				if(ar[st][i]>0)
+					y-=ar[st][i];
+			ar[st][i]=y;
+			sum+=y;
+		}
+		if(ar[i][end]>0)
+			sum+=ar[i][end];
+		else
+		{
+			int y=end-i;
+			for(int k=i+1;k<end;k++)
+				if(ar[i][k]>0)
+					y-=ar[i][k];
+			ar[i][end]=y;
+			sum+=y;
+		}
+		min=min>sum?sum:min;
+	}
+	return min;
+}
+
+
+
+
+
+
+//
+//public static int drivFunc(ArrayList<Integer> al)
+//{
+//	if(al.isEmpty())
+//		return 0;
+//	return cut(al,al.size());
+//}
+//public static int cut(ArrayList<Integer> al,int n)
+//{
+//	if(n==1)
+//		return al.get(n-1);
+//	int max=al.get(n-1);
+////	System.out.println("n= "+n);
+//	for(int i=1;i<=n/2;i++)
+//	{
+//		int j=n-i;
+////		System.out.println("n= "+n+" and i= "+i+" ,j= "+j);
+//		if(mp.containsKey(i) && mp.containsKey(j))
+//			max=max<(mp.get(i)+mp.get(j))?(mp.get(i)+mp.get(j)):max;
+//		else {
+//			int sum=0;
+//			if(mp.containsKey(i))
+//				sum+=mp.get(i);
+//			else
+//			{
+//				sum+=cut(al,i);
+//			}
+//			if(mp.containsKey(j))
+//				sum+=mp.get(j);
+//			else
+//			{
+//				sum+=cut(al,j);
+//			}
+////			System.out.println("final sum= "+sum);
+//			max=max<sum?sum:max;
+//			}
+//	}
+////	System.out.println("max for "+n+" is "+max);
+//	mp.put(n,max);
+//	return max;
+//}
+}
