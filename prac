@@ -1,0 +1,154 @@
+package traversalGraph;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
+
+public class trvs {
+	public static void main(String []args)
+	{
+	Graph g=new Graph(6);
+	vertex a=new vertex(1);
+	vertex b=new vertex(2);
+	vertex c=new vertex(4);
+	vertex d=new vertex(3);
+	vertex e=new vertex(5);
+	vertex f=new vertex(6);
+	g.addVertex(a);
+	g.addVertex(b);
+	g.addVertex(c);
+	g.addVertex(d);
+	g.addVertex(e);
+	g.addVertex(f);
+	g.addEdge(a, b);
+	g.addEdge(a, c);
+	g.addEdge(b, d);
+	g.addEdge(c, e);
+	g.addEdge(e, f);
+//	ArrayList<vertex> vt=g.dfs(a);
+//	for(vertex x:vt)
+//	{
+//		System.out.print(x.val+" , ");
+//	}
+//	System.out.println("");
+	for(vertex k:g.topSort(a))
+	{
+		System.out.print(k.val+" , ");
+	}
+	System.out.println("");
+	}
+}
+class Graph
+{
+	public int numOfVertices;
+	public ArrayList<vertex> vertexList;
+	public ArrayList<LinkedList<vertex>> adjList;
+	public Graph(int x) {
+		numOfVertices=x;
+		vertexList=new ArrayList<vertex>();
+		adjList=new ArrayList<LinkedList<vertex>>();
+	}
+	public void addVertex(vertex a)
+	{
+		vertexList.add(a);
+		adjList.add(new LinkedList<vertex>());
+	}
+	public void addEdge(vertex src,vertex dest)//directed
+	{
+		adjList.get(src.val-1).add(dest);		
+	}
+	public ArrayList<vertex> topSort(vertex root)
+	{
+		ArrayList<vertex> ap=new ArrayList<vertex>();
+		int []indegree=new int[vertexList.size()];
+		for(LinkedList<vertex> lt:adjList)
+		{
+			for(int i=0;i<lt.size();i++)
+			{
+				indegree[lt.get(i).val-1]+=1;
+			}
+		}
+		int count=0;
+		while(count<vertexList.size())
+		{
+			int minPos=0;
+			boolean flag=false;
+			for(int i=0;i<vertexList.size();i++)
+			{
+				if(indegree[i]==0)
+				{
+					ap.add(vertexList.get(i));
+					indegree[i]=Integer.MAX_VALUE;
+					count++;
+					flag=true;
+					break;
+				}
+				minPos=indegree[i]<indegree[minPos]?i:minPos;
+			}
+			if(!flag)
+			{
+				ap.add(vertexList.get(minPos));
+				indegree[minPos]=Integer.MAX_VALUE;
+				for(int j=0;j<adjList.size();j++)
+				{
+					if(adjList.get(j).contains(vertexList.get(minPos)))
+						indegree[j]-=1;
+				}
+				count++;
+			}
+		}
+		return ap;
+	}
+	public ArrayList<vertex> bfs(vertex root)
+	{
+		ArrayList<vertex> ans=new ArrayList<vertex>();
+		ArrayDeque<vertex> st=new ArrayDeque<>();
+		st.offer(root);
+		while(!st.isEmpty())
+		{
+			vertex k=st.poll();
+			ans.add(k);
+			k.visited=true;
+			for(int i=0;i<adjList.get(k.val-1).size();i++)
+			{
+				if(!adjList.get(k.val-1).get(i).visited)
+					st.offer(adjList.get(k.val-1).get(i));
+			}
+		}
+		return ans;
+	}
+	public ArrayList<vertex> dfs(vertex root)
+	{
+		ArrayList<vertex> ans=new ArrayList<vertex>();
+		ArrayDeque<vertex> st=new ArrayDeque<>();
+		st.push(root);
+		ans.add(root);
+		while(!st.isEmpty())
+		{
+			vertex k=st.peek();
+			k.visited=true;
+			for(int i=0;i<adjList.get(k.val-1).size();i++)
+			{
+				if(!adjList.get(k.val-1).get(i).visited)
+					{
+						ans.add(adjList.get(k.val-1).get(i));
+						st.push(adjList.get(k.val-1).get(i));
+						break;
+					}
+			}
+			if(k==st.peek())
+				st.pop();
+		}
+		return ans;
+	}
+}
+class vertex
+{
+	int val;
+	boolean visited;
+	public vertex(int val) {
+		this.val=val;
+		visited=false;
+	}
+}
