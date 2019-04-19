@@ -1,8 +1,7 @@
-package countPairsWithDiffK;
-
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class CountPairsWithDiffK {
 static class Reader {
@@ -24,18 +23,6 @@ static class Reader {
             bufferPointer = bytesRead = 0;
         }
 
-        public String readLine() throws IOException {
-            byte[] buf = new byte[64]; // line length
-            int cnt = 0, c;
-            while ((c = read()) != -1) {
-                if (c == '\n') {
-                    break;
-                }
-                buf[cnt++] = (byte) c;
-            }
-            return new String(buf, 0, cnt);
-        }
-
         public int nextInt() throws IOException {
             int ret = 0;
             byte c = read();
@@ -49,52 +36,6 @@ static class Reader {
             do {
                 ret = ret * 10 + c - '0';
             } while ((c = read()) >= '0' && c <= '9');
-
-            if (neg) {
-                return -ret;
-            }
-            return ret;
-        }
-
-        public long nextLong() throws IOException {
-            long ret = 0;
-            byte c = read();
-            while (c <= ' ') {
-                c = read();
-            }
-            boolean neg = (c == '-');
-            if (neg) {
-                c = read();
-            }
-            do {
-                ret = ret * 10 + c - '0';
-            } while ((c = read()) >= '0' && c <= '9');
-            if (neg) {
-                return -ret;
-            }
-            return ret;
-        }
-
-        public double nextDouble() throws IOException {
-            double ret = 0, div = 1;
-            byte c = read();
-            while (c <= ' ') {
-                c = read();
-            }
-            boolean neg = (c == '-');
-            if (neg) {
-                c = read();
-            }
-
-            do {
-                ret = ret * 10 + c - '0';
-            } while ((c = read()) >= '0' && c <= '9');
-
-            if (c == '.') {
-                while ((c = read()) >= '0' && c <= '9') {
-                    ret += (c - '0') / (div *= 10);
-                }
-            }
 
             if (neg) {
                 return -ret;
@@ -127,14 +68,45 @@ static class Reader {
      Reader sc=new Reader();
      try
      {
-         int n=Integer.parseInt(sc.readLine());
-         int k=Integer.parseInt(sc.readLine());
+         int n=sc.nextInt();
+         int k=sc.nextInt();
          int []ar=new int[n];
+         for(int i=0;i<n;i++){
+             ar[i]=sc.nextInt();
+         }
+         Arrays.sort(ar);
+         int count=0;
+         for(int i=0;i<n;i++){
+             if(binSrch(ar, ar[i]+k,i))
+                count++;
+         }
+         System.out.println(count);
+         sc.close();
      }
      catch(Exception e){
          System.out.println(e);
-     }
-        
+     }        
     }
-    
+    public static boolean binSrch(int []ar,int target,int start){
+        int low=start;
+        int high=ar.length-1;
+        // System.out.println("came for element "+ar[start]);
+        while(low<high)
+        {
+            // System.out.println("intial low: "+low+" high "+high);
+            if(ar[(low+high)/2]==target)
+                {
+                    // System.out.println("true for "+target+" for element "+ar[start]);
+                    return true;
+                }
+            else if(ar[(low+high)/2]<target)
+                low=((low+high)/2)+1;
+            else
+                high=((low+high)/2)-1;
+            // System.out.println("low: "+low+" high "+high);
+        }
+        if(ar[low]==target)
+            return true;
+        return false;            
+    }
 }
