@@ -144,6 +144,7 @@ public class SpojTesser {
                      str.append("E");
                  num=h;
              }
+             sc.read();
              String pattern=sc.readLine();
              boolean f=kmpMatch(pattern, createTempArr(pattern), str);
              if(f)
@@ -155,15 +156,16 @@ public class SpojTesser {
          System.out.println(ans.toString());
     }
     catch(Exception e){
-        System.out.println(e.getStackTrace());
+        System.out.println(e.getMessage());
     }
 }
     public static int[] createTempArr(String pattern){
-        System.out.println("inside temp array");
+        System.out.println("inside temp array, pattern is "+pattern);
         int []tar=new int[pattern.length()];
         tar[0]=0;
         int i=1,j=0;
-        while(i<tar.length){
+        while(i<tar.length)
+        {
             if(pattern.charAt(i)==pattern.charAt(j))
             {
                 tar[i]=j+1;
@@ -171,9 +173,9 @@ public class SpojTesser {
             }
             else
             {
-                while(j!=0 && pattern.charAt(j)!=pattern.charAt(i) && i>0)
+                while(j>0 && pattern.charAt(j)!=pattern.charAt(i) && i>0)
                 {
-                    j=tar[i-1];
+                    j=tar[j-1];
                 }
                 if(pattern.charAt(j)==pattern.charAt(i))
                     tar[i]=j+1;
@@ -181,14 +183,20 @@ public class SpojTesser {
                     tar[i]=0;
             }
             i++;
+//            System.out.println("here");
         }
-        System.out.println("returning arr-> "+tar);
+        System.out.println("returning arr-> ");
+        for (int k = 0; k < tar.length; k++) {
+            System.out.print(tar[k]+" , ");
+        }
+        System.out.println("");
         return tar;
     }
     public static boolean kmpMatch(String pattern,int []tar,StringBuilder str){
         int i=0; // str pointer
         int j=0; // pattern pointer
         int count=0; // count==pattern.length means match found
+        System.out.println("pattern= "+pattern+" and str= "+str.toString());
         while(i<str.length()){
             if(str.charAt(i)==pattern.charAt(j))
             {
