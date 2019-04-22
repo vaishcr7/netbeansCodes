@@ -1,0 +1,210 @@
+package spojtesser;
+
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class SpojTesser {
+    static class Reader {
+
+        final private int BUFFER_SIZE = 1 << 16;
+        private DataInputStream din;
+        private byte[] buffer;
+        private int bufferPointer, bytesRead;
+
+        public Reader() {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public Reader(String file_name) throws IOException {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public String readLine() throws IOException {
+            byte[] buf = new byte[64]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1) {
+                if (c == '\n') {
+                    break;
+                }
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+
+        public int nextInt() throws IOException {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            boolean neg = (c == '-');
+            if (neg) {
+                c = read();
+            }
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+
+            if (neg) {
+                return -ret;
+            }
+            return ret;
+        }
+
+        public long nextLong() throws IOException {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            boolean neg = (c == '-');
+            if (neg) {
+                c = read();
+            }
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (neg) {
+                return -ret;
+            }
+            return ret;
+        }
+
+        public double nextDouble() throws IOException {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            boolean neg = (c == '-');
+            if (neg) {
+                c = read();
+            }
+
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+
+            if (c == '.') {
+                while ((c = read()) >= '0' && c <= '9') {
+                    ret += (c - '0') / (div *= 10);
+                }
+            }
+
+            if (neg) {
+                return -ret;
+            }
+            return ret;
+        }
+
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1) {
+                buffer[0] = -1;
+            }
+        }
+
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead) {
+                fillBuffer();
+            }
+            return buffer[bufferPointer++];
+        }
+
+        public void close() throws IOException {
+            if (din == null) {
+                return;
+            }
+            din.close();
+        }
+    }
+    public static void main(String[] args) {
+    Reader sc=new Reader();
+    StringBuilder ans=new StringBuilder();
+    try
+    {
+         int t=sc.nextInt();
+         while(t-->0){
+             int n=sc.nextInt();
+             StringBuilder str=new StringBuilder();
+             int num=sc.nextInt();
+             for(int i=1;i<n;i++)
+             {
+                 int h=sc.nextInt();
+                 if(h>num)
+                     str.append("G");
+                 else if(h<num)
+                     str.append("L");
+                 else
+                     str.append("E");
+                 num=h;
+             }
+             String pattern=sc.readLine();
+             boolean f=kmpMatch(pattern, createTempArr(pattern), str);
+             if(f)
+                 ans.append("YES").append("\n");
+             else
+                 ans.append("NO").append("\n");
+         }
+         ans.deleteCharAt(ans.length()-1);
+         System.out.println(ans.toString());
+    }
+    catch(Exception e){
+        System.out.println(e.getStackTrace());
+    }
+}
+    public static int[] createTempArr(String pattern){
+        System.out.println("inside temp array");
+        int []tar=new int[pattern.length()];
+        tar[0]=0;
+        int i=1,j=0;
+        while(i<tar.length){
+            if(pattern.charAt(i)==pattern.charAt(j))
+            {
+                tar[i]=j+1;
+                j++;
+            }
+            else
+            {
+                while(j!=0 && pattern.charAt(j)!=pattern.charAt(i) && i>0)
+                {
+                    j=tar[i-1];
+                }
+                if(pattern.charAt(j)==pattern.charAt(i))
+                    tar[i]=j+1;
+                else
+                    tar[i]=0;
+            }
+            i++;
+        }
+        System.out.println("returning arr-> "+tar);
+        return tar;
+    }
+    public static boolean kmpMatch(String pattern,int []tar,StringBuilder str){
+        int i=0; // str pointer
+        int j=0; // pattern pointer
+        int count=0; // count==pattern.length means match found
+        while(i<str.length()){
+            if(str.charAt(i)==pattern.charAt(j))
+            {
+                i++;
+                j++;
+                count++;
+            }
+            else
+            {
+                if(i>0)
+                    j=tar[j-1];                    
+                count=j;
+            }
+        }
+        if(count==pattern.length())
+            return true;
+        return false;
+    }
+}
