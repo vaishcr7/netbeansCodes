@@ -168,12 +168,13 @@ public class SpojMiceMaze {
             else
             {
                 g.beforeRunningbfs();
-                g.controllingFunc(timeLimit);
-                System.out.println(g.sum);
+                int count=g.controllingFunc(timeLimit);
+                System.out.println(count);
             }
         }
         catch(Exception e)
-        {       
+        {
+            System.out.println(e.getStackTrace());
         }
     }   
 }
@@ -296,6 +297,7 @@ class graph // it is a directed and weighted graph
         int count=0;
         vertex cell=vertexList.get(exitCellVertexIndex);
         for(int i=0;i<vertexList.size();i++){
+            System.out.println("calling dijsktra");
             disjkstra(vertexList.get(i),cell);
             if(cell.timeExhausted<=tL)
                 count++;
@@ -306,9 +308,12 @@ class graph // it is a directed and weighted graph
                 vertexList.get(j).timeExhausted=0;
             }
         }
+        System.out.println("count is "+count);
         return count;
     }
     public int disjkstra(vertex v,vertex exitCell){
+        if(v==exitCell)
+            return 0;
         v.visited=true;  
         v.timeExhausted=0;
         PriorityQueue<edge> pq=new PriorityQueue<>(new Comparator<edge>(){
@@ -321,18 +326,23 @@ class graph // it is a directed and weighted graph
             }
         });
 
-        adjList.get(v.label).forEach(e-> {  pq.add(e); });
-        
+        adjList.get(v.label-1).forEach(e-> {  pq.add(e); });
+        Map<edge,Integer> mp=new HashMap<>();
         while(!pq.isEmpty()){
             edge e=pq.poll();
+            mp.put(e,0);
             vertex destAdjListHead=e.destination;
-            if(!adjList.get(e.destination.label).isEmpty())
+            if(!adjList.get(e.destination.label-1).isEmpty())
             {
-                adjList.get(destAdjListHead.label).forEach(p -> {  pq.add(p);  });
+                adjList.get(destAdjListHead.label-1).forEach(p -> { 
+                    if(!mp.containsKey(p))
+                        pq.add(p);  
+                });
             }
             if(e.destination.timeExhausted>(e.weight+e.source.timeExhausted))
                 e.destination.timeExhausted=(e.weight+e.source.timeExhausted);
         }
+        System.out.println("time taken to reach "+exitCell.label+" from "+v.label+" is "+exitCell.timeExhausted);
         return exitCell.timeExhausted;
     }
 }
