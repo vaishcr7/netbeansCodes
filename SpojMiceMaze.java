@@ -1,4 +1,3 @@
-package spojmicemaze;
 
 import java.io.DataInputStream;
 
@@ -327,7 +326,7 @@ public class SpojMiceMaze {
 
             {
 
-                g.beforeRunningbfs();
+                // g.beforeRunningbfs();
 
                 int count=g.controllingFunc(timeLimit);
 
@@ -353,7 +352,7 @@ class graph // it is a directed and weighted graph
 
 {
 
-    public static int sum=0;
+    // public static int sum=0;
 
     public  int exitCellVertexIndex;
 
@@ -365,7 +364,7 @@ class graph // it is a directed and weighted graph
 
     public ArrayList<LinkedList<edge>> adjList;
 
-    public Queue<vertex> queue;
+    // public Queue<vertex> queue;
 
     public graph(int index) {
 
@@ -377,7 +376,7 @@ class graph // it is a directed and weighted graph
 
         numOfVertices=0;
 
-        queue=new LinkedList<>();
+        // queue=new LinkedList<>();
 
 //        visitedVertices=new ArrayList<>();
 
@@ -467,41 +466,41 @@ class graph // it is a directed and weighted graph
 
     }
 
-    public void beforeRunningbfs()
+    // public void beforeRunningbfs()
 
-    {
+    // {
 
-        queue.offer(vertexList.get(exitCellVertexIndex));
+    //     queue.offer(vertexList.get(exitCellVertexIndex));
 
-        vertexList.get(exitCellVertexIndex).visited=true;
+    //     vertexList.get(exitCellVertexIndex).visited=true;
 
-    }
+    // }
 
-    public void printQueueContents()
+    // public void printQueueContents()
 
-    {
+    // {
 
-        Iterator it=queue.iterator();
+    //     Iterator it=queue.iterator();
 
-        System.out.println("--------------------------------");
+    //     System.out.println("--------------------------------");
 
-        while(it.hasNext())
+    //     while(it.hasNext())
 
-        {
+    //     {
 
-            vertex k=(vertex)it.next();
+    //         vertex k=(vertex)it.next();
 
-            System.out.println(k.label+" -> "+k.timeExhausted);
+    //         System.out.println(k.label+" -> "+k.timeExhausted);
 
-        }
+    //     }
 
-        System.out.println("--------------------------------");
+    //     System.out.println("--------------------------------");
 
-    }
+    // }
 
-    public void bfsmodif(int timeLimit)
+    // public void bfsmodif(int timeLimit)
 
-    {
+    // {
 
 //        if(queue.isEmpty())
 
@@ -577,7 +576,7 @@ class graph // it is a directed and weighted graph
 
 //        bfsmodif(timeLimit);
 
-    }
+    // }
 
     public  int controllingFunc(int tL){
 
@@ -591,7 +590,7 @@ class graph // it is a directed and weighted graph
             if(exitCellVertexIndex!=i)
                 {
                     disjkstra(vertexList.get(i),cell);
-                    System.out.println("calling dijsktra");
+                    // System.out.println("calling dijsktra");
                 }
 
             if(cell.timeExhausted<=tL || i==exitCellVertexIndex)
@@ -607,14 +606,14 @@ class graph // it is a directed and weighted graph
                 vertexList.get(j).visited=false;
 
                 vertexList.get(j).timeExhausted=Integer.MAX_VALUE;
-                System.out.print("reset");
+                // System.out.print("reset");
 
             }
-            System.out.println("");
+            // System.out.println("");
 
         }
 
-        System.out.println("count is "+count);
+        // System.out.println("count is "+count);
 
         return count;
 
@@ -675,18 +674,18 @@ class graph // it is a directed and weighted graph
                 });
 
             }
-            System.out.println("edge=> "+e.source.label+" -- "+e.destination.label+" with weight "+e.weight);
+            // System.out.println("edge=> "+e.source.label+" -- "+e.destination.label+" with weight "+e.weight);
 
             if(e.destination.timeExhausted>(e.weight+e.source.timeExhausted))
 
                 {
                     e.destination.timeExhausted=(e.weight+e.source.timeExhausted);
-                    System.out.println("changed for this edge and new time exhausted is "+exitCell.timeExhausted);
+                    // System.out.println("changed for this edge and new time exhausted is "+exitCell.timeExhausted);
                 }
 
         }
 
-        System.out.println("time taken to reach "+exitCell.label+" from "+v.label+" is "+exitCell.timeExhausted);
+        // System.out.println("time taken to reach "+exitCell.label+" from "+v.label+" is "+exitCell.timeExhausted);
 
         return exitCell.timeExhausted;
 
@@ -732,6 +731,8 @@ class edge
 
         this.weight = weight;
 
-    }    
+    }
+
+    
 
 }
