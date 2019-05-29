@@ -167,14 +167,6 @@ public class FastFlow {
                     // System.out.println("i= "+i);
                 }
                 // System.out.println("calling disjktra ");
-                long count = g.disjkstra(g.vertexList.get(g.srcCellVertexIndex), g.vertexList.get(g.destCellVertexIndex));
-                if (count != Long.MAX_VALUE) {
-                    sba.append(count).append("\n");
-//                    System.out.println(count);
-                } else {
-                    sba.append("NONE").append("\n");
-//                    System.out.println("NONE");
-                }
 //            }
 //            sba.deleteCharAt(sba.length()-1);
             System.out.println(sba.toString());
@@ -232,7 +224,7 @@ class graph // it is a directed and weighted graph
 
     }
 
-//    public long disjkstra(vertex v, vertex exitCell) {
+    public void disjkstra(vertex v, vertex exitCell) {
 //        // System.out.println("src cell "+v.label);
 //        // System.out.println("dest cell "+exitCell.label);
 //
@@ -293,7 +285,8 @@ class graph // it is a directed and weighted graph
 ////        System.out.println("returning "+exitCell.capacity);
 //        return exitCell.capacity;
 //
-//    }
+    }
+
     public void bfs(){  // assigning level to all the vertices
         ArrayDeque<vertex> q=new ArrayDeque<>();
         q.offer(vertexList.get(0));
@@ -314,7 +307,7 @@ class graph // it is a directed and weighted graph
     }
     public int drivingFunc(){
         bfs();
-        int max_flow=-1;
+        int max_flow=0;
         if(vertexList.get(vertexList.size()-1).level==-1)
             return max_flow;
         
@@ -325,7 +318,6 @@ class graph // it is a directed and weighted graph
 class vertex {
 
     public int label,level;
-    public long capacity;
 
     public boolean visited;
 
@@ -334,8 +326,6 @@ class vertex {
         this.label = label;
 
         this.visited = false;
-
-        this.capacity = -1;
         this.level=-1;
 
     }
@@ -346,15 +336,16 @@ class edge {
 
     vertex source, destination;
 
-    int weight;
+    public long capacity,flow;
 
-    public edge(vertex source, vertex destination, int weight) {
+    public edge(vertex source, vertex destination, int capacity) {
 
         this.source = source;
 
         this.destination = destination;
 
-        this.weight = weight;
+        this.capacity = capacity;
+        this.flow=0;
 
     }
 } 
