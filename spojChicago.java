@@ -143,12 +143,18 @@ public class SpojChicago {
         try {
 
             Reader sc = new Reader();
-            String[] h = sc.readLine().split(" ");
+            String r=sc.readLine();
+//            System.out.println("r= "+r);
+            r=r.trim();
+            String[] h = r.split(" ");
+//            for(int i=0;i<h.length;i++)
+//            	System.out.print(h[i]+" , ");
+//            System.out.println("");
 
             int n = Integer.parseInt(h[0]);
-            if (n != 0) {
-
+            while (n != 0) {
                 int numOfEdges = Integer.parseInt(h[1]);
+//            	System.out.println("here");
 
                 //System.out.println("n= "+n+" ,exitcell= "+exitCell+" ,timelimit= "+timeLimit+" and numedges= "+numOfEdges);
                 graph g = new graph();
@@ -161,7 +167,7 @@ public class SpojChicago {
 
                 // System.out.println("going to add edges");
                 for (int i = 0; i < numOfEdges; i++) {
-                    String[] p = sc.readLine().split(" ");
+                    String[] p = sc.readLine().trim().split(" ");
                     int source = Integer.parseInt(p[0]);
 
                     int destination = Integer.parseInt(p[1]);
@@ -175,19 +181,13 @@ public class SpojChicago {
                 }
                 // System.out.println("calling disjktra ");
                 double count = g.primAlgo(g.vertexList.get(0), g.vertexList.get(n - 1));
-                if (count != Integer.MAX_VALUE) {
-                    sba.append(count).append("\n");
-//                    System.out.println(count);
-                } else {
-                    sba.append("NONE").append("\n");
-//                    System.out.println("NONE");
-                }
+                System.out.printf("%.6f",count);
+                System.out.println(" percent");
             }
-//            sba.deleteCharAt(sba.length()-1);
-            System.out.println(sba.toString());
+//            System.out.println(sba.toString());
         } catch (Exception e) {
-            System.out.println("error= " + e.getMessage());
-//        return;
+//            System.out.println("error= " + e.getMessage()+" , "+e.getStackTrace());
+        return;
 
         }
 
@@ -268,7 +268,7 @@ class graph // it is a directed and weighted graph
             if (curr.key !=0 && curr.key!=Double. MAX_VALUE) {
                 percent *= (curr.key-lastPercent);
                 lastPercent=curr.key;
-                System.out.println("polled "+curr.label);
+                System.out.println("polled "+curr.label+" and current key= "+curr.key+" and current percent= "+percent);
             }
 //    	System.out.println("visited "+curr.label+" , ");
             count += 1;
@@ -294,19 +294,25 @@ class graph // it is a directed and weighted graph
 //            });
 //            System.out.println("");
             if (curr == exitCell) {
-                System.out.println(" found the destination ");
+//                System.out.println(" found the destination ");
                 break;
             }
         }
         // System.out.println("returning "+exitCell.timeExhausted);
+        System.out.println("changing percent "+percent);
         double temp=percent;
         int numzeroes=0;
+        double remainder=0;
         while(temp/10>=10)
         {
             numzeroes+=1;
+            remainder+=(temp%10);
             temp/=10;
+            remainder*=0.1;
         }
-        return Math.round((percent/(Math.pow(10,numzeroes))));
+        percent=Math.round((percent/(Math.pow(10,numzeroes))));
+        percent+=remainder;
+        return percent;
     }
 }
 
@@ -344,3 +350,16 @@ class edge {
 
     }
 }
+/*
+6 10
+1 2 80
+1 4 40
+1 6 2
+2 3 40
+2 4 80
+3 5 80
+3 4 80
+5 6 30
+5 4 10
+4 4 5
+*/
