@@ -9,7 +9,7 @@ public class LeetcodeDivisorGame {
 		 return stoneGame2(piles,0,0,'a',0,1);
 	    }
 	 public static int stoneGame2(int []ar,int ascore,int bscore,char user,int arIndex,int m){
-	        System.out.println("current ascore= "+ascore+" and cur user= "+user+" ,arindex= "+arIndex+" and m= "+m);
+	        System.out.println("current ascore= "+ascore+",bscore= "+bscore+" and cur user= "+user+" ,arindex= "+arIndex+" and m= "+m);
 	        if(arIndex==ar.length )
 	        	return -1;
 	        int h=-1;
@@ -28,7 +28,7 @@ public class LeetcodeDivisorGame {
 	            		 break;
             	 bscore+=ar[i];
             	 i+=1;
-            	 h=Math.max(bscore,stoneGame2(ar,0,0,'a', i,Math.max(m, (i-arIndex))));
+            	 h=Math.max(bscore,stoneGame2(ar,ascore,bscore,'a', i,Math.max(m, (i-arIndex))));
 	             }
 	        }
 	        if(user=='a' && h>ascore) {
