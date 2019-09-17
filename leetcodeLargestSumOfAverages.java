@@ -18,13 +18,16 @@ public class abcd {
     }
 	public static double markDiv(ArrayList<Integer> al,int []ar,int kRemaining) {
 		double sum=0;
+		System.out.println(" al: "+al+" and k= "+kRemaining);
 		if(kRemaining==1)
 		{
+			System.out.print("all partitions covered for this");
 			sum+=average(ar, 0, al.get(0)-1);
 			for(int i=1;i<al.size()-1;i++) {
 				sum+=average(ar, al.get(i-1), al.get(i)-1);
 			}
 			sum+=average(ar, al.get(al.size()-1),ar.length-1);
+			System.out.println(" returning sum: "+sum);
 			return sum;
 		}
 		int lastElem=al.get(al.size()-1);
@@ -34,6 +37,7 @@ public class abcd {
         	ap.add(i);
         	max=Math.max(markDiv(ap, ar,kRemaining-1), max);
         }
+		System.out.println(" returning max: "+max+" for lastElement: "+lastElem);
 		return max;
 	}
 	public static double average(int []ar,int i,int j) {
