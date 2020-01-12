@@ -1,0 +1,57 @@
+package ibitrepsubseq;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class IBitRepSubseq {
+
+    public static void main(String[] args) {
+//        Map<String,Integer> mp=new HashMap<>();
+//        System.out.println(fnc("abba", 0, 0,mp));
+        Scanner sc=new Scanner(System.in);
+        String s=sc.nextLine();
+        System.out.println(new IBitRepSubseq().anytwo(s));
+    }
+    public int anytwo(String s) {
+        Map<Character,Integer> mp=new LinkedHashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            if(mp.containsKey(s.charAt(i)))
+                mp.put(s.charAt(i),2);
+            else
+                mp.put(s.charAt(i),1);
+        }
+        StringBuilder sba=new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if(mp.get(s.charAt(i))==2)
+                sba.append(s.charAt(i));
+        }
+        s=sba.toString();
+//        System.out.println("s= "+s);
+        int max=1;
+        int [][]ar=new int[s.length()][s.length()];
+        for (int i = 1; i < s.length(); i++) {
+            if(s.charAt(i)==s.charAt(0))
+                ar[0][i]=1;
+            else
+                ar[0][i]=ar[0][i-1];
+            System.out.print(ar[0][i]+" , ");
+        }
+        System.out.println("");
+        for (int i = 1; i < s.length(); i++) {
+            for (int j = i+1; j < s.length(); j++) {
+                if(s.charAt(i)==s.charAt(j))
+                    ar[i][j]=ar[i-1][j-1]+1;
+                else
+                    ar[i][j]=Math.max(ar[i][j-1], ar[i-1][j]);
+                max=Math.max(ar[i][j],max);
+                System.out.print(ar[i][j]+" , ");
+            }
+            System.out.println("");
+        }
+        System.out.println("max= "+max);
+        if(max<=1)
+            return 0;
+        return 1;
+    }        
+}
