@@ -1,0 +1,132 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+
+    Map<TreeNode, Integer> tmp;
+    LinkedList<TreeNode> visited;
+    int numberOfNodes = 0;
+    int point = 0;
+
+    public TreeNode recoverFromPreorder(String s) {
+        if (s.isEmpty()) {
+            return null;
+        }
+        visited = new LinkedList<>();
+        tmp=new HashMap<>();
+        int y=0;
+        StringBuilder sba=new StringBuilder("");
+        while(y<s.length() && s.charAt(y)!='-')
+        {
+            sba.append(s.charAt(y));
+            y++;
+        }
+        TreeNode root = new TreeNode(Integer.parseInt(sba.toString()));
+        tmp.put(root, 0);
+        numberOfNodes=1;
+        while(y<s.length()){
+            boolean mark=false;
+            while(y<s.length()  && s.charAt(y)!='-'){
+                y+=1;
+                mark=true;
+            }
+            if(mark)
+            {
+                numberOfNodes++;
+                y-=1;
+//                System.out.println("number of nodes increased at y= "+y);
+            }
+            y++;
+        }
+        visited.add(root);
+        return work(s);
+    }
+
+    public TreeNode work(String s) {
+        if (point >= s.length() || point<0) {
+            return null;
+        }
+        int i = 0;
+        while(i<s.length() && s.charAt(i)!='-')
+            i++;
+        TreeNode root = null;
+        int depth=0;
+        while (visited.size() < numberOfNodes) {
+//            System.out.println("visited = "+visited.size()+" and number of nodes= "+numberOfNodes);
+            if(s.charAt(i)=='-')
+                depth=0;
+            while (s.charAt(i) == '-') {
+                i+=1;
+                depth+=1;
+            }
+//            System.out.println("i= "+i+"  point = "+point+" and depth= "+depth+" char= "+s.charAt(i)+" and current root= "+visited.get(point).val+"\n");
+            root = visited.get(point);
+
+            if (depth - tmp.get(root) == 1) {
+                StringBuilder sba=new StringBuilder("");
+                int y=i;
+                while(y<s.length() && s.charAt(y)!='-')
+                {
+                    sba.append(s.charAt(y));
+                    y++;
+                }
+                i=y;
+                TreeNode ap = new TreeNode(Integer.parseInt(sba.toString()));
+                if (root.left == null) {
+                    root.left = ap;
+                    tmp.put(ap, depth);
+                    visited.add(ap);
+//                    System.out.println("increasing point for root left and = "+root.val+" and point is "+(point+1));
+                    point+=1;
+                } 
+                else if (root.left != null && root.right == null) {
+                    root.right = ap;
+                    tmp.put(ap, depth);
+                    visited.add(ap);
+//                    System.out.println("increasing point for root right and = "+root.val+" and point is "+(visited.size()-1));
+                    point = visited.size()-1;
+                } 
+                else {                    
+                    if(root.left!=null && root.right!=null){
+                        point+=1;
+//                        System.out.println("increased point since current node can't have any more children and next in line might have so new root= "+visited.get(point).val);
+                        continue;
+                    }
+                    point -= 1;
+//                    System.out.println("decreasing point for root  = "+root.val+" and point is "+point);
+                }
+            }
+            else if (depth - tmp.get(root) <= 0) {
+                point -= 1;
+//                System.out.println("decreasing point else if part  = "+visited.get(point).val+" and point is "+point);
+                while (point > 0 && tmp.get(visited.get(point)) >= depth) {
+//                    System.out.println("same level or senior found going up ,point = "+(point-1));
+                    point -= 1;
+                }
+            }
+        }
+        return visited.get(0);
+    }
+
+    // public void PreOrder(TreeNode node) {
+    //     ArrayDeque<TreeNode> aq=new ArrayDeque<>();
+    //     if(node==null)
+    //         return ;
+    //     aq.push(node);
+    //     while(!aq.isEmpty()){
+    //         TreeNode p=aq.pop();
+    //         System.out.print(p.val+" , ");
+    //         if(p.right!=null)
+    //             aq.push(p.right);
+    //         if(p.left!=null)
+    //             aq.push(p.left);
+    //     }
+    //     System.out.println("");
+    // }
+}
